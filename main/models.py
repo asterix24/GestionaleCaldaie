@@ -7,7 +7,7 @@ class Cliente(models.Model):
     codice_fiscale = models.CharField(max_length=17)
     via = models.TextField()
     citta = models.TextField()
-    numero_telefono = models.CharFieldwq()
+    numero_telefono = models.CharField(max_length=20)
     marca_caldaia = models.CharField(max_length=100)
     modello_caldaia = models.CharField(max_length=100)
     tipo = models.CharField(max_length=1)
@@ -18,6 +18,7 @@ class Cliente(models.Model):
 
     def __unicode__(self):
         return self.nome
+
 
 
 
