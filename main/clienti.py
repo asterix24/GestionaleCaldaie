@@ -1,25 +1,30 @@
 #!/usr/bin/env python
+from models import Cliente
 
-def insertCliente(clienti):
+def insert_record(r):
+    node = Cliente(codice_id = r['codice_id'],
+            nome = r['nome'],
+            cognome = r['cognome'],
+            codice_fiscale = r['codice_fiscale'],
+            via = r['via'],
+            citta = r['citta'],
+            numero_telefono = r['numero_telefono'],
+            marca_caldaia = r['marca_caldaia'],
+            modello_caldaia = r['modello_caldaia'],
+            tipo = r['tipo'],
+            combustibile = r['combustibile'],
+            data_installazione = r['data_installazione'],
+            data_contratto = r['data_contratto'])
+
+    dump(r)
+    node.save()
+
+def insert_records(clienti):
     for l in clienti:
-        node = Cliente(codice_id = l['codice_id'],
-                nome = l['nome'],
-                cognome = l['cognome'],
-                codice_fiscale = l['codice_fiscale'],
-                via = l['via'],
-                citta = l['citta'],
-                numero_telefonico = l['numero_telefono'],
-                marca_caldaia = l['marca_caldaia'],
-                modello_caldaia = l['modello_caldaia'],
-                tipo = l['tipo'],
-                combustibile = l['combustibile'],
-                data_installazione = l['data_installazione'],
-                data_contratto = l['data_contratto'])
-
-        node.save()
+        insert_record(l)
 
 
-def load_csv(file_name):
+def load_csv_cliente(file_name):
     import csv
     import datetime
     table = csv.reader(open(file_name, 'rb'), delimiter=',', quotechar='\"')
@@ -61,7 +66,7 @@ def load_csv(file_name):
                 d, m, y = raw.split("/")
                 dinst = datetime.date(int(y), int(m), int(d))
             else:
-                dinst = datetime.date
+                dinst = datetime.date.today()
 
             table_dict['data_installazione'] = dinst
 
@@ -70,7 +75,7 @@ def load_csv(file_name):
                 d, m, y = raw.split("/")
                 dcont = datetime.date(int(y), int(m), int(d))
             else:
-                dcont = datetime.date
+                dcont = datetime.date.today()
             table_dict['data_contratto'] = dcont
 
         except ValueError, m:
@@ -82,6 +87,20 @@ def load_csv(file_name):
 
     return all
 
+def dump(l):
+    print l['codice_id'],
+    print l['nome'],
+    print l['cognome'],
+    print l['codice_fiscale'],
+    print l['via'],
+    print l['citta'],
+    print l['numero_telefono'],
+    print l['marca_caldaia'],
+    print l['modello_caldaia'],
+    print l['tipo'],
+    print l['combustibile'],
+    print l['data_installazione'],
+    print l['data_contratto']
 
 if __name__ == "__main__":
     import sys
@@ -93,18 +112,6 @@ if __name__ == "__main__":
     i = 0
     for l in all:
         i += 1
-        print l['codice_id'],
-        print l['nome'],
-        print l['cognome'],
-        print l['codice_fiscale'],
-        print l['via'],
-        print l['citta'],
-        print l['numero_telefono'],
-        print l['marca_caldaia'],
-        print l['modello_caldaia'],
-        print l['tipo'],
-        print l['combustibile'],
-        print l['data_installazione'],
-        print l['data_contratto']
+        dump(l)
 
     print "Records: ", i

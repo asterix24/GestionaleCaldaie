@@ -21,4 +21,9 @@ class Cliente(models.Model):
 
 
 
+class Interventi(models.Model):
+    data = models.DateField()
+    cliente = models.ForeignKey(Cliente)
 
+    def __unicode__(self):
+        return self.data
