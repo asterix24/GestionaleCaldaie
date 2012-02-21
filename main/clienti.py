@@ -2,19 +2,7 @@
 from models import Cliente
 
 def insert_record(r):
-    node = Cliente(codice_id = r['codice_id'],
-            nome = r['nome'],
-            cognome = r['cognome'],
-            codice_fiscale = r['codice_fiscale'],
-            via = r['via'],
-            citta = r['citta'],
-            numero_telefono = r['numero_telefono'],
-            marca_caldaia = r['marca_caldaia'],
-            modello_caldaia = r['modello_caldaia'],
-            tipo = r['tipo'],
-            combustibile = r['combustibile'],
-            data_installazione = r['data_installazione'],
-            data_contratto = r['data_contratto'])
+    node = Cliente(**r)
 
     dump(r)
     node.save()
