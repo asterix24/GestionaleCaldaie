@@ -20,7 +20,6 @@ class Cliente(models.Model):
         return self.nome
 
 
-
 class Interventi(models.Model):
     data = models.DateField()
     cliente = models.ForeignKey(Cliente)
