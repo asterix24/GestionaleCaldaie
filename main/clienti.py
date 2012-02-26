@@ -1,6 +1,67 @@
 #!/usr/bin/env python
 from models import Cliente
 
+FILTER_MODE_START =    0
+FILTER_MODE_EXACT =    1
+FILTER_MODE_CONTAIN =  2
+FILTER_SHORT_ASCEN = 0
+FILTER_SHORT_DESCEND = 1
+
+def filter_nome(value, mode = FILTER_MODE_CONTAIN):
+    if mode == FILTER_MODE_START:
+        return Cliente.objects.filter(nome__istartswith = value)
+    elif mode == FILTER_MODE_CONTAIN:
+        return Cliente.objects.filter(nome__icontains= value)
+    elif mode == FILTER_MODE_EXACT:
+        return Cliente.objects.filter(nome__iexact= value)
+    else:
+        print "error: unkwon mode"
+        return None
+
+def filter_cognome(value, mode = FILTER_MODE_CONTAIN):
+    if mode == FILTER_MODE_START:
+        return Cliente.objects.filter(cognome__istartswith = value)
+    elif mode == FILTER_MODE_CONTAIN:
+        return Cliente.objects.filter(cognome__icontains= value)
+    elif mode == FILTER_MODE_EXACT:
+        return Cliente.objects.filter(cognome__iexact= value)
+    else:
+        print "error: unkwon mode"
+        return None
+
+def filter_via(value, mode = FILTER_MODE_CONTAIN):
+    if mode == FILTER_MODE_START:
+        return Cliente.objects.filter(via__istartswith = value)
+    elif mode == FILTER_MODE_CONTAIN:
+        return Cliente.objects.filter(via__icontains= value)
+    elif mode == FILTER_MODE_EXACT:
+        return Cliente.objects.filter(via__iexact= value)
+    else:
+        print "error: unkwon mode"
+        return None
+
+def filter_marcaCaldaia(value, mode = FILTER_MODE_CONTAIN):
+    if mode == FILTER_MODE_START:
+        return Cliente.objects.filter(marca_caldaia__istartswith = value)
+    elif mode == FILTER_MODE_CONTAIN:
+        return Cliente.objects.filter(marca_caldaia__icontains= value)
+    elif mode == FILTER_MODE_EXACT:
+        return Cliente.objects.filter(marca_caldaia__iexact= value)
+    else:
+        print "error: unkwon mode"
+        return None
+
+def filter_combustibile(value, mode = FILTER_MODE_CONTAIN):
+    if mode == FILTER_MODE_START:
+        return Cliente.objects.filter(combustibilie__istartswith = value)
+    elif mode == FILTER_MODE_CONTAIN:
+        return Cliente.objects.filter(combustibilie__icontains= value)
+    elif mode == FILTER_MODE_EXACT:
+        return Cliente.objects.filter(combustibilie__iexact= value)
+    else:
+        print "error: unkwon mode"
+        return None
+
 def insert_record(r):
     node = Cliente(**r)
 
