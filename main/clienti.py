@@ -1,66 +1,84 @@
 #!/usr/bin/env python
 from models import Cliente
+import datetime
 
 FILTER_MODE_START =    0
 FILTER_MODE_EXACT =    1
 FILTER_MODE_CONTAIN =  2
-FILTER_SHORT_ASCEN = 0
+FILTER_SHORT_ASCEN =   0
 FILTER_SHORT_DESCEND = 1
 
-def filter_nome(value, mode = FILTER_MODE_CONTAIN):
+def filter_cognome(ctx, value, mode = FILTER_MODE_CONTAIN):
     if mode == FILTER_MODE_START:
-        return Cliente.objects.filter(nome__istartswith = value)
+        return ctx.filter(cognome__istartswith = value)
     elif mode == FILTER_MODE_CONTAIN:
-        return Cliente.objects.filter(nome__icontains= value)
+        return ctx.filter(cognome__icontains= value)
     elif mode == FILTER_MODE_EXACT:
-        return Cliente.objects.filter(nome__iexact= value)
+        return ctx.filter(cognome__iexact= value)
     else:
         print "error: unkwon mode"
         return None
 
-def filter_cognome(value, mode = FILTER_MODE_CONTAIN):
+def filter_via(ctx, value, mode = FILTER_MODE_CONTAIN):
     if mode == FILTER_MODE_START:
-        return Cliente.objects.filter(cognome__istartswith = value)
+        return ctx.filter(via__istartswith = value)
     elif mode == FILTER_MODE_CONTAIN:
-        return Cliente.objects.filter(cognome__icontains= value)
+        return ctx.filter(via__icontains= value)
     elif mode == FILTER_MODE_EXACT:
-        return Cliente.objects.filter(cognome__iexact= value)
+        return ctx.filter(via__iexact= value)
     else:
         print "error: unkwon mode"
         return None
 
-def filter_via(value, mode = FILTER_MODE_CONTAIN):
+def filter_citta(ctx, value, mode = FILTER_MODE_CONTAIN):
     if mode == FILTER_MODE_START:
-        return Cliente.objects.filter(via__istartswith = value)
+        return ctx.filter(citta__istartswith = value)
     elif mode == FILTER_MODE_CONTAIN:
-        return Cliente.objects.filter(via__icontains= value)
+        return ctx.filter(citta__icontains= value)
     elif mode == FILTER_MODE_EXACT:
-        return Cliente.objects.filter(via__iexact= value)
+        return ctx.filter(citta__iexact= value)
     else:
         print "error: unkwon mode"
         return None
 
-def filter_marcaCaldaia(value, mode = FILTER_MODE_CONTAIN):
+def filter_marcaCaldaia(ctx, value, mode = FILTER_MODE_CONTAIN):
     if mode == FILTER_MODE_START:
-        return Cliente.objects.filter(marca_caldaia__istartswith = value)
+        return ctx.filter(marca_caldaia__istartswith = value)
     elif mode == FILTER_MODE_CONTAIN:
-        return Cliente.objects.filter(marca_caldaia__icontains= value)
+        return ctx.filter(marca_caldaia__icontains= value)
     elif mode == FILTER_MODE_EXACT:
-        return Cliente.objects.filter(marca_caldaia__iexact= value)
+        return ctx.filter(marca_caldaia__iexact= value)
     else:
         print "error: unkwon mode"
         return None
 
-def filter_combustibile(value, mode = FILTER_MODE_CONTAIN):
+def filter_combustibile(ctx, value, mode = FILTER_MODE_CONTAIN):
     if mode == FILTER_MODE_START:
-        return Cliente.objects.filter(combustibilie__istartswith = value)
+        return ctx.filter(combustibilie__istartswith = value)
     elif mode == FILTER_MODE_CONTAIN:
-        return Cliente.objects.filter(combustibilie__icontains= value)
+        return ctx.filter(combustibilie__icontains= value)
     elif mode == FILTER_MODE_EXACT:
-        return Cliente.objects.filter(combustibilie__iexact= value)
+        return ctx.filter(combustibilie__iexact= value)
     else:
         print "error: unkwon mode"
         return None
+
+def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
+    if stop_y is not None and stop_m is not None and stop_d is not None:
+        return ctx.filter(data_installazione__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
+    if start_m is not None:
+        return ctx.filter(data_installazione__year = start_y).filter(data_installazione__month = start_m)
+    else:
+        return ctx.filter(data_installazione__year = start_y)
+
+
+def filter_dataContratto(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
+    if stop_y is not None and stop_m is not None and stop_d is not None:
+        return ctx.filter(data_contratto__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
+    if start_m is not None:
+        return ctx.filter(data_contratto__year = start_y).filter(data_installazione__month = start_m)
+    else:
+        return ctx.filter(data_contratto__year = start_y)
 
 def insert_record(r):
     node = Cliente(**r)
@@ -75,7 +93,6 @@ def insert_records(clienti):
 
 def load_csv_cliente(file_name):
     import csv
-    import datetime
     table = csv.reader(open(file_name, 'rb'), delimiter=',', quotechar='\"')
     all = []
 
@@ -136,20 +153,27 @@ def load_csv_cliente(file_name):
 
     return all
 
-def dump(l):
-    print l['codice_id'],
-    print l['nome'],
-    print l['cognome'],
-    print l['codice_fiscale'],
-    print l['via'],
-    print l['citta'],
-    print l['numero_telefono'],
-    print l['marca_caldaia'],
-    print l['modello_caldaia'],
-    print l['tipo'],
-    print l['combustibile'],
-    print l['data_installazione'],
-    print l['data_contratto']
+def dump(l, key = None):
+    if key is not None:
+        print l[key]
+    else:
+        print l['codice_id'],
+        print l['nome'],
+        print l['cognome'],
+        print l['codice_fiscale'],
+        print l['via'],
+        print l['citta'],
+        print l['numero_telefono'],
+        print l['marca_caldaia'],
+        print l['modello_caldaia'],
+        print l['tipo'],
+        print l['combustibile'],
+        print l['data_installazione'],
+        print l['data_contratto']
+
+def dump_all(l, key = None):
+    for i in l:
+        dump(i, key)
 
 if __name__ == "__main__":
     import sys
