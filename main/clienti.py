@@ -2,66 +2,14 @@
 from models import Cliente
 import datetime
 
-FILTER_MODE_START =    0
-FILTER_MODE_EXACT =    1
-FILTER_MODE_CONTAIN =  2
+FILTER_MODE_START =    '__istartswith'
+FILTER_MODE_EXACT =    '__iexact'
+FILTER_MODE_CONTAIN =  '__icontains'
 FILTER_SHORT_ASCEN =   0
 FILTER_SHORT_DESCEND = 1
 
-def filter_cognome(ctx, value, mode = FILTER_MODE_CONTAIN):
-    if mode == FILTER_MODE_START:
-        return ctx.filter(cognome__istartswith = value)
-    elif mode == FILTER_MODE_CONTAIN:
-        return ctx.filter(cognome__icontains= value)
-    elif mode == FILTER_MODE_EXACT:
-        return ctx.filter(cognome__iexact= value)
-    else:
-        print "error: unkwon mode"
-        return None
-
-def filter_via(ctx, value, mode = FILTER_MODE_CONTAIN):
-    if mode == FILTER_MODE_START:
-        return ctx.filter(via__istartswith = value)
-    elif mode == FILTER_MODE_CONTAIN:
-        return ctx.filter(via__icontains= value)
-    elif mode == FILTER_MODE_EXACT:
-        return ctx.filter(via__iexact= value)
-    else:
-        print "error: unkwon mode"
-        return None
-
-def filter_citta(ctx, value, mode = FILTER_MODE_CONTAIN):
-    if mode == FILTER_MODE_START:
-        return ctx.filter(citta__istartswith = value)
-    elif mode == FILTER_MODE_CONTAIN:
-        return ctx.filter(citta__icontains= value)
-    elif mode == FILTER_MODE_EXACT:
-        return ctx.filter(citta__iexact= value)
-    else:
-        print "error: unkwon mode"
-        return None
-
-def filter_marcaCaldaia(ctx, value, mode = FILTER_MODE_CONTAIN):
-    if mode == FILTER_MODE_START:
-        return ctx.filter(marca_caldaia__istartswith = value)
-    elif mode == FILTER_MODE_CONTAIN:
-        return ctx.filter(marca_caldaia__icontains= value)
-    elif mode == FILTER_MODE_EXACT:
-        return ctx.filter(marca_caldaia__iexact= value)
-    else:
-        print "error: unkwon mode"
-        return None
-
-def filter_combustibile(ctx, value, mode = FILTER_MODE_CONTAIN):
-    if mode == FILTER_MODE_START:
-        return ctx.filter(combustibilie__istartswith = value)
-    elif mode == FILTER_MODE_CONTAIN:
-        return ctx.filter(combustibilie__icontains= value)
-    elif mode == FILTER_MODE_EXACT:
-        return ctx.filter(combustibilie__iexact= value)
-    else:
-        print "error: unkwon mode"
-        return None
+def filter_records(ctx, key, value, mode = FILTER_MODE_CONTAIN):
+    return ctx.filter(**{ key + mode : value })
 
 def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
     if stop_y is not None and stop_m is not None and stop_d is not None:
@@ -111,7 +59,7 @@ def load_csv_cliente(file_name):
             if e[0].strip() != '':
                 id = int(e[0], 10)
             else:
-                id = 0
+                id = None
 
             table_dict['codice_id'] = id
             table_dict['cognome'] = e[1].capitalize().strip()
@@ -128,7 +76,7 @@ def load_csv_cliente(file_name):
             if e[6].strip() != '':
                 tel = e[6].replace(' ', '')
             else:
-                tel = 0
+                tel = None
             table_dict['numero_telefono'] = tel
 
             table_dict['marca_caldaia'] = e[7].strip().upper()
@@ -141,7 +89,7 @@ def load_csv_cliente(file_name):
                 d, m, y = raw.split("/")
                 dinst = datetime.date(int(y), int(m), int(d))
             else:
-                dinst = datetime.date.today()
+                dinst = None
 
             table_dict['data_installazione'] = dinst
 
@@ -150,7 +98,8 @@ def load_csv_cliente(file_name):
                 d, m, y = raw.split("/")
                 dcont = datetime.date(int(y), int(m), int(d))
             else:
-                dcont = datetime.date.today()
+                dcont = None
+
             table_dict['data_contratto'] = dcont
 
         except ValueError, m:
