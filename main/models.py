@@ -23,24 +23,28 @@ class Cliente(models.Model):
 
 
     def __unicode__(self):
-        return self.nome
+        return ("%s: %s") % (self.cognome, self.citta)
 
 
 class Intervento(models.Model):
     data = models.DateField()
+    tipo = models.CharField(max_length=80, null=True)
     note = models.TextField(null=True)
     cliente = models.ForeignKey(Cliente)
 
     def __unicode__(self):
-        return self.data
+        return ("%s: %s") %  (self.tipo, self.data.__str__())
 
 class Bollino(models.Model):
-    data = models.DateField()
-    prente = models.BooleanField()
+    presente = models.BooleanField()
+    data = models.DateField(null=True)
     colore = models.CharField(max_length = 100, null=True)
     valore = models.DecimalField(max_digits = 4, decimal_places = 2, null=True)
     scadenza = models.DateField(null=True)
     cliente = models.ForeignKey(Cliente)
 
+    class Meta:
+        ordering = ['presente']
+
     def __unicode__(self):
-        return self.data
+        return ("%s: %s") %  (self.presente, self.data.__str__())
