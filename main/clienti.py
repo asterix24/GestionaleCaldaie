@@ -37,16 +37,20 @@ def select_record(ctx, id):
 def delete_record(ctx, id):
     return ctx.objects.get(pk=id).delete()
 
-def insert_record(r):
+def insert_cliente(r):
     node = Cliente(**r)
 
     dump(r)
     node.save()
 
-def insert_records(clienti):
+def insert_clienti(clienti):
     for l in clienti:
-        insert_record(l)
+        insert_cliente(l)
 
+def insert_intervento(cli, data_int, tipo_int, note_int):
+    node = Intervento(data=data_int, tipo=tipo_int, note=note, cliente=cli)
+    dump({"data":data_int, "tipo":tipo_int, "note":note, "cliente":cli})
+    node.save()
 
 def load_csv_cliente(file_name):
     import csv
@@ -115,19 +119,10 @@ def dump(l, key = None):
     if key is not None:
         print l[key]
     else:
-        print l['codice_id'],
-        print l['nome'],
-        print l['cognome'],
-        print l['codice_fiscale'],
-        print l['via'],
-        print l['citta'],
-        print l['numero_telefono'],
-        print l['marca_caldaia'],
-        print l['modello_caldaia'],
-        print l['tipo'],
-        print l['combustibile'],
-        print l['data_installazione'],
-        print l['data_contratto']
+        for i in l.keys():
+            print l[i],
+
+        print
 
 def dump_all(l, key = None):
     for i in l:
