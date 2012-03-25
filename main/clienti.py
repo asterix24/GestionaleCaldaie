@@ -2,6 +2,8 @@
 import datetime
 from tools import *
 from models import Cliente
+from models import Intervento
+from models import Bollino
 
 
 FILTER_MODE_START =    '__istartswith'
@@ -11,6 +13,7 @@ FILTER_SHORT_ASCEN =   0
 FILTER_SHORT_DESCEND = 1
 
 def filter_records(ctx, key, value, mode = FILTER_MODE_CONTAIN):
+    print key, value, mode
     return ctx.filter(**{ key + mode : value })
 
 def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
@@ -20,7 +23,6 @@ def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_
         return ctx.filter(data_installazione__year = start_y).filter(data_installazione__month = start_m)
     else:
         return ctx.filter(data_installazione__year = start_y)
-
 
 def filter_dataContratto(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
     if stop_y is not None and stop_m is not None and stop_d is not None:
@@ -53,3 +55,17 @@ def insert_intervento(cli, data_int, tipo_int, note_int):
     node = Intervento(data=data_int, tipo=tipo_int, note=note, cliente=cli)
     dump({"data":data_int, "tipo":tipo_int, "note":note, "cliente":cli})
     node.save()
+    
+def insert_bollino(bl):
+    a = filter_records(Cliente.objects, "cognome", bl['cognome'], FILTER_MODE_EXACT)
+    aa = filter_records(a, "nome", bl['nome'],FILTER_MODE_EXACT)
+    del(bl['nome'])
+    del(bl['cognome'])
+
+    for i in aa:
+        print i.numero_bollino
+        bl['cliente'] = i
+        node = Bollino(**bl)
+        dump(bl)
+        node.save()
+    

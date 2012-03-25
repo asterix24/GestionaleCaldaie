@@ -123,6 +123,7 @@ def dump(l, key = None):
     if key is not None:
         print l[key]
     else:
+        print l
         for i in l.keys():
             print l[i],
 
@@ -135,7 +136,7 @@ def dump_all(l, key = None):
 def load_all():
     cli = load_csv("main/elenco2010.csv", load_cliente)
     bol = load_csv("main/bollino.csv", load_bollino)
-    return cli, bol
+    return cli, bol 
 
 if __name__ == "__main__":
     import sys
