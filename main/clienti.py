@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-from models import Cliente
 import datetime
+from tools import *
+from models import Cliente
+
 
 FILTER_MODE_START =    '__istartswith'
 FILTER_MODE_EXACT =    '__iexact'
@@ -51,93 +53,3 @@ def insert_intervento(cli, data_int, tipo_int, note_int):
     node = Intervento(data=data_int, tipo=tipo_int, note=note, cliente=cli)
     dump({"data":data_int, "tipo":tipo_int, "note":note, "cliente":cli})
     node.save()
-
-def load_csv_cliente(file_name):
-    import csv
-    table = csv.reader(open(file_name, 'rb'), delimiter=',', quotechar='\"')
-    all = []
-
-    for e in table:
-        table_dict = {}
-        try:
-            if e[0].strip() != '':
-                id = int(e[0], 10)
-            else:
-                id = None
-
-            table_dict['codice_id'] = id
-            table_dict['cognome'] = e[1].capitalize().strip()
-            table_dict['nome'] = e[2].capitalize().strip()
-
-            if e[3].strip() != '':
-                cdf = e[3].upper().strip()
-            else:
-                cdf = ""
-            table_dict['codice_fiscale'] = cdf
-            table_dict['via'] = e[4].capitalize().strip()
-            table_dict['citta'] = e[5].capitalize().strip()
-
-            if e[6].strip() != '':
-                tel = e[6].replace(' ', '')
-            else:
-                tel = None
-            table_dict['numero_telefono'] = tel
-
-            table_dict['marca_caldaia'] = e[7].strip().upper()
-            table_dict['modello_caldaia'] = e[8].strip().upper()
-            table_dict['tipo'] = e[9].strip().upper()
-            table_dict['combustibile'] = e[10].strip().capitalize()
-
-            if (e[11].strip() != ""):
-                raw = e[11].replace(".", "/")
-                d, m, y = raw.split("/")
-                dinst = datetime.date(int(y), int(m), int(d))
-            else:
-                dinst = None
-
-            table_dict['data_installazione'] = dinst
-
-            if (e[12].strip() != ""):
-                raw = e[12].replace(".", "/")
-                d, m, y = raw.split("/")
-                dcont = datetime.date(int(y), int(m), int(d))
-            else:
-                dcont = None
-
-            table_dict['data_contratto'] = dcont
-
-        except ValueError, m:
-            print "errore (%s)" % m , e
-            exit (0)
-
-
-        all.append(table_dict)
-
-    return all
-
-def dump(l, key = None):
-    if key is not None:
-        print l[key]
-    else:
-        for i in l.keys():
-            print l[i],
-
-        print
-
-def dump_all(l, key = None):
-    for i in l:
-        dump(i, key)
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) < 2:
-        print sys.argv[0], " <csv file name>"
-
-    all = load_csv(sys.argv[1])
-    i = 0
-    for l in all:
-        i += 1
-        dump(l)
-
-    print "Records: ", i
