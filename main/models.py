@@ -21,7 +21,6 @@ class Cliente(models.Model):
     class Meta:
         ordering = ['cognome']
 
-
     def __unicode__(self):
         return ("%s: %s") % (self.cognome, self.citta)
 
@@ -30,7 +29,13 @@ class Intervento(models.Model):
     data = models.DateField()
     tipo = models.CharField(max_length=80, null=True)
     note = models.TextField(null=True)
+    numero_rapporto = models.IntegerField(null=True)
+    scadenza = models.BooleanField(default=False) # Se l'intervento puo' scadere
+    data_scadenza = models.DateField(null=True)
     cliente = models.ForeignKey(Cliente)
+
+    class Meta:
+        ordering = ['-data'] # Ordina per data in modo decrescente
 
     def __unicode__(self):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
@@ -38,9 +43,11 @@ class Intervento(models.Model):
 class Bollino(models.Model):
     presente = models.BooleanField()
     data = models.DateField(null=True)
+    numero_bollino = models.IntegerField(null=True)
     colore = models.CharField(max_length = 100, null=True)
     valore = models.DecimalField(max_digits = 4, decimal_places = 2, null=True)
     scadenza = models.DateField(null=True)
+    note = models.TextField(null=True)
     cliente = models.ForeignKey(Cliente)
 
     class Meta:
