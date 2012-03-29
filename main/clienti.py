@@ -43,29 +43,27 @@ def delete_record(ctx, id):
 
 def insert_cliente(r):
     node = Cliente(**r)
-
     dump(r)
     node.save()
+    return node
 
-def insert_clienti(clienti):
-    for l in clienti:
-        insert_cliente(l)
-
-def insert_intervento(cli, data_int, tipo_int, note_int):
-    node = Intervento(data=data_int, tipo=tipo_int, note=note, cliente=cli)
-    dump({"data":data_int, "tipo":tipo_int, "note":note, "cliente":cli})
+def insert_intervento(cli, interv):
+    node = Intervento(cliente=cli, **interv)
+    dump(interv)
     node.save()
+    return node
     
-def insert_bollino(bl):
-    a = filter_records(Cliente.objects, "cognome", bl['cognome'], FILTER_MODE_EXACT)
-    aa = filter_records(a, "nome", bl['nome'],FILTER_MODE_EXACT)
-    del(bl['nome'])
-    del(bl['cognome'])
+def insert_bollino(cli, bl):
+    node = Bollino(cliente=cli, **bl)
+    dump(bl)
+    node.save()
+    return node        
+        
+def select_bollino(cli):
+    return cli.bollino_set.values()
 
-    for i in aa:
-        print i.numero_bollino
-        bl['cliente'] = i
-        node = Bollino(**bl)
-        dump(bl)
-        node.save()
-    
+        
+def insert_all(all):
+    for i in all:
+        cli = insert_cliente(i[0])
+        insert_bollino(cli, i[1])

@@ -6,6 +6,7 @@ import csv
 def data_fmt(s):
     if (s.strip() != ""):
         raw = s.replace(".", "/")
+        print raw
         d, m, y = raw.split("/")
         return datetime.date(int(y), int(m), int(d))
 
@@ -17,7 +18,7 @@ def load_csv(file_name, handler):
 
     for e in table:
         try:
-        	table_dict = handler(e)
+            table_dict = handler(e)
         except ValueError, m:
             print "ValueError (%s)" % m , e
             exit (0)
@@ -39,49 +40,9 @@ def load_intervento(e):
     d['data_scadenza'] = data_fmt(e[6])
     d['note'] = e[7]
 
-def load_bollino(e):
-    d = {}
-    print e
-    d['cognome'] = e[0].capitalize().strip()
-    d['nome'] = e[1].capitalize().strip()
-
-    p = 0
-    if e[2].lower() == 'si':
-        p = 1
-    d['presente'] = p
-    
-    dt = e[3].strip()
-    if dt != "":
-        dt = datetime.date(int(dt), 1, 1)
-    else:
-        dt = None
-    d['data'] = dt
-    
-    c = e[4].capitalize().strip()
-    if c == 'No' or c == 'Si':
-        c = None
-    d['colore'] = c
-    
-    v = e[5].strip()
-    if v == "":
-        v = None
-    else:
-        v = int(v)
-    d['valore'] = v
-    
-    n = e[6].strip()
-    if n != "":
-        n = int(n)
-    else:
-        n = None
-    d['numero_bollino'] = n
-    d['scadenza'] = None
-    d['note'] = None
-    
-    return d
-
 	
 def load_cliente(e):
+
     table_dict = {}
 
     if e[0].strip() != '':
@@ -89,6 +50,8 @@ def load_cliente(e):
     else:
         id = None
     table_dict['codice_id'] = id
+    
+    table_dict['codice_impianto'] = None
 
     table_dict['cognome'] = e[1].capitalize().strip()
     table_dict['nome'] = e[2].capitalize().strip()
@@ -103,20 +66,66 @@ def load_cliente(e):
     table_dict['citta'] = e[5].capitalize().strip()
 
     if e[6].strip() != '':
-        tel = e[6].replace(' ', '')
+        cell = e[6].replace(' ', '')
+    else:
+        cell = None
+    
+    if e[7].strip() != '':
+        tel = e[7].replace(' ', '')
+        
+        if tel[0] != '0':
+            cell = tel
     else:
         tel = None
-    table_dict['numero_telefono'] = tel
+    
+    table_dict['numero_telefono'] = cell    
+    table_dict['numero_cellulare'] = tel
+    
+    table_dict['mail'] = None
+    
+    table_dict['marca_caldaia'] = e[8].strip().upper()
+    table_dict['modello_caldaia'] = e[9].strip().upper()
+    table_dict['tipo'] = e[10].strip().upper()
+    table_dict['combustibile'] = e[11].strip().capitalize()
 
-    table_dict['marca_caldaia'] = e[7].strip().upper()
-    table_dict['modello_caldaia'] = e[8].strip().upper()
-    table_dict['tipo'] = e[9].strip().upper()
-    table_dict['combustibile'] = e[10].strip().capitalize()
+    table_dict['data_installazione'] = data_fmt(e[12])
+    table_dict['data_contratto'] = data_fmt(e[13])	
 
-    table_dict['data_installazione'] = data_fmt(e[11])
-    table_dict['data_contratto'] = data_fmt(e[12])	
+    table_bollino = {}
+    p = 0
+    if e[14].lower() == 'si':
+        p = 1
+    table_bollino['presente'] = p
+    
+    dt = e[15].strip()
+    if dt != "":
+        dt = datetime.date(int(dt), 1, 1)
+    else:
+        dt = None
+    table_bollino['data'] = dt
+    
+    c = e[16].capitalize().strip()
+    if c == 'No' or c == 'Si':
+        c = None
+    table_bollino['colore'] = c
+    
+    v = e[17].strip()
+    if v == "":
+        v = None
+    else:
+        v = int(v)
+    table_bollino['valore'] = v
+    
+    n = e[18].strip()
+    if n != "":
+        n = int(n)
+    else:
+        n = None
+    table_bollino['numero_bollino'] = n
+    table_bollino['scadenza'] = None
+    table_bollino['note'] = None
 
-    return table_dict
+    return [table_dict, table_bollino]
 
 
 def dump(l, key = None):
@@ -135,8 +144,7 @@ def dump_all(l, key = None):
 
 def load_all():
     cli = load_csv("main/elenco2010.csv", load_cliente)
-    bol = load_csv("main/bollino.csv", load_bollino)
-    return cli, bol 
+    return cli 
 
 if __name__ == "__main__":
     import sys
@@ -145,7 +153,7 @@ if __name__ == "__main__":
         print sys.argv[0], " <csv file name>"
         exit (1)
     
-    all = load_csv(sys.argv[1], load_bollino)
+    all = load_csv(sys.argv[1], load_cliente)
     print all
     
     print "Records: ", len(all)
