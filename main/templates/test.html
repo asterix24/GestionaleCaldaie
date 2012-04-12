@@ -1,11 +1,26 @@
 <html>
 <body>
-<table border="1">
+<table border="0">
 {% for cliente in clienti %}
 <tr>
-<td>{{cliente.nome}}</td>
-<td>{{cliente.cognome}}</td>
-<td>{{cliente.citta}}</td>
+    <td>{{cliente.nome}}</td>
+    <td>{{cliente.cognome}}</td>
+    <td>{{cliente.citta}}</td>
+        <td>
+            <tr>
+            {% for intervento in  cliente.intervento_set.values %}
+            <tr>
+                <td>.</td>
+                <td>.</td>
+                <td>.</td>
+
+                <td>{{intervento.data}}</td>
+                <td>{{intervento.tipo}}</td>
+                <td>{{intervento.note}}</td>
+            </tr>
+            {% endfor %}
+            </tr>
+        </td>
 </tr>
 {% endfor %}
 </table>
