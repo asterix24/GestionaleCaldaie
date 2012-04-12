@@ -1,0 +1,13 @@
+<html>
+<body>
+<table border="1">
+{% for cliente in clienti %}
+<tr>
+<td>{{cliente.nome}}</td>
+<td>{{cliente.cognome}}</td>
+<td>{{cliente.citta}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
