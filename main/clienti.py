@@ -61,9 +61,13 @@ def insert_bollino(cli, bl):
         
 def select_bollino(cli):
     return cli.bollino_set.values()
-
         
 def insert_all(all):
     for i in all:
         cli = insert_cliente(i[0])
         insert_bollino(cli, i[1])
+
+def insert_interventi(all):
+    for i in all:
+        cli = select_record(Cliente.objects, i[0]['id'])
+        insert_intervento(cli, i[1])

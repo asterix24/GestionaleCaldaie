@@ -28,17 +28,17 @@ def load_csv(file_name, handler):
     return all
 
 def load_intervento(e):
+    ref = {}
     d = {}
-    print e
-    d['cognome'] = e[0].capitalize().strip()
-    d['nome'] = e[1].capitalize().strip()
-
-    d['data'] = data_fmt(e[2])
-    d['tipo'] = e[3].strip()
-    d['numero_rapporto'] = int(e[4].strip())
-    d['scadenza'] = int(e[5].strip())
-    d['data_scadenza'] = data_fmt(e[6])
-    d['note'] = e[7]
+    ref['id'] = int(e[0].strip())
+    d['data'] = data_fmt(e[1])
+    d['tipo'] = e[2].strip()
+    d['numero_rapporto'] = int(e[3].strip())
+    d['scadenza'] = int(e[4].strip())
+    d['data_scadenza'] = data_fmt(e[5])
+    d['note'] = e[6]
+    
+    return [ref, d]
 
 	
 def load_cliente(e):
@@ -143,7 +143,8 @@ def dump_all(l, key = None):
         dump(i, key)
 
 def load_all():
-    cli = load_csv("main/elenco2010.csv", load_cliente)
+    #cli = load_csv("main/elenco2010.csv", load_cliente)
+    cli = load_csv("main/interventi.csv", load_intervento)
     return cli 
 
 if __name__ == "__main__":
