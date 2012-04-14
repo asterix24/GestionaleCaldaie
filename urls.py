@@ -6,8 +6,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^$', 'GestionaleCaldaie.main.views.home', name='home'),
     url(r'^test/', 'GestionaleCaldaie.main.views.test', name='test'),
-    # url(r'^$', 'GestionaleCaldaie.views.home', name='home'),
+    url(r'^edit/', 'GestionaleCaldaie.main.views.edit', name='edit'),
+    
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
