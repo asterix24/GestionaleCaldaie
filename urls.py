@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', 'GestionaleCaldaie.main.views.home', name='home'),
     url(r'^test/', 'GestionaleCaldaie.main.views.test', name='test'),
     url(r'^edit/', 'GestionaleCaldaie.main.views.edit', name='edit'),
+    url(r'^anagrafe/', 'GestionaleCaldaie.main.views.anagrafe', name='anagrafe'),
     
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
 

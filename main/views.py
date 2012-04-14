@@ -19,6 +19,13 @@ def edit(req):
     select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
     html = modelformset_factory(models.Cliente)
     return HttpResponse(html(queryset=select))
+
+
+def anagrafe(req):
+    filtro = req.GET.get('q', '')
+    return render_to_response('anagrafe.html',
+        {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro)}
+        )
         
 def home(req):
     filtro = req.GET.get('q', '')
