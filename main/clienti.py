@@ -13,7 +13,6 @@ FILTER_SHORT_ASCEN =   0
 FILTER_SHORT_DESCEND = 1
 
 def filter_records(ctx, key, value, mode = FILTER_MODE_CONTAIN):
-    print key, value, mode
     return ctx.filter(**{ key + mode : value })
 
 def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):

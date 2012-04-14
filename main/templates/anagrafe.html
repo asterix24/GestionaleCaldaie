@@ -20,6 +20,7 @@
     </td>
     <td style="background-color:#EEEEEE;height:100%;width:80%;text-align:top;">
     <div id="content" style="background-color:#EEEEEE;height:100%;width:100%;">
+    {% if display_data %}
         <table border="0">
         {% for cliente in clienti %}
         <tr>
@@ -28,6 +29,9 @@
             <td>{{cliente.citta}}</td>
         </tr>
         {% endfor %}
+    {% else %}
+    <b>Stringa di ricerca</b>
+    {% endif %}
     </div>
     </td>
     
