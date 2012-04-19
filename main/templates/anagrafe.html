@@ -1,47 +1,45 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it-it" xml:lang="it-it" >
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}base.css" />
+<title>Gestionale Caldaie</title>
+</head>
+
 <body>
+<div id="maincontainer">
+    <div id="topsection">
+        <div class="innertube">
+            <h1>uno</h1>
+        </div>
+    </div>
 
-<table width="100%" border="0">
-
-<tr>
-<td colspan="2" style="background-color:#FFA500;">
-<h1>Main Title of Web Page</h1>
-</td>
-</tr>
-
-    <tr valign="top">
-    
-    <td style="background-color:#FFD700;width:10%;text-align:top;">
-    <b>Menu</b><br />
-    HTML<br />
-    CSS<br />
-    JavaScript
-    </td>
-    <td style="background-color:#EEEEEE;height:100%;width:80%;text-align:top;">
-    <div id="content" style="background-color:#EEEEEE;height:100%;width:100%;">
-    {% if display_data %}
+<div id="contentwrapper">
+    <div id="contentcolumn">
+        <div class="innertube">
+        {% if display_data %}
         <table border="0">
         {% for cliente in clienti %}
-        <tr>
+        <tr style={% cycle 'background-color:#EEEEEE' 'background-color:#EEE555' %}>
             <td>{{cliente.nome}}</td>
             <td>{{cliente.cognome}}</td>
             <td>{{cliente.citta}}</td>
         </tr>
         {% endfor %}
-    {% else %}
-    <b>Stringa di ricerca</b>
-    {% endif %}
+        {% else %}
+        <b>Stringa di ricerca</b>
+        {% endif %}
+        </table>
+        </div>
     </div>
-    </td>
-    
-    </tr>
+</div>
 
-<tr>
-<td colspan="2" style="background-color:#FFA500;text-align:center">
-Copyright © 2011 W3Schools.com</td>
-</tr>
-</table>
+<div id="leftcolumn">
+    <div class="innertube">
+        <b>Menu</b>
+    </div>
 
-</body>
-</html>
+</div>
+
+<div id="footer"><a href="">CSS</a></div>

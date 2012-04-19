@@ -26,18 +26,14 @@ def edit(req):
 
 
 def anagrafe(req):
-    filtro = req.GET.get('q', '')
-    print filtro
-    if filtro == "":
-        return render_to_response('anagrafe.html',
-            {'display_data':0}
-            )
+    if req.GET == {}:
+        return render(req, 'anagrafe.html',
+           {'display_data':0})
     else:
-        return render_to_response('anagrafe.html',
-            {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro),
-            'display_data':1}
-            )
-
+        return render(req, 'anagrafe.html',
+            {'clienti': clienti.filter_records(models.Cliente.objects, req.GET.keys()[0], req.GET.values()[0]),
+            'display_data':1})
+    
 def home(req):
     filtro = req.GET.get('q', '')
     select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
