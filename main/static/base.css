@@ -28,12 +28,12 @@ em {
 }
 
 #contentcolumn {
-    margin-left: 200px; /*Set left margin to LeftColumnWidth*/
+    margin-left: 100px; /*Set left margin to LeftColumnWidth*/
 }
 
 #leftcolumn {
     float: left;
-    width: 200px; /*Width of left column*/
+    width: 100px; /*Width of left column*/
     margin-left: -100%;
     background: #C8FC98;
 }
@@ -52,6 +52,6 @@ em {
 }
 
 .innertube {
-    margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
+    margin: 5px; /*Margins for inner DIV inside each column (to provide padding)*/
     margin-top: 0;
 }
