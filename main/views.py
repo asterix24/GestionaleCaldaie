@@ -5,17 +5,19 @@ from main import clienti
 from django.shortcuts import render_to_response
 from django.forms.models import modelformset_factory
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def test(req):
-    return render_to_response('template.html',
-        {}
-        )    
+    return render(req, 'template.html')
     """
+    return render_to_response('template.html',
+        RequestContext(req, {})
+        )
     return render_to_response('test.html',
         {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro)}
         )
     """
-        
+
 def edit(req):
     filtro = req.GET.get('q', '')
     select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
@@ -35,7 +37,7 @@ def anagrafe(req):
             {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro),
             'display_data':1}
             )
-        
+
 def home(req):
     filtro = req.GET.get('q', '')
     select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
