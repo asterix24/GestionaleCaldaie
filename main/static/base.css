@@ -2,7 +2,8 @@ body {
     margin:0;
     padding:0;
     line-height: 1.5em;
-    font-family: sans;
+    font-family:"helvetica";
+    font-size:15px;
 }
 
 b {
@@ -12,8 +13,27 @@ em {
     color: red;
 }
 
+
+table, td, th {
+    border:1px solid black;
+}
+
 table {
+    width:100%;
     border-collapse:collapse;
+}
+
+td {
+    padding:2px;
+}
+
+.full_td {
+    text-align:left;
+}
+
+.empty_td {
+    width:25px;
+    text-align:center;
 }
 
 #topsection {

@@ -35,7 +35,8 @@ def anagrafe(req):
     else:
         return render(req, 'anagrafe.html',
             {'clienti': clienti.filter_records(models.Cliente.objects, req.GET.keys()[0], req.GET.values()[0]),
-            'display_data':1})
+            'display_data':1,
+            'empty_cell':"-"})
 
 def home(req):
     filtro = req.GET.get('q', '')

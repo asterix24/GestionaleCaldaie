@@ -22,9 +22,26 @@
         <table border="0">
         {% for cliente in clienti %}
         <tr style={% cycle 'background-color:#EEEEEE' 'background-color:#EEE555' %}>
-		<td><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.nome}}</a></td>
-		<td>{{cliente.cognome}}</td>
-		<td>{{cliente.citta}}</td>
+        {% if cliente.codice_id != None %}<td class="full_td">{{cliente.codice_id}}</td>{% else %}<td class="empty_td">{{ empty_cell }}</td>{% endif %}
+        {% if cliente.codice_impianto != None %}<td class="full_td">{{cliente.codice_impianto}}</td>{% else %}<td class="empty_td">{{ empty_cell }}</td>{% endif %}
+        {% if cliente.nome != None %}
+            <td class="full_td"><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.nome}}</a></td>
+        {% else %}<td align=center>{{ empty_cell }}</td>{% endif %}        
+        {% if cliente.cognome != None %}
+            <td><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.cognome}}</a></td>
+        {% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.codice_fiscale != None %}<td>{{cliente.codice_fiscale}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.via != None %}<td>{{cliente.via}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}        
+        {% if cliente.citta != None %}<td>{{cliente.citta}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.numero_telefono != None %}<td>{{cliente.numero_telefono}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.numero_cellulare != None %}<td>{{cliente.numero_cellulare}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}        
+        {% if cliente.marca_caldaia != None %}<td>{{cliente.marca_caldaia}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.mail != None %}<td>{{cliente.mail}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
+        {% if cliente.modello_caldaia != None %}<td>{{cliente.modello_caldaia}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}        
+        {% if cliente.tipo != None %}<td>{{cliente.tipo}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}                
+        {% if cliente.combustibile != None %}<td>{{cliente.combustibile}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}                
+        {% if cliente.data_installazione != None %}<td>{{cliente.data_installazione}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}                
+        {% if cliente.data_contratto != None %}<td>{{cliente.data_contratto}}</td>{% else %}<td align=center>{{ empty_cell }}</td>{% endif %}
         </tr>
         {% endfor %}
         {% else %}
