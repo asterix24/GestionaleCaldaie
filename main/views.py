@@ -17,7 +17,8 @@ def test(req):
         {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro)}
         )
     """
-def cli(req):
+def scheda_cliente(req):
+    print req.GET.get('id','');
     return render(req, 'template.html')
 
 def edit(req):
