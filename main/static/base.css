@@ -2,6 +2,7 @@ body {
     margin:0;
     padding:0;
     line-height: 1.5em;
+    font-family: sans;
 }
 
 b {
@@ -11,6 +12,9 @@ em {
     color: red;
 }
 
+table {
+    border-collapse:collapse;
+}
 
 #topsection {
     background: #EAEAEA;
@@ -35,7 +39,6 @@ em {
     float: left;
     width: 100px; /*Width of left column*/
     margin-left: -100%;
-    background: #C8FC98;
 }
 
 #footer {

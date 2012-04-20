@@ -22,6 +22,7 @@
         <table border="0">
         {% for cliente in clienti %}
         <tr style={% cycle 'background-color:#EEEEEE' 'background-color:#EEE555' %}>
+		<td>{% url cli %} {{cliente.pk}}</td>
             <td>{{cliente.nome}}</td>
             <td>{{cliente.cognome}}</td>
             <td>{{cliente.citta}}</td>

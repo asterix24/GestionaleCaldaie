@@ -17,6 +17,8 @@ def test(req):
         {'clienti': clienti.filter_records(models.Cliente.objects, "cognome", filtro)}
         )
     """
+def cli(req):
+    return render(req, 'template.html')
 
 def edit(req):
     filtro = req.GET.get('q', '')
@@ -33,7 +35,7 @@ def anagrafe(req):
         return render(req, 'anagrafe.html',
             {'clienti': clienti.filter_records(models.Cliente.objects, req.GET.keys()[0], req.GET.values()[0]),
             'display_data':1})
-    
+
 def home(req):
     filtro = req.GET.get('q', '')
     select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)

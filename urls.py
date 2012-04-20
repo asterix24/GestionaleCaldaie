@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     url(r'^test/', 'GestionaleCaldaie.main.views.test', name='test'),
     url(r'^edit/', 'GestionaleCaldaie.main.views.edit', name='edit'),
     url(r'^anagrafe/', 'GestionaleCaldaie.main.views.anagrafe', name='anagrafe'),
-    
+    url(r'^cliente/', 'GestionaleCaldaie.main.views.cli', name='cli'),
+
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
