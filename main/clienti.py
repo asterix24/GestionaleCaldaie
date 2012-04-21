@@ -42,19 +42,19 @@ def delete_record(ctx, id):
 
 def insert_cliente(r):
     node = Cliente(**r)
-    dump(r)
+#    dump(r)
     node.save()
     return node
 
 def insert_intervento(cli, interv):
     node = Intervento(cliente=cli, **interv)
-    dump(interv)
+#    dump(interv)
     node.save()
     return node
     
 def insert_bollino(cli, bl):
     node = Bollino(cliente=cli, **bl)
-    dump(bl)
+ #   dump(bl)
     node.save()
     return node        
         

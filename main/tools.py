@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from clienti import *
 import datetime
 import csv
 
@@ -84,8 +85,9 @@ def load_cliente(e):
     table_dict['mail'] = None
     
     table_dict['marca_caldaia'] = e[8].strip().upper()
-    table_dict['modello_caldaia'] = e[9].strip().upper()
-    table_dict['tipo'] = e[10].strip().upper()
+    table_dict['tipo'] = e[9].strip().upper()
+    table_dict['modello_caldaia'] = e[10].strip().upper()
+
     table_dict['combustibile'] = e[11].strip().capitalize()
 
     table_dict['data_installazione'] = data_fmt(e[12])
@@ -143,9 +145,11 @@ def dump_all(l, key = None):
         dump(i, key)
 
 def load_all():
-    #cli = load_csv("main/elenco2010.csv", load_cliente)
-    cli = load_csv("main/interventi.csv", load_intervento)
-    return cli 
+    cli = load_csv("main/elenco2010.csv", load_cliente)
+    int = load_csv("main/interventi.csv", load_intervento)
+    
+    insert_clientiBollini(cli)
+    insert_interventi(int)
 
 if __name__ == "__main__":
     import sys

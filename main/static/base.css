@@ -28,12 +28,14 @@ td {
 }
 
 .full_td {
-    text-align:left;
+    text-align:center;
+    padding:5px;
 }
 
 .empty_td {
-    width:25px;
+    width:30px;
     text-align:center;
+    padding:5px;
 }
 
 #topsection {
