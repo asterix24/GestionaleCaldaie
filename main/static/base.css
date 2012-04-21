@@ -39,7 +39,7 @@ td {
 }
 
 #topsection {
-    background: #EAEAEA;
+    background: #33CCCC;
     height: 90px; /*Height of top section*/
 }
 
@@ -54,22 +54,22 @@ td {
 }
 
 #contentcolumn {
-    margin-left: 100px; /*Set left margin to LeftColumnWidth*/
+    margin-left: 80px; /*Set left margin to LeftColumnWidth*/
 }
 
 #leftcolumn {
     float: left;
-    width: 100px; /*Width of left column*/
+    width: 80px; /*Width of left column*/
     margin-left: -100%;
 }
 
 #footer {
     clear: left;
     width: 100%;
-    background: black;
+    background: #009999;
     color: #FFF;
     text-align: center;
-    padding: 4px 0;
+    padding: 4px;
 }
 
 #footer a {
@@ -77,6 +77,7 @@ td {
 }
 
 .innertube {
-    margin: 5px; /*Margins for inner DIV inside each column (to provide padding)*/
+    margin: 2px; /*Margins for inner DIV inside each column (to provide padding)*/
     margin-top: 0;
+    margin-bottom: 0;
 }
