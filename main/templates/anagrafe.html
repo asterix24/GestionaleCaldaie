@@ -126,13 +126,13 @@
         {% endif %}
 
         {% if cliente.data_installazione != None %}
-            <td class="full_td">{{cliente.data_installazione}}</td>
+            <td class="full_td">{{cliente.data_installazione|date:"d/m/y"}}</td>
         {% else %}
             <td class="empty_td">{{ empty_cell }}</td>
         {% endif %}
 
         {% if cliente.data_contratto != None %}
-            <td class="full_td">{{cliente.data_contratto}}</td>
+            <td class="full_td">{{cliente.data_contratto|date:"d/m/y"}}</td>
         {% else %}
             <td class="empty_td">{{ empty_cell }}</td>
         {% endif %}
