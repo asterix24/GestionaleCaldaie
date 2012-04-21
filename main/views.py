@@ -19,7 +19,7 @@ def test(req):
     """
 def scheda_cliente(req):
     print req.GET.get('id','');
-    return render(req, 'template.html')
+    return render(req, 'base.html')
 
 def edit(req):
     filtro = req.GET.get('q', '')
@@ -30,10 +30,10 @@ def edit(req):
 
 def anagrafe(req):
     if req.GET == {}:
-        return render(req, 'anagrafe.html',
+        return render(req, 'anagrafe.sub',
            {'display_data':0})
     else:
-        return render(req, 'anagrafe.html',
+        return render(req, 'anagrafe.sub',
             {'clienti': clienti.filter_records(models.Cliente.objects, req.GET.keys()[0], req.GET.values()[0]),
             'display_data':1,
             'empty_cell':"-"})
