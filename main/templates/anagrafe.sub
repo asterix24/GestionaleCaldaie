@@ -2,8 +2,8 @@
 
 {% block center_block %}
 {% if display_data %}
-<table border="0">
-<tr style='background-color:#33CCFF' %}>
+<table id="customers">
+<tr>
     <th>Cod. ID</th>
     <th>Cod. Impianto</th>
     <th>Nome</th>
@@ -22,102 +22,102 @@
     <th>Data Contr.</th>
 </tr>
 {% for cliente in clienti %}
-<tr style={% cycle 'background-color:#EEEEEE' 'background-color:#EEE555' %}>
+<tr {% cycle '' 'class="alt"' %} >
 {% if cliente.codice_id != None %}
-    <td class="full_td">{{cliente.codice_id}}</td>
+    <td>{{cliente.codice_id}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.codice_impianto != None %}
-    <td class="full_td">{{cliente.codice_impianto}}</td>
+    <td >{{cliente.codice_impianto}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.nome != None %}
-    <td class="full_td"><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.nome}}</a></td>
+    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.nome}}</a></td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.cognome != None %}
-    <td class="full_td"><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.cognome}}</a></td>
+    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.cognome}}</a></td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.codice_fiscale != None %}
-    <td class="full_td">{{cliente.codice_fiscale}}</td>
+    <td >{{cliente.codice_fiscale}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.via != None %}
-    <td class="full_td">{{cliente.via}}</td>
+    <td>{{cliente.via}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.citta != None %}
-    <td class="full_td">{{cliente.citta}}</td>
+    <td>{{cliente.citta}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.numero_telefono != None %}
-    <td class="full_td">{{cliente.numero_telefono}}</td>
+    <td>{{cliente.numero_telefono}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.numero_cellulare != None %}
-    <td class="full_td">{{cliente.numero_cellulare}}</td>
+    <td>{{cliente.numero_cellulare}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.mail != None %}
-    <td class="full_td">{{cliente.mail}}</td>
+    <td>{{cliente.mail}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.marca_caldaia != None %}
-    <td class="full_td">{{cliente.marca_caldaia}}</td>
+    <td>{{cliente.marca_caldaia}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 
 {% if cliente.modello_caldaia != None %}
-    <td class="full_td">{{cliente.modello_caldaia}}</td>
+    <td>{{cliente.modello_caldaia}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.tipo != None %}
-    <td class="full_td">{{cliente.tipo}}</td>
+    <td>{{cliente.tipo}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.combustibile != None %}
-    <td class="full_td">{{cliente.combustibile}}</td>
+    <td>{{cliente.combustibile}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.data_installazione != None %}
-    <td class="full_td">{{cliente.data_installazione|date:"d/m/y"}}</td>
+    <td>{{cliente.data_installazione|date:"d/m/y"}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.data_contratto != None %}
-    <td class="full_td">{{cliente.data_contratto|date:"d/m/y"}}</td>
+    <td>{{cliente.data_contratto|date:"d/m/y"}}</td>
 {% else %}
-    <td class="empty_td">{{ empty_cell }}</td>
+    <td>{{ empty_cell }}</td>
 {% endif %}
 
 </tr>
