@@ -3,7 +3,11 @@
 {% block center_block %}
 
 <table id="customers_detail">
-<tr><th></th><th>Dettaglio Cliente</th>
+<tr><th>
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" value="Modifica Anagrafica" />
+</form>
+</th><th>Dettaglio Cliente</th>
 </tr>
 <tr>
     <td class="hdr">Cod. ID</td>
@@ -122,7 +126,11 @@
 </tr>
 </table>
 <table id="customers_detail">
-<tr><th></th><th>Bollino</th>
+<tr><th>
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" value="Modifica Bollino" />
+</form>
+</th><th>Bollino</th>
 </tr>
 {% if bollino.presente %}
 <tr><td class="hdr">Storico</td>
@@ -177,7 +185,11 @@
 {% endif %}
 </table>
 <table id="customers_detail">
-<tr><th></th><th>Interventi</th>
+<tr><th>
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" value="Modifica Intervento" />
+</form>
+</th><th>Interventi</th>
 </tr>
 {% if bollino.presente %}
 <tr><td class="hdr">Storico</td>
