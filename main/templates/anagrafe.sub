@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block center_block %}
+
+<div class="innertube">
+<form action="/anagrafe/" method="post">{% csrf_token %}
+    {{ form.as_table }}
+    <input type="hidden" name="advanced_search" value=0 />
+    <input type="submit" value="Cerca" />
+</form>
+<form action="/anagrafe/" method="post">{% csrf_token %}
+    <input type="hidden" name="advanced_search" value=1 />
+    <input type="submit" value="Ricerca avanzata" />
+</form>
+</div>
+
 {% if display_data %}
 <table id="customers">
 <tr>
@@ -119,11 +132,8 @@
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
-
 </tr>
 {% endfor %}
-{% else %}
-<b>Stringa di ricerca</b>
 {% endif %}
 </table>
 {% endblock %}

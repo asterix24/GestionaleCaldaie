@@ -1,5 +1,6 @@
 from django import http
 from main import models
+from main import myforms
 from main import clienti
 
 from django.shortcuts import render_to_response
@@ -29,14 +30,28 @@ def edit(req):
 
 
 def anagrafe(req):
+    form = myforms.FullTextSearchForm()
+    if req.method == 'POST':
+        if req.POST.get('advanced_search','') == 0:
+            form = myforms.FullTextSearchForm(req.POST)
+            if form.is_valid():
+                print form.cleaned_data['search_string']
+            else:
+                print "non valido"
+        else:
+            print "Ricerca avanzata"
+            form = myforms.SearchCliente()
+
     if req.GET == {}:
         return render(req, 'anagrafe.sub',
-           {'display_data':0})
+           {'display_data':0,
+           'form': form })
     else:
         return render(req, 'anagrafe.sub',
             {'clienti': clienti.filter_records(models.Cliente.objects, req.GET.keys()[0], req.GET.values()[0]),
             'display_data':1,
-            'empty_cell':"-"})
+            'empty_cell':"-",
+            'form': form })
 
 def home(req):
     filtro = req.GET.get('q', '')
