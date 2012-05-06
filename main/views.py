@@ -32,15 +32,17 @@ def edit(req):
 def anagrafe(req):
     form = myforms.FullTextSearchForm()
     if req.method == 'POST':
-        if req.POST.get('advanced_search','') == 0:
-            form = myforms.FullTextSearchForm(req.POST)
-            if form.is_valid():
-                print form.cleaned_data['search_string']
-            else:
-                print "non valido"
+        form = myforms.FullTextSearchForm(req.POST)
+        if form.is_valid():
+            print form.cleaned_data['search_string']
         else:
-            print "Ricerca avanzata"
-            form = myforms.SearchCliente()
+            """stringa vuota faccio vedere tutto"""
+            form = myforms.FullTextSearchForm()
+            return render(req, 'anagrafe.sub',
+                {'clienti': clienti.clienti_displayAll(models.Cliente.objects),
+                'display_data':1,
+                'empty_cell':"-",
+                'form': form })
 
     if req.GET == {}:
         return render(req, 'anagrafe.sub',
