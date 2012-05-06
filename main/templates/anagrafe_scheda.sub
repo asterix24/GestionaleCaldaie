@@ -3,6 +3,8 @@
 {% block center_block %}
 
 <table id="customers_detail">
+<tr><th></th><th>Dettaglio Cliente</th>
+</tr>
 <tr>
     <td class="hdr">Cod. ID</td>
     {% if cliente.codice_id != None %}
@@ -106,17 +108,120 @@
 </tr>
 <tr><td class="hdr">Data Installazione</td>
 {% if cliente.data_installazione != None %}
-    <td>{{cliente.data_installazione|date:"d/m/y"}}</td>
+    <td>{{cliente.data_installazione|date:"d/m/Y"}}</td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 </tr>
 <tr><td class="hdr">Data Contratto</td>
 {% if cliente.data_contratto != None %}
-    <td>{{cliente.data_contratto|date:"d/m/y"}}</td>
+    <td>{{cliente.data_contratto|date:"d/m/Y"}}</td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 </tr>
+</table>
+<table id="customers_detail">
+<tr><th></th><th>Bollino</th>
+</tr>
+{% if bollino.presente %}
+<tr><td class="hdr">Storico</td>
+    <td><a href="">{{ history_bollini_len }}</a></td>
+</tr>
+<tr><td class="hdr">Data</td>
+    {% if  bollino.data != None %}
+    <td>{{ bollino.data|date:"d/m/Y"}}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Numero</td>
+    {% if  bollino.numero_bollino != None %}
+    <td>{{ bollino.numero_bollino }}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Colore</td>
+    {% if  bollino.colore != None %}
+    <td>{{ bollino.colore }}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Valore</td>
+    {% if  bollino.valore != None %}
+    <td>{{ bollino.valore }}&euro;</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Scadenza</td>
+    {% if  bollino.scadenza != None %}
+    <td>{{ bollino.scadenza|date:"d/m/Y"}}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Note</td>
+    {% if bollino.note != None %}
+        <td>{{ bollino.note }}</td>
+    {% else %}
+        <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+{% else %}
+<tr><td class="hdr">Note</td>
+    <td>Non ci sono bollini per questo cliente</td>
+</tr>
+{% endif %}
+</table>
+<table id="customers_detail">
+<tr><th></th><th>Interventi</th>
+</tr>
+{% if bollino.presente %}
+<tr><td class="hdr">Storico</td>
+    <td><a href="">{{ history_interventi_len }}</a></td>
+</tr>
+<tr><td class="hdr">Interverto data</td>
+    {% if  intervento.data != None %}
+    <td>{{ intervento.data|date:"d/m/Y"}}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Motivo dell'intervento</td>
+    {% if  intervento.tipo != None %}
+    <td>{{ intervento.tipo }}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr><td class="hdr">Rapporto Numero</td>
+    {% if  intervento.numero_rapporto != None %}
+    <td>{{ intervento.numero_rapporto }}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+
+<tr><td class="hdr">Annotazioni</td>
+    {% if  intervento.note != None %}
+    <td>{{ intervento.note }}</td>
+    {% else %}
+    <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+
+{% if intervento.scadenza %}
+<tr><td class="hdr">Scade il</td>
+    <td>{{ intervento.data_scadenza|date:"d/m/Y" }}</td>
+</tr>
+{% endif %}
+{% else %}
+<tr><td class="hdr">Note</td>
+    <td>Non ci sono interventi per questo cliente</td>
+</tr>
+{% endif %}
 </table>
 {% endblock %}
