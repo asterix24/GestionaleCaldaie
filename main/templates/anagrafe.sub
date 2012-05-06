@@ -10,7 +10,7 @@
 </div>
 
 {% if display_data %}
-<table id="customers">
+<table id="customers_detail">
 <tr>
     <th>Cod. ID</th>
     <th>Cod. Impianto</th>

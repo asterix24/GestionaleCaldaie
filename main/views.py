@@ -19,8 +19,12 @@ def test(req):
         )
     """
 def scheda_cliente(req):
-    print req.GET.get('id','');
-    return render(req, 'base.html')
+    id = int(req.GET.get('id',''));
+    return render(req, 'anagrafe_scheda.sub',
+    {'cliente': clienti.select_record(models.Cliente.objects, id),
+    'empty_cell':"-"
+    })
+
 
 def edit(req):
     filtro = req.GET.get('q', '')
