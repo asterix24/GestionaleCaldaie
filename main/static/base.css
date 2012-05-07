@@ -39,12 +39,16 @@ em {
    background-color:#CCCC66;
 }
 
-#customers tr.alt td
+#customers tr.alt
 {
     color:#000000;
     background-color:#EAF2D3;
 }
 
+#customers tr.alt:hover
+{
+   background-color:#CCCC66;
+}
 
 #customers_detail
 {
