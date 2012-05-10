@@ -54,15 +54,17 @@ def anagrafe(req):
     if req.method == 'POST':
         form = myforms.FullTextSearchForm(req.POST)
         if form.is_valid():
-            print form.cleaned_data['search_string']
+            data_to_render = clienti.search_fullText(models.Cliente.objects, form.cleaned_data['search_string'])
         else:
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
-            return render(req, 'anagrafe.sub',
-                {'clienti': clienti.clienti_displayAll(models.Cliente.objects),
-                'display_data':1,
-                'empty_cell':"-",
-                'form': form })
+            data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
+            
+        return render(req, 'anagrafe.sub',
+            {'clienti': data_to_render,
+            'display_data':1,
+            'empty_cell':"-",
+            'form': form })
 
     if req.GET == {}:
         return render(req, 'anagrafe.sub',

@@ -78,3 +78,21 @@ def insert_interventi(all):
         cli = select_record(Cliente.objects, i[0]['id'])
         insert_intervento(cli, i[1])
 
+def search_fullText(ctx, s):
+    """
+    If users search one word and is number we search only in some
+    table field, otherwise apply some euristic to make a full text search
+    on all db fields
+    """
+    s = s.split(" ")
+    if len(s) == 1:
+        try:
+            num = int(s[0])
+            first = filter_records(ctx, "codice_id", num)
+            return filter_records(first, "codice_impianto", num)
+            
+        except ValueError:
+            print "S e' una stringa"
+    else:
+        pass
+    
