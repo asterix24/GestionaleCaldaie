@@ -54,7 +54,10 @@ def anagrafe(req):
     if req.method == 'POST':
         form = myforms.FullTextSearchForm(req.POST)
         if form.is_valid():
-            data_to_render = clienti.search_fullText(models.Cliente.objects, form.cleaned_data['search_string'])
+            search_str = form.cleaned_data['search_string']
+            print search_str
+            data_to_render = clienti.search_fullText(models.Cliente.objects, search_str)
+            print data_to_render.count()
         else:
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
