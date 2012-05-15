@@ -55,9 +55,7 @@ def anagrafe(req):
         form = myforms.FullTextSearchForm(req.POST)
         if form.is_valid():
             search_str = form.cleaned_data['search_string']
-            print search_str
             data_to_render = clienti.search_fullText(models.Cliente.objects, search_str)
-            print data_to_render.count()
         else:
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
@@ -80,9 +78,4 @@ def anagrafe(req):
             'empty_cell':"-",
             'form': form })
 
-def home(req):
-    filtro = req.GET.get('q', '')
-    select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
-    html = modelformset_factory(select)
-    return HttpResponse(html())
 
