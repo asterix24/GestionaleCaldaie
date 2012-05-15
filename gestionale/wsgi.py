@@ -16,7 +16,7 @@ framework.
 import sys
 
 sys.path.append("/home/asterix/gestionale_www")
-sys.path.append("/home/asterix/venv/lib/python2.7/site-packages/")
+sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/")
 sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/Django-1.4-py2.7.egg")
 sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/django_extensions-0.8-py2.7.egg")
 import os
