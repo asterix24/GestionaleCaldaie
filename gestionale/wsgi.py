@@ -13,6 +13,11 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+import sys
+
+sys.path.append("/home/asterix/gestionale_www")
+sys.path.append("/home/asterix/venv/lib/python2.7/site-packages/")
+sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/Django-1.4-py2.7.egg")
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestionale.settings")
