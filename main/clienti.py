@@ -1,9 +1,16 @@
 #!/usr/bin/env python
+
 import datetime
+import string
+
 from tools import *
+from django.db.models import Q
+ 
 from models import Cliente
 from models import Intervento
 from models import Bollino
+
+
 
 
 FILTER_MODE_START =    '__istartswith'
@@ -84,15 +91,12 @@ def search_fullText(ctx, s):
     table field, otherwise apply some euristic to make a full text search
     on all db fields
     """
-    s = s.split(" ")
-    if len(s) == 1:
-        try:
-            num = int(s[0])
-            first = filter_records(ctx, "codice_id", num)
-            return filter_records(first, "codice_impianto", num)
-            
-        except ValueError:
-            print "S e' una stringa"
+    if " " in s:
+        s = s.split(" ")
     else:
-        pass
-    
+        result = ctx.filter(Q(codice_impianto__icontains=s) | 
+                       Q(codice_id__icontains=s)|
+                       Q(numero_telefono__icontains=s) | 
+                       Q(numero_cellulare__icontains=s))
+
+    return result
