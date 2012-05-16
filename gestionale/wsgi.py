@@ -21,7 +21,7 @@ sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/Django-1.4
 sys.path.append("/home/asterix/venv/local/lib/python2.7/site-packages/django_extensions-0.8-py2.7.egg")
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestionale.settings")
+os.environ["DJANGO_SETTINGS_MODULE"] = "gestionale.settings"
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
