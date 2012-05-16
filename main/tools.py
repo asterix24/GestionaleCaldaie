@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from clienti import *
+import clienti
 import datetime
 import csv
 
@@ -76,6 +76,7 @@ def load_cliente(e):
         
         if tel[0] != '0':
             cell = tel
+            tel = None
     else:
         tel = None
     
@@ -148,8 +149,8 @@ def load_all():
     cli = load_csv("main/elenco2010.csv", load_cliente)
     int = load_csv("main/interventi.csv", load_intervento)
     
-    insert_clientiBollini(cli)
-    insert_interventi(int)
+    clienti.insert_clientiBollini(cli)
+    clienti.insert_interventi(int)
 
 if __name__ == "__main__":
     import sys

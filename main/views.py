@@ -19,23 +19,28 @@ def test(req):
         )
     """
 def scheda_cliente(req):
-    id = int(req.GET.get('id',''));
-    cli = clienti.select_record(models.Cliente.objects, id)
+    id = req.GET.get('id','')
+    if id == "":
+        return render(req, 'anagrafe_scheda.sub',
+        {'error': 1})
+
+        
+    cli = clienti.select_record(models.Cliente.objects, int(id))
     bol = clienti.select_bollini(cli)
-    intr = clienti.select_interventi(cli)
-    
+    intr = clienti.select_interventi(cli)    
     bollini_history = len(bol)
     interventi_history = len(intr)
-    
-    if bollini_history > 1:
+
+    if bollini_history >= 1:
         bol = bol[0]
-    if interventi_history > 1:
+    if interventi_history >= 1:
         intr = intr[0]
     
     return render(req, 'anagrafe_scheda.sub',
-    {'cliente': cli,
+    {'error': 0,
+     'cliente': cli,
      'bollino': bol,
-     'intervento':intr,
+     'intervento': intr,
      'history_bollini_len': bollini_history,
      'history_interventi_len': interventi_history,
     'empty_cell':"-"

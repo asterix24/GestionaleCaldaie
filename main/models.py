@@ -1,8 +1,8 @@
 from django.db import models
 
 class Cliente(models.Model):
-    codice_id = models.IntegerField(null=True)
-    codice_impianto = models.IntegerField(null=True)
+    codice_id = models.CharField(max_length=15, null=True)
+    codice_impianto = models.CharField(max_length=15, null=True)
     cognome = models.CharField(max_length=100, null=True)
     nome = models.CharField(max_length=100, null=True)
     codice_fiscale = models.CharField(max_length=17, null=True)

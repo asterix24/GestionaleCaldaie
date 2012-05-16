@@ -2,6 +2,9 @@
 
 {% block center_block %}
 
+{% if error %}
+<h1> Errore! </h1>
+{% else %}
 <table id="customers_detail">
 <tr><th>
 <form action="" method="post">{% csrf_token %}
@@ -236,4 +239,5 @@
 </tr>
 {% endif %}
 </table>
+{% endif %}
 {% endblock %}
