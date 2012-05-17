@@ -3,3 +3,4 @@
 *.db
 *.csv
 /log
+local_settings.py
