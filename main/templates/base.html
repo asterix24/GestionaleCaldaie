@@ -8,38 +8,28 @@
 </head>
 
 <body>
-<div id="maincontainer">
-    <div id="topsection">
-        <div class="innertube">
-            <h1>Gestionale Caldaie</h1>
-        </div>
-    </div>
-
-<div id="contentwrapper">
-    <div id="contentcolumn">
-        <div class="innertube">
-        {% block center_block %}
-        <h1>Tabella per dati</h1>
-        {% endblock %}
-        </div>
-    </div>
-</div>
-
-<div id="leftcolumn">
-    <div class="innertube">
-    {% block menu_block %}
-    <b>Menu</b>
-    <br>
-    <a href="{% url anagrafe %}">Anagrafe</a></li>
+<div id="container">
+	<div id="header">
+		<h1>Gestionale Caldaie</h1>
+	</div>
+	<div id="navigation">
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">About</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Contact us</a></li>
+		</ul>
+	</div>
+	<div id="content">
+	{% block center_block %}
+    <h1>Tabella per dati</h1>
     {% endblock %}
-    
-    {% block navigation_menu_block %}
+	</div>
+	<div id="footer">
+	
+	{% block footer_block %}
+    Copyright Daniele Basile Site name, 2012
     {% endblock %}
-    </div>
+	</div>
 </div>
-
-<div id="footer">
-    {% block footer_block %}
-    Daniele Basile
-    {% endblock %}
-</div>
+</body>
