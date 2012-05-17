@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
-{% block center_block %}
-
-<div class="innertube">
+{% block navigation_search_block_top %}
+<li>
 <form action="/anagrafe/" method="post">{% csrf_token %}
-    {{ form.as_table }}
-    <input type="submit" value="Cerca" />
+{{ form.search_string }}
+<input type="submit" value="Cerca"/>
 </form>
-</div>
+</li>
+{% endblock %}
+
+{% block center_block %}
 
 {% if display_data %}
 <table id="customers">
@@ -97,7 +99,6 @@
     <td>{{ empty_cell }}</td>
 {% endif %}
 
-
 {% if cliente.modello_caldaia != None %}
     <td>{{cliente.modello_caldaia}}</td>
 {% else %}
@@ -128,6 +129,8 @@
     <td>{{ empty_cell }}</td>
 {% endif %}
 </tr>
+{% empty %}
+    <tr><h2>La ricerca non ha prodotto risultati</h2></tr>
 {% endfor %}
 {% endif %}
 </table>

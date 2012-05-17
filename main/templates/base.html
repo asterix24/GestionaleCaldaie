@@ -15,16 +15,29 @@
 	<div id="navigation">
 		<ul>
 			<li><a href="#">Home</a></li>
-			<li><a href="#">About</a></li>
-			<li><a href="#">Services</a></li>
-			<li><a href="#">Contact us</a></li>
+			{% block navigation_search_block_top %}
+			{% endblock %}
+			{% block navigation_menu_block_top %}
+		    {% endblock %}
 		</ul>
 	</div>
+
 	<div id="content">
 	{% block center_block %}
     <h1>Tabella per dati</h1>
     {% endblock %}
 	</div>
+
+	<div id="navigation">
+		<ul>
+			<li><a href="#">Home</a></li>
+			{% block navigation_search_block_bot %}
+			{% endblock %}
+			{% block navigation_menu_block_bot %}
+		    {% endblock %}
+		</ul>
+	</div>
+
 	<div id="footer">
 	
 	{% block footer_block %}

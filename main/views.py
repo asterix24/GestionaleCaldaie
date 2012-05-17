@@ -65,7 +65,7 @@ def anagrafe(req):
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
             data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
-            
+                        
         return render(req, 'anagrafe.sub',
             {'clienti': data_to_render,
             'display_data':1,

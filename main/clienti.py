@@ -91,12 +91,38 @@ def search_fullText(ctx, s):
     table field, otherwise apply some euristic to make a full text search
     on all db fields
     """
+    
+    """
+    funziona benenino, con le frasi composte nello stesso campo non
+    va a modo.. pensare di cercare tutta la chiave di ricerca e poi
+    spezzettarla..
+    """
+    search_key = []
     if " " in s:
-        s = s.split(" ")
+        search_key = s.strip().split(" ")
     else:
-        result = ctx.filter(Q(codice_impianto__icontains=s) | 
-                       Q(codice_id__icontains=s)|
-                       Q(numero_telefono__icontains=s) | 
-                       Q(numero_cellulare__icontains=s))
+        search_key.append(s.strip())
+    
+    for key in search_key:
+        if len(key) >= 3:
+            result = ctx.filter(Q(codice_impianto__icontains = key) | 
+                           Q(codice_id__icontains = key)|
+                           Q(numero_telefono__icontains = key) | 
+                           Q(numero_cellulare__icontains = key) |
+                           Q(nome__icontains = key) |
+                           Q(cognome__icontains = key) |
+                           Q(via__icontains = key) |
+                           Q(citta__icontains = key) |
+                           Q(mail__icontains = key) |
+                           Q(marca_caldaia__icontains = key) |
+                           Q(combustibile__icontains = key) |
+                           Q(modello_caldaia__icontains = key)
+                           )
+        else:
+            if key[0] in string.letters:
+                result = ctx.filter(Q(nome__istartswith = key) |
+                               Q(cognome__istartswith = key) |                       
+                               Q(citta__istartswith = key))
+        ctx = result        
 
     return result
