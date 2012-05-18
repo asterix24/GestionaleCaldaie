@@ -91,12 +91,11 @@ def search_fullText(ctx, s):
     table field, otherwise apply some euristic to make a full text search
     on all db fields
     """
-    
-    """
-    funziona benenino, con le frasi composte nello stesso campo non
-    va a modo.. pensare di cercare tutta la chiave di ricerca e poi
-    spezzettarla..
-    """
+    result = []
+    if "pk=" in s:
+        _, pk = s.strip().split("=")
+        return [select_record(ctx, pk)]
+        
     search_key = []
     if " " in s:
         search_key = s.strip().split(" ")
