@@ -9,6 +9,15 @@
 </li>
 {% endblock %}
 
+{% block navigation_search_block_bot %}
+<li>
+<form action="/anagrafe/" method="post">{% csrf_token %}
+{{ form.search_string }}
+<input type="submit" value="Cerca"/>
+</form>
+</li>
+{% endblock %}
+
 {% block center_block %}
 
 {% if display_data %}
@@ -46,13 +55,13 @@
 {% endif %}
 
 {% if cliente.nome != None %}
-    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.nome}}</a></td>
+    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}&s={{search_string}}">{{cliente.nome}}</a></td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.cognome != None %}
-    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}">{{cliente.cognome}}</a></td>
+    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}&s={{search_string}}">{{cliente.cognome}}</a></td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
@@ -132,6 +141,7 @@
 {% empty %}
     <tr><h2>La ricerca non ha prodotto risultati</h2></tr>
 {% endfor %}
-{% endif %}
 </table>
+{% endif %}
+
 {% endblock %}

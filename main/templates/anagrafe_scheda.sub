@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
+{% block navigation_menu_block_top %}
+<li>
+<form action="/anagrafe/" method="post">{% csrf_token %}
+<input id="id_search_string" type="hidden" name="search_string" value="{{search_string}}"/>
+<input type="submit" value="Ritorna alla lista"/>
+</form>
+</li>
+{% endblock %}
+
+
+{% block navigation_menu_block_bot %}
+<li>
+<form action="/anagrafe/" method="post">{% csrf_token %}
+<input id="id_search_string" type="hidden" name="search_string" value="{{search_string}}"/>
+<input type="submit" value="Ritorna alla lista"/>
+</form>
+</li>
+{% endblock %}
+
 {% block center_block %}
 
 {% if error %}

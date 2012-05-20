@@ -20,11 +20,11 @@ def test(req):
     """
 def scheda_cliente(req):
     id = req.GET.get('id','')
+    search_str = req.GET.get('s', '')
     if id == "":
         return render(req, 'anagrafe_scheda.sub',
         {'error': 1})
 
-        
     cli = clienti.select_record(models.Cliente.objects, int(id))
     bol = clienti.select_bollini(cli)
     intr = clienti.select_interventi(cli)    
@@ -38,12 +38,13 @@ def scheda_cliente(req):
     
     return render(req, 'anagrafe_scheda.sub',
     {'error': 0,
+     'search_string':search_str,
      'cliente': cli,
      'bollino': bol,
      'intervento': intr,
      'history_bollini_len': bollini_history,
      'history_interventi_len': interventi_history,
-    'empty_cell':"-"
+     'empty_cell':"-"
     })
 
 
@@ -56,6 +57,7 @@ def edit(req):
 
 def anagrafe(req):
     form = myforms.FullTextSearchForm()
+    search_str = ""
     if req.method == 'POST':
         form = myforms.FullTextSearchForm(req.POST)
         if form.is_valid():
@@ -65,12 +67,14 @@ def anagrafe(req):
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
             data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
+            search_str = ""
                         
         return render(req, 'anagrafe.sub',
             {'clienti': data_to_render,
-            'display_data':1,
-            'empty_cell':"-",
-            'form': form })
+             'search_string': search_str,
+             'display_data':1,
+             'empty_cell':"-",
+             'form': form })
 
     if req.GET == {}:
         return render(req, 'anagrafe.sub',
