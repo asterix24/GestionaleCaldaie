@@ -22,8 +22,8 @@ def scheda_cliente(req):
     id = req.GET.get('id','')
     search_str = req.GET.get('s', '')
     if id == "":
-        return render(req, 'anagrafe_scheda.sub',
-        {'error': 1})
+        return render(req, 'errors.sub',
+        {'error': "Id sbagliato." })
 
     cli = clienti.select_record(models.Cliente.objects, int(id))
     bol = clienti.select_bollini(cli)
@@ -49,10 +49,19 @@ def scheda_cliente(req):
 
 
 def edit(req):
-    filtro = req.GET.get('q', '')
-    select = clienti.filter_records(models.Cliente.objects, "cognome", filtro)
+    id = req.GET.get('id','')
+    if id == "":
+        return render(req, 'errors.sub',
+        {'error': "Id sbagliato." })
+
+    select = clienti.select_record(models.Cliente.objects, int(id))
     html = modelformset_factory(models.Cliente)
     return HttpResponse(html(queryset=select))
+
+def new_record(req):
+    clienti_formset = modelformset_factory(models.Cliente)
+    return render(req, 'anagrafe_new.sub',
+                    {'formset': clienti_formset(queryset=models.Cliente.objects.get(pk=1)) })
 
 
 def anagrafe(req):

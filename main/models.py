@@ -18,6 +18,7 @@ class Cliente(models.Model):
     data_installazione = models.DateField(null=True)
     data_contratto = models.DateField(null=True)
 
+
     class Meta:
         ordering = ['cognome']
 

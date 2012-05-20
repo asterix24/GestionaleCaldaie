@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^test/', 'main.views.test', name='test'),
     url(r'^edit/', 'main.views.edit', name='edit'),
     url(r'^anagrafe/', 'main.views.anagrafe', name='anagrafe'),
+    url(r'^new/', 'main.views.new_record', name='new_record'),
     url(r'^scheda/', 'main.views.scheda_cliente', name='scheda_cliente'),
 
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
