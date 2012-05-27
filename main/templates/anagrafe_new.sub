@@ -5,7 +5,7 @@
 <form action="/anagrafe/record/" method="post">{% csrf_token %}
 <table id="customers_detail">
 <tr><th>
-</th><th>Modifica/Nuovo Cliente</th>
+</th><th>{{action}} Cliente</th>
 </tr>
 <tr>
     <td class="hdr">Cod. ID</td>

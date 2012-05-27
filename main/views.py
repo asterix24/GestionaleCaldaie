@@ -37,10 +37,11 @@ def scheda_cliente(req):
     })
 
 def manage_clienteRecord(req):
+    action = "Nuovo"
     form = models.ClienteForm()
     if req.method == 'POST':
+        action = "Modifica"
         form = models.ClienteForm(req.POST)
-        print form
         if form.is_valid():
             return render(req, 'anagrafe_new.sub', {'cliente': form })
     
@@ -49,8 +50,9 @@ def manage_clienteRecord(req):
         if id != "":
             select = clienti.select_record(models.Cliente.objects, int(id))
             form = models.ClienteForm(instance=select)
+            action = "Modifica"
 
-    return render(req, 'anagrafe_new.sub', {'cliente': form })
+    return render(req, 'anagrafe_new.sub', {'action':action,'cliente': form })
 
 def anagrafe(req):
     form = myforms.FullTextSearchForm()
