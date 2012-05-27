@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import ModelForm
+
 
 class Cliente(models.Model):
     codice_id = models.CharField(max_length=15, null=True)
@@ -24,6 +26,10 @@ class Cliente(models.Model):
 
     def __unicode__(self):
         return ("%s: %s") % (self.cognome, self.citta)
+
+class ClienteForm(ModelForm):
+    class Meta:
+        model = Cliente
 
 
 class Intervento(models.Model):
