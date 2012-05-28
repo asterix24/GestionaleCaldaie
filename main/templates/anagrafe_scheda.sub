@@ -26,8 +26,9 @@
 {% else %}
 <table id="customers_detail">
 <tr><th>
-<form action="/anagrafe/record/" method="get">{% csrf_token %}
+<form action="/anagrafe/edit/" method="get">{% csrf_token %}
 <input id="id_edit" type="hidden" name="id" value="{{cliente.id}}"/>
+<input id="id_search_string" type="hidden" name="search_string" value="{{search_string}}"/>
 <input type="submit" value="Modifica Anagrafica" />
 </form>
 </th><th>Dettaglio Cliente</th>
@@ -49,12 +50,12 @@
     {% endif %}
 </tr>
 <tr>
-<td class="hdr">Nome</td>
-{% if cliente.nome != None %}
-    <td >{{cliente.nome}}</td>
-{% else %}
-    <td>{{ empty_cell }}</td>
-{% endif %}
+    <td class="hdr">Nome</td>
+    {% if cliente.nome != None %}
+        <td >{{cliente.nome}}</td>
+    {% else %}
+        <td>{{ empty_cell }}</td>
+    {% endif %}
 </tr>
 <tr><td class="hdr">Cognome</td>
 {% if cliente.cognome != None %}

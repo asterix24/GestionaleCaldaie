@@ -3,22 +3,22 @@ from django.forms import ModelForm
 
 
 class Cliente(models.Model):
-    codice_id = models.CharField(max_length=15, null=True)
-    codice_impianto = models.CharField(max_length=15, null=True)
-    cognome = models.CharField(max_length=100, null=True)
-    nome = models.CharField(max_length=100, null=True)
-    codice_fiscale = models.CharField(max_length=17, null=True)
-    via = models.CharField(max_length=300, null=True)
-    citta = models.CharField(max_length=100, null=True)
-    numero_telefono = models.CharField(max_length=20, null=True)
-    numero_cellulare = models.CharField(max_length=20, null=True)
-    mail = models.EmailField(null=True)
-    marca_caldaia = models.CharField(max_length=100, null=True)
-    modello_caldaia = models.CharField(max_length=100, null=True)
-    tipo = models.CharField(max_length=1, null=True)
-    combustibile = models.CharField(max_length=100, null=True)
-    data_installazione = models.DateField(null=True)
-    data_contratto = models.DateField(null=True)
+    codice_id = models.CharField(max_length=15, null=True, blank=True)
+    codice_impianto = models.CharField(max_length=15, null=True, blank=True)
+    cognome = models.CharField(max_length=100, null=True, blank=True)
+    nome = models.CharField(max_length=100, null=True, blank=True)
+    codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
+    via = models.CharField(max_length=300, null=True, blank=True)
+    citta = models.CharField(max_length=100, null=True, blank=True)
+    numero_telefono = models.CharField(max_length=20, null=True, blank=True)
+    numero_cellulare = models.CharField(max_length=20, null=True, blank=True)
+    mail = models.EmailField(null=True, blank=True)
+    marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    tipo = models.CharField(max_length=1, null=True, blank=True)
+    combustibile = models.CharField(max_length=100, null=True, blank=True)
+    data_installazione = models.DateField(null=True, blank=True)
+    data_contratto = models.DateField(null=True, blank=True)
 
 
     class Meta:
@@ -34,11 +34,11 @@ class ClienteForm(ModelForm):
 
 class Intervento(models.Model):
     data = models.DateField()
-    tipo = models.CharField(max_length=80, null=True)
-    note = models.TextField(null=True)
-    numero_rapporto = models.IntegerField(null=True)
+    tipo = models.CharField(max_length=80, null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
+    numero_rapporto = models.IntegerField(null=True, blank=True)
     scadenza = models.BooleanField(default=False) # Se l'intervento puo' scadere
-    data_scadenza = models.DateField(null=True)
+    data_scadenza = models.DateField(null=True, blank=True)
     cliente = models.ForeignKey(Cliente)
 
     class Meta:
@@ -49,12 +49,12 @@ class Intervento(models.Model):
 
 class Bollino(models.Model):
     presente = models.BooleanField()
-    data = models.DateField(null=True)
-    numero_bollino = models.IntegerField(null=True)
-    colore = models.CharField(max_length = 100, null=True)
-    valore = models.DecimalField(max_digits = 4, decimal_places = 2, null=True)
-    scadenza = models.DateField(null=True)
-    note = models.TextField(null=True)
+    data = models.DateField(null=True, blank=True)
+    numero_bollino = models.IntegerField(null=True, blank=True)
+    colore = models.CharField(max_length = 100, null=True, blank=True)
+    valore = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
+    scadenza = models.DateField(null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
     cliente = models.ForeignKey(Cliente)
 
     class Meta:
