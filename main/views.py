@@ -42,16 +42,19 @@ def scheda_cliente(request):
 def edit_record(req):
     if req.method == 'GET':
         record_id = req.GET.get('id','')
+        search_str = req.GET.get('s', '')
         #If we found a id take the record to edit it.
         if record_id != "":
             select = clienti.select_record(models.Cliente.objects, int(record_id))
             form = models.ClienteForm(instance=select)
             return render(req, 'anagrafe_new.sub', {'action': 'Modifica',
                                                     'cliente': form,
-                                                    'record_id':record_id})
+                                                    'record_id':record_id,
+                                                    'search_string':search_str})
         else:
             return render(req, 'errors.sub', {'error': "Id sbagliato." })
-            
+    
+    # We manage a post request when we want to save the data.        
     if req.method == 'POST':
         record_id = req.POST.get('id','')
         search_str = req.POST.get('s', '')

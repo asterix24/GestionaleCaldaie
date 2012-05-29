@@ -111,12 +111,21 @@ em {
     background: #333;
 }
 
+
+.navigation_buttons
+{
+    float: left;
+    display:inline;
+}
+
 #navigation_search
 {
     float: left;
     width: 100%;
     padding: 5px 10px;
     background: #CC9900;
+    overflow:hidden;
+    display:inline;
 }
 
 #navigation ul
