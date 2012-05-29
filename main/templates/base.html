@@ -8,44 +8,50 @@
 </head>
 
 <body>
-<div id="container">
-	<div id="header">
-		<h1>Gestionale Caldaie</h1>
-	</div>
-	<div id="navigation">
-		<ul>
-			<li><a href="#">Home</a></li>
-			<li><a href="/anagrafe/">Anagrafe</a></li>
-			{% block navigation_menu_block_top %}
-		    {% endblock %}
-
-			{% block navigation_search_block_top %}
-			{% endblock %}
-		</ul>
-	</div>
-
-	<div id="content">
-	{% block center_block %}
-    <h1>Tabella per dati</h1>
-    {% endblock %}
-	</div>
-
-	<div id="navigation">
-		<ul>
-			<li><a href="#">Home</a></li>
-			<li><a href="/anagrafe/">Anagrafe</a></li>
-		    {% block navigation_menu_block_bot %}
-		    {% endblock %}
-			{% block navigation_search_block_bot %}
-			{% endblock %}
-		</ul>
-	</div>
-	
-	<div id="footer">
-	
-	{% block footer_block %}
-    Copyright Daniele Basile Site name, 2012
-    {% endblock %}
-	</div>
+<div id="header">
+<h1>Gestionale Caldaie</h1>
 </div>
+
+<div id="navigation">
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="/anagrafe/">Anagrafe</a></li>
+{% block navigation_menu_block_top %}
+{% endblock %}
+</ul>
+</div>
+
+<div id="navigation_search">
+{% block navigation_search_block_top %}
+{% endblock %}
+</div>
+
+<div id="content">
+{% block center_block %}
+<h1>Tabella per dati</h1>
+{% endblock %}
+</div>
+
+
+
+<div id="navigation_search">
+{% block navigation_search_block_bot %}
+{% endblock %}
+</div>
+
+<div id="navigation">
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="/anagrafe/">Anagrafe</a></li>
+{% block navigation_menu_block_bot %}
+{% endblock %}
+</ul>
+</div>
+
+<div id="footer">
+{% block footer_block %}
+Copyright Daniele Basile Site name, 2012
+{% endblock %}
+</div>
+
 </body>

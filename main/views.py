@@ -87,9 +87,12 @@ def anagrafe(req):
             {'clienti': data_to_render,
              'search_string': search_str,
              'display_data':1,
+             'display_search_bot':1,
              'empty_cell':"-",
              'form': form })
 
-    return render(req, 'anagrafe.sub', {'display_data':0, 'form': form })
+    return render(req, 'anagrafe.sub', {'display_data':0,
+                                        'display_search_bot':0,
+                                        'form': form })
 
 

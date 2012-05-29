@@ -1,22 +1,33 @@
 {% extends "base.html" %}
 
 {% block navigation_search_block_top %}
-<li>
 <form action="/anagrafe/" method="post">{% csrf_token %}
 {{ form.search_string }}
 <input type="submit" value="Cerca"/>
 </form>
-</li>
 {% endblock %}
 
+{% block navigation_menu_block_top %}
+<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
+{% endblock %}
+
+
+{% block navigation_menu_block_bot %}
+<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
+{% endblock %}
+
+
 {% block navigation_search_block_bot %}
-<li>
+{% if display_search_bot %}
 <form action="/anagrafe/" method="post">{% csrf_token %}
 {{ form.search_string }}
 <input type="submit" value="Cerca"/>
 </form>
-</li>
+{% endif %}
 {% endblock %}
+
+
+
 
 {% block center_block %}
 

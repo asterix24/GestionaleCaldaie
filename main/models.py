@@ -43,7 +43,7 @@ class Intervento(models.Model):
 
     class Meta:
         ordering = ['-data'] # Ordina per data in modo decrescente
-	
+
     def __unicode__(self):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
 
