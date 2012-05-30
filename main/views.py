@@ -5,7 +5,10 @@ from main import models
 from main import myforms
 from main import clienti
 
-def _diplay_Scheda(request, record_id='', search_str=''):    
+def test(request, record_id):
+    return _diplay_Scheda(request, record_id)
+
+def _diplay_Scheda(request, record_id='', search_str=''):
     cli = clienti.select_record(models.Cliente.objects, int(record_id))
     bol = clienti.select_bollini(cli)
     intr = clienti.select_interventi(cli)    

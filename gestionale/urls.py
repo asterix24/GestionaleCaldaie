@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     url(r'^anagrafe/$', 'main.views.anagrafe', name='anagrafe'),
     url(r'^anagrafe/scheda/', 'main.views.scheda_cliente', name='scheda_cliente'),
     url(r'^anagrafe/new/', 'main.views.new_record', name='new_record'),
-    url(r'^anagrafe/edit/', 'main.views.edit_record', name='edit_record'),
+    url(r'^anagrafe/edit/$', 'main.views.edit_record', name='edit_record'),
+    url(r'^anagrafe/edit/(?P<record_id>\d+)/$', 'main.views.test', name='test'),
 
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
 
