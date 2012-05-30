@@ -25,76 +25,17 @@
 {% endblock %}
 
 {% block center_block %}
-    
 <form action="/anagrafe/edit/" method="post">{% csrf_token %}
 <table id="customers_detail">
-<tr><th>
-</th><th>{{action}} Cliente</th>
-</tr>
 <tr>
-    <td class="hdr">Cod. ID</td>
-    <td>{{cliente.codice_id}} {{cliente.codice_id.errors}}</td>
+    <th></th><th>{{action}} Cliente</th>
 </tr>
+{% for form in cliente %}
 <tr>
-    <td class="hdr">Cod. Impianto</td>
-    <td >{{cliente.codice_impianto}} {{cliente.codice_impianto.errors}}</td>
+    <td class="hdr">{{ form.label }}</td>
+    <td>{{form}} {{form.errors}}</td>
 </tr>
-<tr>
-    <td class="hdr">Nome</td>
-    <td >{{cliente.nome}}{{cliente.nome.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Cognome</td>
-    <td >{{cliente.cognome}}{{cliente.cognome.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Cod. Fiscale</td>
-    <td >{{cliente.codice_fiscale}}{{cliente.codice_fiscale.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Via</td>
-    <td>{{cliente.via}}{{cliente.via.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Citta</td>
-    <td>{{cliente.citta}}{{cliente.citta.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Telefono</td>
-    <td>{{cliente.numero_telefono}}{{cliente.numero_telefono.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Cellulare</td>
-    <td>{{cliente.numero_cellulare}}{{cliente.numero_cellulare.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Mail</td>
-    <td>{{cliente.mail}}{{cliente.mail.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Caldaia</td>
-    <td>{{cliente.marca_caldaia}}{{cliente.marca_caldaia.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Modello</td>
-    <td>{{cliente.modello_caldaia}}{{cliente.modello_caldaia.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Tipo</td>
-    <td>{{cliente.tipo}}{{cliente.tipo.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Combustibile</td>
-    <td>{{cliente.combustibile}}{{cliente.combustibile.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Data Installazione</td>
-    <td>{{cliente.data_installazione}}{{cliente.data_installazione.errors}}</td>
-</tr>
-<tr>
-    <td class="hdr">Data Contratto</td>
-    <td>{{cliente.data_contratto}}{{cliente.data_contratto.errors}}</td>
-</tr>
+{% endfor %}
 </table>
 <input id="id_edit" type="hidden" name="id" value="{{record_id}}"/>
 <input type="submit" value="Salva"/>
