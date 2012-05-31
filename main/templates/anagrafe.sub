@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block navigation_search_block_top %}
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-{{ form.search_string }}
+<form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
+{{ form.s }}
 <input type="submit" value="Cerca"/>
 </form>
 {% endblock %}
@@ -19,14 +19,12 @@
 
 {% block navigation_search_block_bot %}
 {% if display_search_bot %}
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-{{ form.search_string }}
+<form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
+{{ form.s }}
 <input type="submit" value="Cerca"/>
 </form>
 {% endif %}
 {% endblock %}
-
-
 
 
 {% block center_block %}

@@ -1,7 +1,7 @@
 from django import forms
 
 class FullTextSearchForm(forms.Form):
-    search_string = forms.CharField(max_length=200)
+    s = forms.CharField(max_length=200)
     
 class SearchCliente(forms.Form):
     codice_id = forms.IntegerField()
