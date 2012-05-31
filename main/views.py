@@ -8,10 +8,14 @@ from main import clienti
 def test(request, record_id):
     return _diplay_Scheda(request, record_id)
 
-def _diplay_Scheda(request, record_id='', search_str=''):
+def _diplay_error(request):
+    return render(request, 'errors.sub',
+        {'error': "Id sbagliato." })
+    
+def _diplay_Scheda(request, record_id=''):
     cli = clienti.select_record(models.Cliente.objects, int(record_id))
     bol = clienti.select_bollini(cli)
-    intr = clienti.select_interventi(cli)    
+    intr = clienti.select_interventi(cli)
     bollini_history = len(bol)
     interventi_history = len(intr)
 
@@ -22,7 +26,6 @@ def _diplay_Scheda(request, record_id='', search_str=''):
     
     return render(request, 'anagrafe_scheda.sub',
     {'error': 0,
-     'search_string':search_str,
      'cliente': cli,
      'bollino': bol,
      'intervento': intr,
@@ -31,48 +34,38 @@ def _diplay_Scheda(request, record_id='', search_str=''):
      'empty_cell':"-"
     })
 
-
-def scheda_cliente(request):
-    record_id = request.GET.get('id','')
-    search_str = request.GET.get('s', '')
-    
+def detail_record(request, record_id):
     if record_id == "":
-        return render(request, 'errors.sub',
-        {'error': "Id sbagliato." })
-    
-    return _diplay_Scheda(request, record_id, search_str)
+        _diplay_error(request)
 
-def edit_record(req):
-    if req.method == 'GET':
-        record_id = req.GET.get('id','')
-        search_str = req.GET.get('s', '')
-        #If we found a id take the record to edit it.
+    return _diplay_Scheda(request, record_id)
+
+def edit_record(request, record_id):
+    if request.method == 'GET':
         if record_id != "":
-            select = clienti.select_record(models.Cliente.objects, int(record_id))
+            select = clienti.select_record(models.Cliente.objects, record_id)
             form = models.ClienteForm(instance=select)
-            return render(req, 'anagrafe_new.sub', {'action': 'Modifica',
-                                                    'cliente': form,
-                                                    'record_id':record_id,
-                                                    'search_string':search_str})
+            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                        'record_id': record_id,
+                                                        'cliente': form})
         else:
-            return render(req, 'errors.sub', {'error': "Id sbagliato." })
+            return _diplay_error(request)
     
     # We manage a post request when we want to save the data.        
-    if req.method == 'POST':
-        record_id = req.POST.get('id','')
-        search_str = req.POST.get('s', '')
+    if request.method == 'POST':
         #If we found a id take the record to edit it.
         if record_id != "":
-            select = clienti.select_record(models.Cliente.objects, int(record_id))
-            form = models.ClienteForm(req.POST, instance=select)
+            select = clienti.select_record(models.Cliente.objects, record_id)
+            form = models.ClienteForm(request.POST, instance=select)
+            
             if form.is_valid():
                 form.save()
-                return _diplay_Scheda(req, record_id, search_str)
+                return _diplay_Scheda(request, record_id)
         else:
-            return render(req, 'errors.sub', {'error': "Id sbagliato." })
+            return _diplay_error(request)
 
-def new_record(req):
-    pass
+def new_record(request):
+    return _diplay_error(request)
 
 def anagrafe(req):
     form = myforms.FullTextSearchForm()
@@ -91,7 +84,6 @@ def anagrafe(req):
                         
         return render(req, 'anagrafe.sub',
             {'clienti': data_to_render,
-             'search_string': search_str,
              'display_data':1,
              'display_search_bot':1,
              'empty_cell':"-",

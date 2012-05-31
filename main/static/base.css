@@ -118,16 +118,6 @@ em {
     display:inline;
 }
 
-#navigation_search
-{
-    float: left;
-    width: 100%;
-    padding: 5px 10px;
-    background: #CC9900;
-    overflow:hidden;
-    display:inline;
-}
-
 #navigation ul
 {
     margin: 0;
@@ -151,6 +141,38 @@ em {
 }
 
 #navigation li a:hover { background: #383; }
+
+
+#navigation_search
+{
+    float: left;
+    width: 100%;
+    background: #CC9900;
+}
+
+#navigation_search ul
+{
+    margin: 0;
+    padding: 0;
+}
+
+#navigation_search ul li
+{
+    list-style-type: none;
+    display: inline;
+}
+
+#navigation_search li a
+{
+    display: block;
+    float: left;
+    padding: 2px 5px;
+    color: #fff;
+    text-decoration: none;
+    border-right: 1px solid #fff;
+}
+
+#navigation_search li a:hover { background: #383; }
 
 #content
 {

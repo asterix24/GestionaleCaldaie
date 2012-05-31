@@ -1,33 +1,10 @@
 {% extends "base.html" %}
 
-{% block navigation_search_block_top %} 
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_search_string" type="hidden" name="search_string" value="{{search_string}}"/>
-<input type="submit" value="Ritorna alla lista"/>
-</form>
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_intervento_new" type="hidden" name="intervento_new" value="{{cliente.pk}}"/>
-<input type="submit" value="Nuovo Intervento"/>
-</form>
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_bollino_new" type="hidden" name="bollino_new" value="{{cliente.pk}}"/>
-<input type="submit" value="Nuovo Bollino"/>
-</form>
+{% block navigation_search_block_top %}
+<li><a href="javascript:history.back()">Ritorna alla lista</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_search_string" type="hidden" name="search_string" value="{{search_string}}"/>
-<input type="submit" value="Ritorna alla lista"/>
-</form>
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_intervento_new" type="hidden" name="intervento_new" value="{{cliente.pk}}"/>
-<input type="submit" value="Nuovo Intervento"/>
-</form>
-<form class="navigation_buttons" action="/anagrafe/" method="post">{% csrf_token %}
-<input id="id_bollino_new" type="hidden" name="bollino_new" value="{{cliente.pk}}"/>
-<input type="submit" value="Nuovo Bollino"/>
-</form>
 {% endblock %}
 
 {% block navigation_menu_block_top %}
@@ -45,11 +22,7 @@
 {% else %}
 <table id="customers_detail">
 <tr><th>
-<form action="/anagrafe/edit/" method="get">
-<input id="id_edit" type="hidden" name="id" value="{{cliente.pk}}"/>
-<input id="id_search_string" type="hidden" name="s" value="{{search_string}}"/>
-<input type="submit" value="Modifica Anagrafica" />
-</form>
+<a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a>
 </th><th>Dettaglio Cliente</th>
 </tr>
 <tr>

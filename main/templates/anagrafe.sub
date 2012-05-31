@@ -58,25 +58,25 @@
 {% endif %}
 
 {% if cliente.codice_impianto != None %}
-    <td >{{cliente.codice_impianto}}</td>
+    <td>{{cliente.codice_impianto}}</td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.nome != None %}
-    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}&s={{search_string}}">{{cliente.nome}}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/">{{cliente.nome}}</a></td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.cognome != None %}
-    <td ><a href="{% url scheda_cliente %}?id={{cliente.pk}}&s={{search_string}}">{{cliente.cognome}}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/">{{cliente.cognome}}</a></td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
 
 {% if cliente.codice_fiscale != None %}
-    <td >{{cliente.codice_fiscale}}</td>
+    <td>{{cliente.codice_fiscale}}</td>
 {% else %}
     <td>{{ empty_cell }}</td>
 {% endif %}
