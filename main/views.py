@@ -67,29 +67,26 @@ def edit_record(request, record_id):
 def new_record(request):
     return _diplay_error(request)
 
-def anagrafe(req):
+def anagrafe(request):
     form = myforms.FullTextSearchForm()
-    search_str = ""
     
-    if req.method == 'GET' and req.GET != {}:
-        form = myforms.FullTextSearchForm(req.GET)
+    if request.method == 'GET' and request.GET != {}:
+        form = myforms.FullTextSearchForm(request.GET)
         if form.is_valid():
-            search_str = form.cleaned_data['s']
-            data_to_render = clienti.search_fullText(models.Cliente.objects, search_str)
+            data_to_render = clienti.search_fullText(models.Cliente.objects, form.cleaned_data['s'])
         else:
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
             data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
-            search_str = ""
                         
-        return render(req, 'anagrafe.sub',
+        return render(request, 'anagrafe.sub',
             {'clienti': data_to_render,
              'display_data':1,
              'display_search_bot':1,
              'empty_cell':"-",
              'form': form })
 
-    return render(req, 'anagrafe.sub', {'display_data':0,
+    return render(request, 'anagrafe.sub', {'display_data':0,
                                         'display_search_bot':0,
                                         'form': form })
 
