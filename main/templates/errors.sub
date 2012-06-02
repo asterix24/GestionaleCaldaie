@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-
-{% block center_block %}
-
-<h1> Errore! </h1>
-<br>
-<h3>{{ error }}<h3>
-
-{% endblock %}
