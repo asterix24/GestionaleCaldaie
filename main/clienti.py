@@ -88,10 +88,14 @@ def search_fullText(ctx, s):
     on all db fields
     """
     result = []
-    if "pk=" in s:
-        _, pk = s.strip().split("=")
+    if "pk:" in s:
+        _, pk = s.strip().split(":")
         return [select_record(ctx, pk)]
         
+    if "citta:" in s:
+        _, citta = s.strip().split(":")
+        return ctx.filter(Q(citta__icontains = citta))
+
     search_key = []
     if " " in s:
         search_key = s.strip().split(" ")
