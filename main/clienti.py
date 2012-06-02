@@ -41,10 +41,6 @@ def filter_dataContratto(ctx, start_y, start_m = None, start_d = None, stop_y = 
 def clienti_displayAll(ctx):
     return ctx.all()
 
-
-def update_record(ctx, id, key_value):
-    return ctx.filter(pk__exact = id).update(**key_value)
-
 def select_record(ctx, id):
     return ctx.get(pk=id)
 

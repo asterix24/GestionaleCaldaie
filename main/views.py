@@ -87,7 +87,11 @@ def new_record(request):
         else:
             return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
                                                     'cliente': form}) 
+
     return _diplay_error(request, "Qualcosa e' andato storto..")
+
+def delete_record(request, record_id):
+    pass
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
