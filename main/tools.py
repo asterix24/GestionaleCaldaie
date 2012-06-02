@@ -19,8 +19,9 @@ def load_csv(file_name, handler):
 
     for e in table:
         try:
-            table_dict = handler(e)
-        except ValueError, m:
+            if e != []:
+                table_dict = handler(e)
+        except (ValueError, IndexError), m:
             print "ValueError (%s)" % m , e
             exit (0)
 

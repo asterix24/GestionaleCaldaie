@@ -37,7 +37,6 @@ def _diplay_Scheda(request, record_id=''):
      'intervento': intr,
      'history_bollini_len': bollini_history,
      'history_interventi_len': interventi_history,
-     'empty_cell':"-"
     })
 
 def detail_record(request, record_id):

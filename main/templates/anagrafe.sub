@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
 {% block navigation_search_block_top %}
+<div class="navigation_buttons">{% now "d F Y H:i" %}</div>
 <form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
 {{ form.s }}
 <input type="submit" value="Cerca"/>
 </form>
+{% if display_data %}
+<div class="navigation_buttons">Clienti trovati: {{clienti|length }}</div>
+{% endif %}
 {% endblock %}
 
 {% block navigation_menu_block_top %}
@@ -16,15 +20,19 @@
 <li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
 {% endblock %}
 
-
 {% block navigation_search_block_bot %}
 {% if display_search_bot %}
-<form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
-{{ form.s }}
-<input type="submit" value="Cerca"/>
-</form>
+    <div class="navigation_buttons">{% now "d F Y H:i" %}</div>
+    <form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
+    {{ form.s }}
+    <input type="submit" value="Cerca"/>
+    </form>
+    {% if display_data %}
+        <div class="navigation_buttons">Clienti trovati: {{clienti|length }}</div>
+    {% endif %}
 {% endif %}
 {% endblock %}
+
 
 
 {% block center_block %}
