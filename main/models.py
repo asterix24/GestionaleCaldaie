@@ -1,9 +1,9 @@
 from django.db import models
 from django.forms import ModelForm
-
+import datetime
 
 class Cliente(models.Model):
-    data_creazione = models.DateField(null=True, blank=True, editable=False)
+    data_creazione = models.DateField(default=datetime.date.today(), editable=False)
     codice_id = models.CharField(max_length=15, null=True, blank=True)
     codice_impianto = models.CharField(max_length=15, null=True, blank=True)
     cognome = models.CharField(max_length=100, null=True, blank=True)

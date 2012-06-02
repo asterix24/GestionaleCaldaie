@@ -45,8 +45,6 @@ def load_intervento(e):
 def load_cliente(e):
 
     table_dict = {}
-
-    table_dict['data_creazione'] = datetime.date.today()
     if e[0].strip() != '':
         id = int(e[0], 10)
     else:
