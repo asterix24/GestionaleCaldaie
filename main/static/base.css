@@ -116,6 +116,7 @@ em {
 {
     float: left;
     display:inline;
+    padding: 2px 5px;
 }
 
 #navigation ul

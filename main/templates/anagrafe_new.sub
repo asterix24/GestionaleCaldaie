@@ -28,7 +28,7 @@
 {% for form in cliente %}
 <tr>
     <td class="hdr">{{ form.label }}</td>
-    <td>{{form}} {{form.errors}}</td>
+    <td>{{form}}{{form.errors}}</td>
 </tr>
 {% endfor %}
 </table>

@@ -66,6 +66,10 @@ def edit_record(request, record_id):
             if form.is_valid():
                 form.save()
                 return _diplay_Scheda(request, record_id)
+            else:
+                return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                        'record_id': record_id,
+                                                        'cliente': form})
         else:
             return _diplay_error(request, "Id non trovato.")
 
@@ -80,7 +84,9 @@ def new_record(request):
             form.save()
             return _diplay_ok(request,
                 "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
-            
+        else:
+            return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
+                                                    'cliente': form}) 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def anagrafe(request):
