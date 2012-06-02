@@ -16,7 +16,11 @@
 {% endblock %}
 
 {% block center_block %}
+{% if action == "Modifica" %}
 <form action="{% url anagrafe %}{{record_id}}/edit/" method="post">{% csrf_token %}
+{% else %}
+<form action="{% url anagrafe %}new/" method="post">{% csrf_token %}
+{% endif %}
 <table id="customers_detail">
 <tr>
     <th></th><th>{{action}} Cliente</th>

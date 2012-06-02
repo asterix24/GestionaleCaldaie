@@ -2,8 +2,8 @@
 
 {% block center_block %}
 
-<h1> Errore! </h1>
+<h1>{{msg_hdr}}</h1>
 <br>
-<h3>{{ error }}<h3>
+<h3>{{msg_body}}<h3>
 
 {% endblock %}

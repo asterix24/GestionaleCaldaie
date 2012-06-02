@@ -8,9 +8,15 @@ from main import clienti
 def test(request, record_id):
     return _diplay_Scheda(request, record_id)
 
-def _diplay_error(request):
-    return render(request, 'errors.sub',
-        {'error': "Id sbagliato." })
+def _diplay_error(request, msg):
+    return render(request, 'messages.sub',
+        { 'msg_hdr':'Error!',
+          'msg_body': msg })
+
+def _diplay_ok(request, msg):
+    return render(request, 'messages.sub',
+        { 'msg_hdr':'Ok!',
+          'msg_body': msg})
     
 def _diplay_Scheda(request, record_id=''):
     cli = clienti.select_record(models.Cliente.objects, int(record_id))
@@ -36,7 +42,7 @@ def _diplay_Scheda(request, record_id=''):
 
 def detail_record(request, record_id):
     if record_id == "":
-        _diplay_error(request)
+        _diplay_error(request, "Id non trovato.")
 
     return _diplay_Scheda(request, record_id)
 
@@ -49,7 +55,7 @@ def edit_record(request, record_id):
                                                         'record_id': record_id,
                                                         'cliente': form})
         else:
-            return _diplay_error(request)
+            return _diplay_error(request, "Id non trovato.")
     
     # We manage a post request when we want to save the data.        
     if request.method == 'POST':
@@ -62,10 +68,21 @@ def edit_record(request, record_id):
                 form.save()
                 return _diplay_Scheda(request, record_id)
         else:
-            return _diplay_error(request)
+            return _diplay_error(request, "Id non trovato.")
 
 def new_record(request):
-    return _diplay_error(request)
+    if request.method == 'GET':
+        form = models.ClienteForm()
+        return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
+                                                'cliente': form})
+    if request.method == 'POST':
+        form = models.ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return _diplay_ok(request,
+                "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
+            
+    return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
