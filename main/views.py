@@ -63,7 +63,7 @@ def edit_record(request, record_id):
         if record_id != "":
             select = clienti.select_record(models.Cliente.objects, record_id)
             form = models.ClienteForm(request.POST, instance=select)
-            
+
             if form.is_valid():
                 form.save()
                 return _diplay_Scheda(request, record_id)

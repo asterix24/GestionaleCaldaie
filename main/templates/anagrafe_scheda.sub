@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block navigation_search_block_top %}
-<li><a href="javascript:history.back()">Ritorna alla lista</a></li>
+<li><a href="javascript:history.back()">Indietro</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a></li>
+<li><a href="{% url anagrafe %}">Nuovo Intervento</a></li>
+<li><a href="{% url anagrafe %}">Modifica Intervento</a></li>
+<li><a href="{% url anagrafe %}">Nuovo Bollino</a></li>
+<li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -22,7 +27,6 @@
 {% else %}
 <table id="customers_detail">
 <tr><th>
-<a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a>
 </th><th>Dettaglio Cliente</th>
 </tr>
 <tr>
@@ -151,9 +155,6 @@
 </table>
 <table id="customers_detail">
 <tr><th>
-<form action="" method="post">{% csrf_token %}
-    <input type="submit" value="Modifica Bollino" />
-</form>
 </th><th>Bollino</th>
 </tr>
 
@@ -211,9 +212,6 @@
 </table>
 <table id="customers_detail">
 <tr><th>
-<form action="" method="post">{% csrf_token %}
-    <input type="submit" value="Modifica Intervento" />
-</form>
 </th><th>Interventi</th>
 </tr>
 {% if bollino.presente %}

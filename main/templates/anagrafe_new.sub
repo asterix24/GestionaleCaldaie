@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block navigation_search_block_top %}
-<li><a href="javascript:history.back()">Ritorna alla lista</a></li>
+<li><a href="javascript:history.back()">Indietro</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
