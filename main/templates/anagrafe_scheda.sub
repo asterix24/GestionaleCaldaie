@@ -26,6 +26,14 @@
 </th><th>Dettaglio Cliente</th>
 </tr>
 <tr>
+    <td class="hdr">Cliente aggiunto</td>
+    {% if cliente.data_creazione != None %}
+        <td>{{cliente.data_creazione|date:"d/m/Y"}}</td>
+    {% else %}
+        <td>{{ empty_cell }}</td>
+    {% endif %}
+</tr>
+<tr>
     <td class="hdr">Cod. ID</td>
     {% if cliente.codice_id != None %}
         <td>{{cliente.codice_id}}</td>
