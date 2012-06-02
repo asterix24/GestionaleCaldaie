@@ -100,7 +100,6 @@ def anagrafe(request):
             {'clienti': data_to_render,
              'display_data':1,
              'display_search_bot':1,
-             'empty_cell':"-",
              'form': form })
 
     return render(request, 'anagrafe.sub', {'display_data':0,

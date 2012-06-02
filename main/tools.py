@@ -41,26 +41,27 @@ def load_intervento(e):
     
     return [ref, d]
 
-	
+        
 def load_cliente(e):
 
     table_dict = {}
     if e[0].strip() != '':
         id = int(e[0], 10)
-    else:
-        id = None
-    table_dict['codice_id'] = id
-    
-    table_dict['codice_impianto'] = None
+        table_dict['codice_id'] = id
 
-    table_dict['cognome'] = e[1].capitalize().strip()
-    table_dict['nome'] = e[2].capitalize().strip()
+    #table_dict['codice_impianto'] = None
+
+    cognome = e[1].capitalize().strip()
+    if  cognome != '':
+        table_dict['cognome'] = cognome
+        
+    nome = e[2].capitalize().strip()
+    if nome != '':
+        table_dict['nome'] = nome
 
     if e[3].strip() != '':
         cdf = e[3].upper().strip()
-    else:
-        cdf = ""
-    table_dict['codice_fiscale'] = cdf
+        table_dict['codice_fiscale'] = cdf
 
     table_dict['via'] = e[4].capitalize().strip()
     table_dict['citta'] = e[5].capitalize().strip()
@@ -68,21 +69,21 @@ def load_cliente(e):
     if e[6].strip() != '':
         cell = e[6].replace(' ', '')
     else:
-        cell = None
+        cell = "-"
     
     if e[7].strip() != '':
         tel = e[7].replace(' ', '')
         
         if tel[0] != '0':
             cell = tel
-            tel = None
+            tel = "-"
     else:
-        tel = None
+        tel = "-"
     
     table_dict['numero_telefono'] = cell    
     table_dict['numero_cellulare'] = tel
     
-    table_dict['mail'] = None
+    #table_dict['mail'] = None
     
     table_dict['marca_caldaia'] = e[8].strip().upper()
     table_dict['tipo'] = e[9].strip().upper()
@@ -91,7 +92,7 @@ def load_cliente(e):
     table_dict['combustibile'] = e[11].strip().capitalize()
 
     table_dict['data_installazione'] = data_fmt(e[12])
-    table_dict['data_contratto'] = data_fmt(e[13])	
+    table_dict['data_contratto'] = data_fmt(e[13])      
 
     table_bollino = {}
     p = 0
@@ -108,12 +109,12 @@ def load_cliente(e):
     
     c = e[16].capitalize().strip()
     if c == 'No' or c == 'Si':
-        c = None
+        c = "-"
     table_bollino['colore'] = c
     
     v = e[17].strip()
     if v == "":
-        v = None
+        v = 0
     else:
         v = int(v)
     table_bollino['valore'] = v
@@ -122,7 +123,7 @@ def load_cliente(e):
     if n != "":
         n = int(n)
     else:
-        n = None
+        n = 0
     table_bollino['numero_bollino'] = n
     table_bollino['scadenza'] = None
     table_bollino['note'] = None
