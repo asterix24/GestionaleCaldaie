@@ -17,7 +17,7 @@ def _diplay_ok(request, msg):
     return render(request, 'messages.sub',
         { 'msg_hdr':'Ok!',
           'msg_body': msg})
-    
+
 def _diplay_Scheda(request, record_id=''):
     cli = clienti.select_record(models.Cliente.objects, int(record_id))
     bol = clienti.select_bollini(cli)
@@ -29,10 +29,9 @@ def _diplay_Scheda(request, record_id=''):
         bol = bol[0]
     if interventi_history >= 1:
         intr = intr[0]
-    
+
     return render(request, 'anagrafe_scheda.sub',
-    {'error': 0,
-     'cliente': cli,
+    {'cliente': cli,
      'bollino': bol,
      'intervento': intr,
      'history_bollini_len': bollini_history,
@@ -55,8 +54,8 @@ def edit_record(request, record_id):
                                                         'cliente': form})
         else:
             return _diplay_error(request, "Id non trovato.")
-    
-    # We manage a post request when we want to save the data.        
+
+    # We manage a post request when we want to save the data.
     if request.method == 'POST':
         #If we found a id take the record to edit it.
         if record_id != "":
@@ -86,16 +85,30 @@ def new_record(request):
                 "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
         else:
             return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
-                                                    'cliente': form}) 
+                                                    'cliente': form})
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def delete_record(request, record_id):
-    pass
+    if request.method == 'GET':
+        form = models.ClienteForm()
+        return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
+                                            'cliente': form})
+    if request.method == 'POST':
+        form = models.ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return _diplay_ok(request,
+                "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
+        else:
+            return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
+                                                    'cliente': form})
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
-    
+
     if request.method == 'GET' and request.GET != {}:
         form = myforms.FullTextSearchForm(request.GET)
         if form.is_valid():
@@ -104,7 +117,7 @@ def anagrafe(request):
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
             data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
-                        
+
         return render(request, 'anagrafe.sub',
             {'clienti': data_to_render,
              'display_data':1,
@@ -114,5 +127,3 @@ def anagrafe(request):
     return render(request, 'anagrafe.sub', {'display_data':0,
                                         'display_search_bot':0,
                                         'form': form })
-
-

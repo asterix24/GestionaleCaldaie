@@ -7,6 +7,7 @@
 <li><a href="{% url anagrafe %}">Modifica Intervento</a></li>
 <li><a href="{% url anagrafe %}">Nuovo Bollino</a></li>
 <li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -21,134 +22,31 @@
 {% endblock %}
 
 {% block center_block %}
-
-{% if error %}
-<h1> Errore! </h1>
-{% else %}
 <table id="customers_detail">
-<tr><th>
-</th><th>Dettaglio Cliente</th>
-</tr>
-<tr>
-    <td class="hdr">Cliente aggiunto</td>
-    <td>{{cliente.data_creazione|date:"d/m/Y"}}</td>
-</tr>
-<tr>
-    <td class="hdr">Cod. ID</td>
-    <td>{{cliente.codice_id}}</td>
-</tr>
-<tr>
-    <td class="hdr">Cod. Impianto</td>
-        <td >{{cliente.codice_impianto}}</td>
-</tr>
-<tr>
-    <td class="hdr">Nome</td>
-        <td >{{cliente.nome}}</td>
-</tr>
-<tr><td class="hdr">Cognome</td>
-    <td >{{cliente.cognome}}</td>
-</tr>
-<tr><td class="hdr">Cod. Fiscale</td>
-    <td >{{cliente.codice_fiscale}}</td>
-</tr>
-<tr><td class="hdr">Via</td>
-    <td>{{cliente.via}}</td>
-</tr>
-<tr><td class="hdr">Citta</td>
-    <td>{{cliente.citta}}</td>
-</tr>
-<tr><td class="hdr">Telefono</td>
-    <td>{{cliente.numero_telefono}}</td>
-</tr>
-<tr><td class="hdr">Cellulare</td>
-    <td>{{cliente.numero_cellulare}}</td>
-</tr>
-<tr><td class="hdr">Mail</td>
-    <td>{{cliente.mail}}</td>
-</tr>
-<tr><td class="hdr">Caldaia</td>
-    <td>{{cliente.marca_caldaia}}</td>
-</tr>
-<tr><td class="hdr">Modello</td>
-    <td>{{cliente.modello_caldaia}}</td>
-</tr>
-<tr><td class="hdr">Tipo</td>
-    <td>{{cliente.tipo}}</td>
-</tr>
-<tr><td class="hdr">Combustibile</td>
-    <td>{{cliente.combustibile}}</td>
-</tr>
-<tr><td class="hdr">Data Installazione</td>
-    <td>{{cliente.data_installazione|date:"d/m/Y"}}</td>
-</tr>
-<tr><td class="hdr">Data Contratto</td>
-    <td>{{cliente.data_contratto|date:"d/m/Y"}}</td>
-</tr>
+<tr><th></th><th>Dettaglio Cliente</th></tr>
+{% include "anagrafe_scheda_cliente.inc" %}
 </table>
-<table id="customers_detail">
-<tr><th>
-</th><th>Bollino</th>
-</tr>
 
+<table id="customers_detail">
+<tr><th></th><th>Bollino</th></tr>
 {% if bollino.presente %}
-<tr><td class="hdr">Storico</td>
-    <td><a href="">{{ history_bollini_len }}</a></td>
-</tr>
-<tr><td class="hdr">Data</td>
-    <td>{{ bollino.data|date:"d/m/Y"}}</td>
-</tr>
-<tr><td class="hdr">Numero</td>
-    <td>{{ bollino.numero_bollino }}</td>
-</tr>
-<tr><td class="hdr">Colore</td>
-    <td>{{ bollino.colore }}</td>
-</tr>
-<tr><td class="hdr">Valore</td>
-    <td>{{ bollino.valore }}&euro;</td>
-</tr>
-<tr><td class="hdr">Scadenza</td>
-    <td>{{ bollino.scadenza|date:"d/m/Y"}}</td>
-</tr>
-<tr><td class="hdr">Note</td>
-        <td>{{ bollino.note }}</td>
-</tr>
+    {% include "anagrafe_scheda_bollino.inc" %}
 {% else %}
-<tr><td class="hdr">Note</td>
+<tr>
+    <td class="hdr">Note</td>
     <td>Non ci sono bollini per questo cliente</td>
 </tr>
 {% endif %}
 </table>
-<table id="customers_detail">
-<tr><th>
-</th><th>Interventi</th>
-</tr>
-{% if bollino.presente %}
-<tr><td class="hdr">Storico</td>
-    <td><a href="">{{ history_interventi_len }}</a></td>
-</tr>
-<tr><td class="hdr">Interverto data</td>
-    <td>{{ intervento.data|date:"d/m/Y"}}</td>
-</tr>
-<tr><td class="hdr">Motivo dell'intervento</td>
-    <td>{{ intervento.tipo }}</td>
-</tr>
-<tr><td class="hdr">Rapporto Numero</td>
-    <td>{{ intervento.numero_rapporto }}</td>
-</tr>
-<tr><td class="hdr">Annotazioni</td>
-    <td>{{ intervento.note }}</td>
-</tr>
 
-{% if intervento.scadenza %}
-<tr><td class="hdr">Scade il</td>
-    <td>{{ intervento.data_scadenza|date:"d/m/Y" }}</td>
-</tr>
-{% endif %}
+<table id="customers_detail">
+<tr><th></th><th>Interventi</th></tr>
+{% if history_interventi_len %}
+    {% include "anagrafe_scheda_intervento.inc" %}
 {% else %}
 <tr><td class="hdr">Note</td>
     <td>Non ci sono interventi per questo cliente</td>
 </tr>
 {% endif %}
 </table>
-{% endif %}
 {% endblock %}
