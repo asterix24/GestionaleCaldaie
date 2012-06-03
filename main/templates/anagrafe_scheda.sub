@@ -22,6 +22,9 @@
 {% endblock %}
 
 {% block center_block %}
+
+{%if top_msg != "" %}<h1>{{top_msg}}</h1>{% endif %}
+
 <table id="customers_detail">
 <tr><th></th><th>Dettaglio Cliente</th></tr>
 {% include "anagrafe_scheda_cliente.inc" %}
@@ -49,4 +52,5 @@
 </tr>
 {% endif %}
 </table>
+
 {% endblock %}

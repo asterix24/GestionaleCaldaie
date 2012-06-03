@@ -1,5 +1,6 @@
 from django import http
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 
 from main import models
 from main import myforms
@@ -18,7 +19,7 @@ def _diplay_ok(request, msg):
         { 'msg_hdr':'Ok!',
           'msg_body': msg})
 
-def _diplay_Scheda(request, record_id=''):
+def _diplay_Scheda(request, record_id='', msg=''):
     cli = clienti.select_record(models.Cliente.objects, int(record_id))
     bol = clienti.select_bollini(cli)
     intr = clienti.select_interventi(cli)
@@ -31,7 +32,8 @@ def _diplay_Scheda(request, record_id=''):
         intr = intr[0]
 
     return render(request, 'anagrafe_scheda.sub',
-    {'cliente': cli,
+    {'top_msg':msg,
+     'cliente': cli,
      'bollino': bol,
      'intervento': intr,
      'history_bollini_len': bollini_history,
@@ -80,9 +82,9 @@ def new_record(request):
     if request.method == 'POST':
         form = models.ClienteForm(request.POST)
         if form.is_valid():
-            form.save()
-            return _diplay_ok(request,
-                "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
+            istance = form.save()
+            s = "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome'))
+            return _diplay_Scheda(request, istance.id, s)
         else:
             return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
                                                     'cliente': form})
@@ -90,19 +92,21 @@ def new_record(request):
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def delete_record(request, record_id):
-    if request.method == 'GET':
-        form = models.ClienteForm()
-        return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
-                                            'cliente': form})
-    if request.method == 'POST':
-        form = models.ClienteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return _diplay_ok(request,
-                "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome')))
-        else:
-            return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
-                                                    'cliente': form})
+    try:
+        if request.method == 'GET':
+            return render(request, 'anagrafe_delete.sub', {'record_id':record_id,
+                                                           'cliente': clienti.select_record(models.Cliente.objects, record_id)})
+
+        if request.method == 'POST':
+            cli = clienti.select_record(models.Cliente.objects, record_id)
+            nome = cli.nome
+            cognome = cli.cognome
+            cli.delete()
+            s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
+            return _diplay_ok(request, s)
+
+    except ObjectDoesNotExist, m:
+        return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
