@@ -32,6 +32,9 @@
 </tr>
 {% endfor %}
 </table>
-<input type="submit" value="Salva"/>
+<input class=navigation_buttons type="submit" value="Salva"/>
+</form>
+<form action="{% url anagrafe %}{{record_id}}/" method="post">{% csrf_token %}
+<input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
 {% endblock %}
