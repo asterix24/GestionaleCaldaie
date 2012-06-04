@@ -7,7 +7,7 @@ from main import myforms
 from main import clienti
 
 def home(request):
-    pass
+    return render(request, 'home.sub', {})
 
 def _diplay_error(request, msg):
     return render(request, 'messages.sub',

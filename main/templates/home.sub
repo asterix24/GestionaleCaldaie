@@ -3,4 +3,6 @@
 {% block center_block %}
 <h1>Eventi del giorno</h1>
 <h2>{% now "d F Y H:i" %}</h2>
+
+Per ora nessun evento.
 {% endblock %}

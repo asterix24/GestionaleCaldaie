@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'main.views.home', name='home'),
+    url(r'^home/$', 'main.views.home', name='home'),
     url(r'^anagrafe/$', 'main.views.anagrafe', name='anagrafe'),
     url(r'^anagrafe/(?P<record_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
     url(r'^anagrafe/(?P<record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
