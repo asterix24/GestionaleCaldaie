@@ -6,8 +6,8 @@ from main import models
 from main import myforms
 from main import clienti
 
-def test(request, record_id):
-    return _diplay_Scheda(request, record_id)
+def home(request):
+    pass
 
 def _diplay_error(request, msg):
     return render(request, 'messages.sub',
