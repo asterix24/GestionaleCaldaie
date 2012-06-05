@@ -32,41 +32,15 @@
 
 <table id="customers_detail">
 <tr><th></th><th>Bollino</th></tr>
+{% for bollino in bollini %}
 {% if bollino.presente %}
-<tr>
-    <td class="hdr">Storico</td>
-    {% if bollini_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/bollini">{{ bollini_history }}</a></td>
-    {% else %}
-    <td>{{ bollini_history }}</td>
-    {% endif %}
-</tr>
     {% include "anagrafe_scheda_bollino.inc" %}
-{% else %}
+{% endif %}
+{% empty %}
 <tr>
     <td class="hdr">Note</td>
     <td>Non ci sono bollini per questo cliente</td>
 </tr>
-{% endif %}
+{% endfor %}
 </table>
-
-<table id="customers_detail">
-<tr><th></th><th>Interventi</th></tr>
-{% if interventi_history %}
-<tr>
-    <td class="hdr">Storico</td>
-     {% if interventi_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/interventi">{{ interventi_history }}</a></td>
-    {% else %}
-    <td>{{ interventi_history }}</td>
-    {% endif %}
-</tr>
-    {% include "anagrafe_scheda_intervento.inc" %}
-{% else %}
-<tr><td class="hdr">Note</td>
-    <td>Non ci sono interventi per questo cliente</td>
-</tr>
-{% endif %}
-</table>
-
 {% endblock %}

@@ -19,26 +19,47 @@ def _diplay_ok(request, msg):
         { 'msg_hdr':'Ok!',
           'msg_body': msg})
 
-def _diplay_Scheda(request, record_id='', msg=''):
-    cli = clienti.select_record(models.Cliente.objects, int(record_id))
-    bol = clienti.select_bollini(cli)
-    intr = clienti.select_interventi(cli)
-    bollini_history = len(bol)
-    interventi_history = len(intr)
+def _diplay_Scheda(request, record_id, msg=''):
+    cliente = clienti.select_record(models.Cliente.objects, record_id)
+    bollini = clienti.select_bollini(cliente)
+    interventi = clienti.select_interventi(cliente)
 
+    bollini_history = len(bollini)
     if bollini_history >= 1:
-        bol = bol[0]
+        bollini = bollini[0]
+
+    interventi_history = len(interventi)
     if interventi_history >= 1:
-        intr = intr[0]
+        interventi = interventi[0]
 
     return render(request, 'anagrafe_scheda.sub',
-    {'top_msg':msg,
-     'cliente': cli,
-     'bollino': bol,
-     'intervento': intr,
-     'history_bollini_len': bollini_history,
-     'history_interventi_len': interventi_history,
-    })
+                    {'top_msg':msg,
+                     'cliente': cliente,
+                     'bollino': bollini,
+                     'intervento': interventi,
+                     'interventi_history': interventi_history,
+                     'bollini_history': bollini_history,
+                    })
+
+def detail_bollini(request, record_id, msg=''):
+    cliente = clienti.select_record(models.Cliente.objects, record_id)
+    bollini = clienti.select_bollini(cliente)
+    print "qui..", bollini
+    return render(request, 'anagrafe_scheda_bollini.sub',
+                    {'top_msg':msg,
+                     'cliente': cliente,
+                     'bollini': bollini,
+                    })
+
+def detail_interventi(request, record_id, msg=''):
+    cliente = clienti.select_record(models.Cliente.objects, record_id)
+    interventi = clienti.select_interventi(cliente)
+    return render(request, 'anagrafe_scheda_interventi.sub',
+                    {'top_msg':msg,
+                     'cliente': cliente,
+                     'interventi': interventi,
+                    })
+
 
 def detail_record(request, record_id):
     if record_id == "":

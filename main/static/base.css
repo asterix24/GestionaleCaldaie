@@ -96,6 +96,13 @@ em {
     color:#ffffff;
 }
 
+#customers_detail td.h_div
+{
+    font-size:1em;
+    background-color:#808000;
+    color:#ffffff;
+}
+
 #header
 {
     background: #ccc;

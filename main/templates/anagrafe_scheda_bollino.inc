@@ -1,8 +1,3 @@
-
-<tr>
-    <td class="hdr">Storico</td>
-    <td><a href="">{{ history_bollini_len }}</a></td>
-</tr>
 <tr>
     <td class="hdr">Data</td>
     <td>{{ bollino.data|date:"d/m/Y"}}</td>
