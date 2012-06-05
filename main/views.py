@@ -19,6 +19,22 @@ def _diplay_ok(request, msg):
         { 'msg_hdr':'Ok!',
           'msg_body': msg})
 
+
+def _detail_select(request, record_id, msg='', _type="interventi"):
+    cliente = clienti.select_record(models.Cliente.objects, record_id)
+
+    if _type == "interventi":
+        data_to_render = clienti.select_interventi(cliente)
+    elif _type == "bollini":
+        data_to_render = clienti.select_bollini(cliente)
+    else:
+        return _diplay_error(request, "Detail non sensato..")
+
+    return render(request, 'anagrafe_scheda_' + _type + '.sub',
+                    {'top_msg':msg,
+                     'cliente': cliente,
+                     _type: data_to_render})
+
 def _diplay_Scheda(request, record_id, msg=''):
     cliente = clienti.select_record(models.Cliente.objects, record_id)
     bollini = clienti.select_bollini(cliente)
@@ -41,31 +57,14 @@ def _diplay_Scheda(request, record_id, msg=''):
                      'bollini_history': bollini_history,
                     })
 
-def detail_bollini(request, record_id, msg=''):
-    cliente = clienti.select_record(models.Cliente.objects, record_id)
-    bollini = clienti.select_bollini(cliente)
-    print "qui..", bollini
-    return render(request, 'anagrafe_scheda_bollini.sub',
-                    {'top_msg':msg,
-                     'cliente': cliente,
-                     'bollini': bollini,
-                    })
-
-def detail_interventi(request, record_id, msg=''):
-    cliente = clienti.select_record(models.Cliente.objects, record_id)
-    interventi = clienti.select_interventi(cliente)
-    return render(request, 'anagrafe_scheda_interventi.sub',
-                    {'top_msg':msg,
-                     'cliente': cliente,
-                     'interventi': interventi,
-                    })
-
-
-def detail_record(request, record_id):
+def detail_record(request, record_id, detail_type = None):
     if record_id == "":
         _diplay_error(request, "Id non trovato.")
 
-    return _diplay_Scheda(request, record_id)
+    if detail_type == "detail":
+        return _diplay_Scheda(request, record_id)
+    else:
+        return _detail_select(request, record_id, '', detail_type)
 
 def edit_record(request, record_id):
     if request.method == 'GET':

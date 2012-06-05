@@ -61,8 +61,8 @@
 <tr {% cycle '' 'class="alt"' %} >
     <td>{{cliente.codice_id}}</td>
     <td>{{cliente.codice_impianto}}</td>
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/">{{cliente.nome}}</a></td>
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/">{{cliente.cognome}}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/detail">{{cliente.nome}}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/detail">{{cliente.cognome}}</a></td>
     <td>{{cliente.codice_fiscale}}</td>
     <td>{{cliente.via}}</td>
     <td>{{cliente.citta}}</td>
