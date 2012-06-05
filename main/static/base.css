@@ -99,6 +99,7 @@ em {
 #customers_detail td.h_div
 {
     font-size:1em;
+    text-align:center;
     background-color:#808000;
     color:#ffffff;
 }

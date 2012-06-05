@@ -33,9 +33,9 @@
 <table id="customers_detail">
 <tr><th></th><th>Interventi</th></tr>
 {% for intervento in interventi %}
+    <td class="h_div">{{forloop.counter}}</td>
+    <td class="h_div">&ensp;</td>
     {% include "anagrafe_scheda_intervento.inc" %}
-    <td class="h_div">&ensp;</td>
-    <td class="h_div">&ensp;</td>
 {% empty %}
 <tr>
     <td class="hdr">Note</td>
