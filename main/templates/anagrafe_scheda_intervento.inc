@@ -20,4 +20,12 @@
     <td class="hdr">Scade il</td>
     <td>{{ intervento.data_scadenza|date:"d/m/Y" }}</td>
 </tr>
+<tr>
+    <td class="hdr">Stato</td>
+    {% if intervento.is_elapse %}
+    <td>Valido</td>
+    {% else %}
+    <td>Scaduto</td>
+    {% endif %}
+</tr>
 {% endif %}

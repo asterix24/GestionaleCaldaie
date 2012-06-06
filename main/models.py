@@ -2,6 +2,11 @@ from django.db import models
 from django.forms import ModelForm
 import datetime
 
+@property
+def is_elapse(self):
+    if self.data_scadenza < datetime.date.today():
+        return False
+    return True
 
 MODELS_EMPTY_STRING="-"
 
