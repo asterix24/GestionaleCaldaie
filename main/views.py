@@ -111,6 +111,22 @@ def new_record(request):
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
+def new_intervento(request, record_id):
+    if request.method == 'GET':
+        form = models.InterventoForm()
+        form.cliente = clienti.select_record(models.Cliente.objects, record_id)
+        return render(request, 'intervetno_mgr.sub', {'action': 'Nuovo', 'cliente': form})
+
+    if request.method == 'POST':
+        form = models.InterventoForm(request.POST)
+        if form.is_valid():
+            istance = form.save()
+            return _diplay_Scheda(request, istance.id, s)
+        else:
+            return render(request, 'intervetno_mgr.sub', {'action': 'Nuovo', 'cliente': form})
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
+
 def delete_record(request, record_id):
     try:
         if request.method == 'GET':

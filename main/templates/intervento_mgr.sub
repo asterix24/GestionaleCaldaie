@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block navigation_search_block_top %}
+<li><a href="javascript:history.back()">Indietro</a></li>
+{% endblock %}
+
+{% block navigation_search_block_bot %}
+<li><a href="javascript:history.back()">Indietro</a></li>
+{% endblock %}
+
+{% block center_block %}
+
+<form action="{% url anagrafe %}{{record_id}}/new/interveto/" method="post">{% csrf_token %}
+
+<table id="customers_detail">
+<tr><th></th><th>{{action}} Intervento</th></tr>
+{% for form in cliente %}
+<tr>
+    <td class="hdr">{{ form.label }}</td>
+    <td>{{form}}{{form.errors}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<input class=navigation_buttons type="submit" value="Salva"/>
+</form>
+
+<form action="{% url anagrafe %}{{record_id}}/" method="post">{% csrf_token %}
+<input class=navigation_buttons type="submit" value="Annulla"/>
+</form>
+
+{% endblock %}
