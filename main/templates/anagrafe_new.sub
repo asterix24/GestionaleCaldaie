@@ -16,15 +16,15 @@
 {% endblock %}
 
 {% block center_block %}
+
 {% if action == "Modifica" %}
 <form action="{% url anagrafe %}{{record_id}}/edit/" method="post">{% csrf_token %}
 {% else %}
 <form action="{% url anagrafe %}new/" method="post">{% csrf_token %}
 {% endif %}
+
 <table id="customers_detail">
-<tr>
-    <th></th><th>{{action}} Cliente</th>
-</tr>
+<tr><th></th><th>{{action}} Cliente</th></tr>
 {% for form in cliente %}
 <tr>
     <td class="hdr">{{ form.label }}</td>
@@ -32,9 +32,12 @@
 </tr>
 {% endfor %}
 </table>
+
 <input class=navigation_buttons type="submit" value="Salva"/>
 </form>
+
 <form action="{% url anagrafe %}{{record_id}}/" method="post">{% csrf_token %}
 <input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
+
 {% endblock %}
