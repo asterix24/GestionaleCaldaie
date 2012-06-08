@@ -33,7 +33,7 @@ class Cliente(models.Model):
         ordering = ['cognome']
 
     def __unicode__(self):
-        return ("%s: %s") % (self.cognome, self.citta)
+        return ("%s, %s: %s") % (self.nome, self.cognome, self.citta)
 
 class ClienteForm(ModelForm):
     class Meta:
@@ -55,6 +55,10 @@ class Intervento(models.Model):
     def __unicode__(self):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
 
+class InterventoForm(ModelForm):
+    class Meta:
+        model = Intervento
+
 class Bollino(models.Model):
     presente = models.BooleanField()
     data = models.DateField(default=datetime.date.today(),null=True, blank=True)
@@ -70,3 +74,7 @@ class Bollino(models.Model):
 
     def __unicode__(self):
         return ("%s: %s") %  (self.presente, self.data.__str__())
+
+class BollinoForm(ModelForm):
+    class Meta:
+        model = Bollino
