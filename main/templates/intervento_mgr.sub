@@ -9,23 +9,29 @@
 {% endblock %}
 
 {% block center_block %}
-
-<form action="{% url anagrafe %}{{record_id}}/new/interveto/" method="post">{% csrf_token %}
-
+{% if record_id != None %}
+<form action="{% url anagrafe %}{{record_id}}/new/intervento/" method="post">{% csrf_token %}
+{% else %}
+<form action="{% url anagrafe %}new/intervento/" method="post">{% csrf_token %}
+{% endif %}
 <table id="customers_detail">
 <tr><th></th><th>{{action}} Intervento</th></tr>
-{% for form in cliente %}
+
+{% for form in intervento %}
 <tr>
     <td class="hdr">{{ form.label }}</td>
     <td>{{form}}{{form.errors}}</td>
 </tr>
 {% endfor %}
-</table>
 
+</table>
 <input class=navigation_buttons type="submit" value="Salva"/>
 </form>
-
+{% if record_id != None %}
 <form action="{% url anagrafe %}{{record_id}}/" method="post">{% csrf_token %}
+{% else %}
+<form action="{% url anagrafe %}" method="post">{% csrf_token %}
+{% endif %}
 <input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
 

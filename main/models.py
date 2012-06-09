@@ -1,5 +1,5 @@
 from django.db import models
-from django.forms import ModelForm
+from django import forms
 import datetime
 
 @property
@@ -33,9 +33,9 @@ class Cliente(models.Model):
         ordering = ['cognome']
 
     def __unicode__(self):
-        return ("%s, %s: %s") % (self.nome, self.cognome, self.citta)
+        return ("%s, %s: %s") % (self.cognome, self.nome, self.citta)
 
-class ClienteForm(ModelForm):
+class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
 
@@ -55,9 +55,11 @@ class Intervento(models.Model):
     def __unicode__(self):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
 
-class InterventoForm(ModelForm):
+class InterventoForm(forms.ModelForm):
+    tipo = forms.CharField(label='Motivo dell\'intevento')
     class Meta:
         model = Intervento
+        exclude = ('scadenza')
 
 class Bollino(models.Model):
     presente = models.BooleanField()
@@ -75,6 +77,6 @@ class Bollino(models.Model):
     def __unicode__(self):
         return ("%s: %s") %  (self.presente, self.data.__str__())
 
-class BollinoForm(ModelForm):
+class BollinoForm(forms.ModelForm):
     class Meta:
         model = Bollino

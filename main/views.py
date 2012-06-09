@@ -115,15 +115,23 @@ def new_intervento(request, record_id = None):
     if request.method == 'GET':
         if record_id is None:
             form = models.InterventoForm()
-            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo', 'cliente': form})
+            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+                                                          'intervento': form,
+                                                          'record_id': record_id })
 
     if request.method == 'POST':
-        form = models.InterventoForm(request.POST)
-        if form.is_valid():
-            istance = form.save()
-            return _diplay_scheda(request, istance.id, s)
-        else:
-            return render(request, 'intervetno_mgr.sub', {'action': 'Nuovo', 'cliente': form})
+        if record_id is None:
+            form = models.InterventoForm(request.POST)
+            if form.is_valid():
+                record_id = form.cleaned_data['cliente'].id
+                s = ("Intervento \"%s\" del %s e' stato aggiunto correttamente." %
+                     (form.cleaned_data['tipo'], form.cleaned_data['data'].strftime("%d/%m/%y")))
+                istance = form.save()
+                return _diplay_scheda(request, record_id, s)
+            else:
+                return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+                                                              'intervento': form,
+                                                              'record_id': record_id})
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
