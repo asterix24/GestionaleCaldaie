@@ -16,6 +16,8 @@
 <ul>
 <li><a href="{% url home %}">Home</a></li>
 <li><a href="/anagrafe/">Anagrafe</a></li>
+<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
+<li><a href="/anagrafe/new/intervento/">Nuovo Intervento</a></li>
 {% block navigation_menu_block_top %}
 {% endblock %}
 </ul>
@@ -33,17 +35,19 @@
 {% endblock %}
 </div>
 
-
-
 <div id="navigation_search">
+<ul>
 {% block navigation_search_block_bot %}
 {% endblock %}
+</ul>
 </div>
 
 <div id="navigation">
 <ul>
-<li><a href="#">Home</a></li>
+<li><a href="{% url home %}">Home</a></li>
 <li><a href="/anagrafe/">Anagrafe</a></li>
+<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
+<li><a href="/anagrafe/new/intervento/">Nuovo Intervento</a></li>
 {% block navigation_menu_block_bot %}
 {% endblock %}
 </ul>

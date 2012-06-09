@@ -35,7 +35,7 @@ def _detail_select(request, record_id, msg='', _type="interventi"):
                      'cliente': cliente,
                      _type: data_to_render})
 
-def _diplay_Scheda(request, record_id, msg=''):
+def _diplay_scheda(request, record_id, msg=''):
     cliente = clienti.select_record(models.Cliente.objects, record_id)
     bollini = clienti.select_bollini(cliente)
     interventi = clienti.select_interventi(cliente)
@@ -62,7 +62,7 @@ def detail_record(request, record_id, detail_type = None):
         _diplay_error(request, "Id non trovato.")
 
     if detail_type == "detail":
-        return _diplay_Scheda(request, record_id)
+        return _diplay_scheda(request, record_id)
     else:
         return _detail_select(request, record_id, '', detail_type)
 
@@ -86,7 +86,7 @@ def edit_record(request, record_id):
 
             if form.is_valid():
                 form.save()
-                return _diplay_Scheda(request, record_id)
+                return _diplay_scheda(request, record_id)
             else:
                 return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
                                                         'record_id': record_id,
@@ -104,24 +104,24 @@ def new_record(request):
         if form.is_valid():
             istance = form.save()
             s = "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome'))
-            return _diplay_Scheda(request, istance.id, s)
+            return _diplay_scheda(request, istance.id, s)
         else:
             return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
                                                     'cliente': form})
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
-def new_intervento(request, record_id):
+def new_intervento(request, record_id = None):
     if request.method == 'GET':
-        form = models.InterventoForm()
-        form.cliente = clienti.select_record(models.Cliente.objects, record_id)
-        return render(request, 'intervetno_mgr.sub', {'action': 'Nuovo', 'cliente': form})
+        if record_id is None:
+            form = models.InterventoForm()
+            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo', 'cliente': form})
 
     if request.method == 'POST':
         form = models.InterventoForm(request.POST)
         if form.is_valid():
             istance = form.save()
-            return _diplay_Scheda(request, istance.id, s)
+            return _diplay_scheda(request, istance.id, s)
         else:
             return render(request, 'intervetno_mgr.sub', {'action': 'Nuovo', 'cliente': form})
 

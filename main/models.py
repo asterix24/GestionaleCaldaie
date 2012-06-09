@@ -42,12 +42,12 @@ class ClienteForm(ModelForm):
 
 class Intervento(models.Model):
     data = models.DateField(default=datetime.date.today())
+    cliente = models.ForeignKey(Cliente)
     tipo = models.CharField(default=MODELS_EMPTY_STRING,max_length=80, null=True, blank=True)
-    note = models.TextField(null=True, blank=True)
     numero_rapporto = models.IntegerField(null=True, blank=True)
     scadenza = models.BooleanField(default=False) # Se l'intervento puo' scadere
     data_scadenza = models.DateField(null=True, blank=True)
-    cliente = models.ForeignKey(Cliente)
+    note = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ['-data'] # Ordina per data in modo decrescente

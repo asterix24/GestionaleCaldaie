@@ -13,14 +13,6 @@
 {% block navigation_search_block_bot %}
 {% endblock %}
 
-{% block navigation_menu_block_top %}
-<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
-{% endblock %}
-
-{% block navigation_menu_block_bot %}
-<li><a href="/anagrafe/new/">Nuovo Cliente</a></li>
-{% endblock %}
-
 {% block center_block %}
 
 {%if top_msg != "" %}<h1>{{top_msg}}</h1>{% endif %}
