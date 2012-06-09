@@ -126,7 +126,7 @@ def new_intervento(request, record_id = None):
                 record_id = form.cleaned_data['cliente'].id
                 s = ("Intervento \"%s\" del %s e' stato aggiunto correttamente." %
                      (form.cleaned_data['tipo'], form.cleaned_data['data'].strftime("%d/%m/%y")))
-                istance = form.save()
+                form.save()
                 return _diplay_scheda(request, record_id, s)
             else:
                 return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',

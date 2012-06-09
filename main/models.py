@@ -39,12 +39,19 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
 
+INTERVENTI_CHOICES = (
+    ('ordinaria', 'Manutenzione Ordinaria'),
+    ('straordinaria', 'Manutenzione Straordinaria'),
+    ('programmata', 'Manutenzione Programmata'),
+    ('combustione', 'Verifica combustione'),
+    ('none', 'Altro..'),
+)
 
 class Intervento(models.Model):
     data = models.DateField(default=datetime.date.today())
     cliente = models.ForeignKey(Cliente)
-    tipo = models.CharField(default=MODELS_EMPTY_STRING,max_length=80, null=True, blank=True)
-    numero_rapporto = models.IntegerField(null=True, blank=True)
+    tipo = models.CharField(default=MODELS_EMPTY_STRING, max_length=80, null=True, blank=True)
+    numero_rapporto = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
     scadenza = models.BooleanField(default=False) # Se l'intervento puo' scadere
     data_scadenza = models.DateField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
@@ -56,10 +63,26 @@ class Intervento(models.Model):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
 
 class InterventoForm(forms.ModelForm):
-    tipo = forms.CharField(label='Motivo dell\'intevento')
+    tipo = forms.CharField(label='Motivo dell\'intevento', widget=forms.Select(choices=INTERVENTI_CHOICES))
+    altro = forms.CharField(label='Altro tipo di intervento',max_length=100, required=False)
+
+    def clean(self):
+        cleaned_data = super(forms.ModelForm, self).clean()
+        _tipo = cleaned_data.get("tipo")
+        _altro = cleaned_data.get("altro")
+        if _tipo == 'none':
+            if _altro == '':
+                self._errors["altro"] = self.error_class(["Specificare un altro tipo di intervento."])
+                del cleaned_data["altro"]
+
+            cleaned_data["tipo"] = _altro
+
+        return cleaned_data
+
     class Meta:
         model = Intervento
         exclude = ('scadenza')
+        fields = ('data', 'cliente', 'tipo', 'altro', 'numero_rapporto', 'data_scadenza', 'note')
 
 class Bollino(models.Model):
     presente = models.BooleanField()
