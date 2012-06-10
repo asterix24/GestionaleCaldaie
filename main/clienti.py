@@ -5,7 +5,7 @@ import string
 
 from tools import *
 from django.db.models import Q
- 
+
 from models import Cliente
 from models import Intervento
 from models import Bollino
@@ -58,19 +58,21 @@ def insert_intervento(cli, interv):
 #    dump(interv)
     node.save()
     return node
-    
+
 def insert_bollino(cli, bl):
     node = Bollino(cliente=cli, **bl)
  #   dump(bl)
     node.save()
-    return node        
-        
+    return node
+
 def select_bollini(cli):
     return cli.bollino_set.values()
 
-def select_interventi(cli):
-    return cli.intervento_set.values()
-        
+def select_interventi(ctx, id = None):
+    if id is None:
+        return ctx.intervento_set.values()
+    return ctx.get(pk=id)
+
 def insert_clientiBollini(all):
     for i in all:
         cli = insert_cliente(i[0])
@@ -91,7 +93,7 @@ def search_fullText(ctx, s):
     if "pk:" in s:
         _, pk = s.strip().split(":")
         return [select_record(ctx, pk)]
-        
+
     if "citta:" in s:
         _, citta = s.strip().split(":")
         return ctx.filter(Q(citta__icontains = citta))
@@ -101,12 +103,12 @@ def search_fullText(ctx, s):
         search_key = s.strip().split(" ")
     else:
         search_key.append(s.strip())
-    
+
     for key in search_key:
         if len(key) >= 3:
-            result = ctx.filter(Q(codice_impianto__icontains = key) | 
+            result = ctx.filter(Q(codice_impianto__icontains = key) |
                            Q(codice_id__icontains = key)|
-                           Q(numero_telefono__icontains = key) | 
+                           Q(numero_telefono__icontains = key) |
                            Q(numero_cellulare__icontains = key) |
                            Q(nome__icontains = key) |
                            Q(cognome__icontains = key) |
@@ -120,8 +122,8 @@ def search_fullText(ctx, s):
         else:
             if key[0] in string.letters:
                 result = ctx.filter(Q(nome__istartswith = key) |
-                               Q(cognome__istartswith = key) |                       
+                               Q(cognome__istartswith = key) |
                                Q(citta__istartswith = key))
-        ctx = result        
+        ctx = result
 
     return result

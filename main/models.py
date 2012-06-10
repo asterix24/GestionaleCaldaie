@@ -47,6 +47,12 @@ INTERVENTI_CHOICES = (
     ('none', 'Altro..'),
 )
 
+def interventi_choicesExteded(key):
+    for k, t in INTERVENTI_CHOICES:
+        if k == key:
+            return t
+    return key
+
 class Intervento(models.Model):
     data = models.DateField(default=datetime.date.today())
     cliente = models.ForeignKey(Cliente)
@@ -95,7 +101,7 @@ class Bollino(models.Model):
     cliente = models.ForeignKey(Cliente)
 
     class Meta:
-        ordering = ['presente']
+        ordering = ['-data']
 
     def __unicode__(self):
         return ("%s: %s") %  (self.presente, self.data.__str__())

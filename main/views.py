@@ -111,30 +111,6 @@ def new_record(request):
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
-def new_intervento(request, record_id = None):
-    if request.method == 'GET':
-        if record_id is None:
-            form = models.InterventoForm()
-            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
-                                                          'intervento': form,
-                                                          'record_id': record_id })
-
-    if request.method == 'POST':
-        if record_id is None:
-            form = models.InterventoForm(request.POST)
-            if form.is_valid():
-                record_id = form.cleaned_data['cliente'].id
-                s = ("Intervento \"%s\" del %s e' stato aggiunto correttamente." %
-                     (form.cleaned_data['tipo'], form.cleaned_data['data'].strftime("%d/%m/%y")))
-                form.save()
-                return _diplay_scheda(request, record_id, s)
-            else:
-                return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
-                                                              'intervento': form,
-                                                              'record_id': record_id})
-
-    return _diplay_error(request, "Qualcosa e' andato storto..")
-
 def delete_record(request, record_id):
     try:
         if request.method == 'GET':
@@ -153,6 +129,87 @@ def delete_record(request, record_id):
         return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
+
+def new_intervento(request, record_id = None):
+    if request.method == 'GET':
+        if record_id is None:
+            form = models.InterventoForm()
+        else:
+            form = models.InterventoForm(initial={'cliente': clienti.select_record(models.Cliente.objects, record_id)})
+
+        return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+                                                      'intervento': form,
+                                                      'record_id': record_id })
+
+    if request.method == 'POST':
+        form = models.InterventoForm(request.POST)
+        if form.is_valid():
+            record_id = form.cleaned_data['cliente'].id
+            form.save()
+            return _diplay_scheda(request, record_id, "L'intervento \"%s\" del %s e' stato aggiunto correttamente." %
+                            (models.interventi_choicesExteded(form.cleaned_data['tipo']), form.cleaned_data['data'].strftime("%d/%m/%y")))
+        else:
+            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+                                                          'intervento': form,
+                                                          'record_id': record_id})
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
+
+def edit_intervento(request, record_id, intervento_id = None):
+    if request.method == 'GET':
+        if intervento_id is not None:
+            form = models.InterventoForm(instance = clienti.select_interventi(models.Intervento.objects, intervento_id))
+        else:
+            form = models.InterventoForm()
+
+        return render(request, 'intervento_mgr.sub', {'action': 'Modifica',
+                                                      'intervento': form,
+                                                      'record_id': record_id,
+                                                      'intervento_id': intervento_id})
+
+    if request.method == 'POST':
+        if intervento_id is not None:
+            print "qui..", intervento_id
+            form = models.InterventoForm(request.POST, instance=clienti.select_interventi(models.Intervento.objects, intervento_id))
+        else:
+            form = models.InterventoForm(request.POST)
+
+        if form.is_valid():
+            record_id = form.cleaned_data['cliente'].id
+            form.save()
+            return _diplay_scheda(request, record_id, "L'intervento del %s e' stato modificato correttamente." %
+                                                                form.cleaned_data['data'].strftime("%d/%m/%y"))
+        else:
+            return render(request, 'intervento_mgr.sub', {'action': 'Modifica',
+                                                          'intervento': form,
+                                                          'record_id': record_id,
+                                                          'intervento_id': intervento_id})
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
+
+def delete_intervento(request, record_id, intervento_id = None):
+    try:
+        if request.method == 'GET':
+            return render(request, 'intervento_delete.sub', {'action': 'Modifica',
+                                                             'intervento': clienti.select_interventi(models.Intervento.objects, intervento_id),
+                                                             'record_id': record_id,
+                                                             'intervento_id': intervento_id})
+        if request.method == 'POST':
+            inter = clienti.select_interventi(models.Intervento.objects, intervento_id)
+            try:
+                data = inter.data.strftime("%d/%m/%y")
+            except ValueError:
+                data = ""
+
+            tipo = models.interventi_choicesExteded(inter.tipo)
+            inter.delete()
+            return _diplay_scheda(request, record_id, "Intervento \"%s\" del %s, Rimosso correttamente." % (tipo, data))
+
+    except ObjectDoesNotExist, m:
+        return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
+
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()

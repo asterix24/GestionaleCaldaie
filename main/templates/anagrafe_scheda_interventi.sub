@@ -2,12 +2,8 @@
 
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a></li>
-<li><a href="{% url anagrafe %}">Aggiungi Intervento</a></li>
-<li><a href="{% url anagrafe %}">Modifica Intervento</a></li>
-<li><a href="{% url anagrafe %}">Aggiungi Bollino</a></li>
-<li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/new/intervento/">Aggiungi Intervento</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/intervento/">Modifica Intervento</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -26,7 +22,10 @@
 <tr><th></th><th>Interventi</th></tr>
 {% for intervento in interventi %}
     <td class="h_div">{{forloop.counter}}</td>
-    <td class="h_div">&ensp;</td>
+    <td class="h_div">
+        <a href="{% url anagrafe %}{{cliente.pk}}/edit/intervento/{{intervento.id}}">Modifica</a>
+        <a href="{% url anagrafe %}{{cliente.pk}}/delete/intervento/{{intervento.id}}">Cancella</a>
+    </td>
     {% include "anagrafe_scheda_intervento.inc" %}
 {% empty %}
 <tr>

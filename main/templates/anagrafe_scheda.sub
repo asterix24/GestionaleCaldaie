@@ -3,9 +3,12 @@
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
 <li><a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a></li>
-<li><a href="{% url anagrafe %}">Nuovo Intervento</a></li>
-<li><a href="{% url anagrafe %}">Modifica Intervento</a></li>
-<li><a href="{% url anagrafe %}">Nuovo Bollino</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/new/intervento/">Aggiungi Intervento</a></li>
+{% if interventi_history %}
+<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/intervento/{{intervento.id}}/">Modifica Intervento</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/intervento/{{intervento.id}}/">Cancella Intervento</a></li>
+{% endif %}
+<li><a href="{% url anagrafe %}">Aggiungi Bollino</a></li>
 <li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
 <li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
 {% endblock %}
@@ -47,7 +50,7 @@
 {% if interventi_history %}
 <tr>
     <td class="hdr">Storico</td>
-     {% if interventi_history > 1 %}
+    {% if interventi_history > 1 %}
     <td><a href="{% url anagrafe %}{{cliente.pk}}/interventi">{{ interventi_history }}</a></td>
     {% else %}
     <td>{{ interventi_history }}</td>

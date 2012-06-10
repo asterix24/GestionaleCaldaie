@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^anagrafe/(?P<record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
     url(r'^anagrafe/(?P<record_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
     url(r'^anagrafe/(?P<record_id>\d+)/new/intervento/$', 'main.views.new_intervento', name='new_intervento'),
+    url(r'^anagrafe/(?P<record_id>\d+)/edit/intervento/(?P<intervento_id>\d+)/$', 'main.views.edit_intervento', name='edit_intervento'),
+    url(r'^anagrafe/(?P<record_id>\d+)/delete/intervento/(?P<intervento_id>\d+)/$', 'main.views.delete_intervento', name='delete_intervento'),
     url(r'^anagrafe/(?P<record_id>\d+)/(?P<detail_type>\w+)/$', 'main.views.detail_record', name='detail_record'),
 
     # url(r'^GestionaleCaldaie/', include('GestionaleCaldaie.foo.urls')),
