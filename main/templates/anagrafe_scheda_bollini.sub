@@ -2,12 +2,9 @@
 
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a></li>
-<li><a href="{% url anagrafe %}">Nuovo Intervento</a></li>
-<li><a href="{% url anagrafe %}">Modifica Intervento</a></li>
-<li><a href="{% url anagrafe %}">Nuovo Bollino</a></li>
-<li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/new/bollino/">Aggiungi Bollino</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/bollino/">Modifica Bollino</a></li>
+
 {% endblock %}
 
 {% block navigation_search_block_bot %}

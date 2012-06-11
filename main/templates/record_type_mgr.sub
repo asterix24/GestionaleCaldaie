@@ -19,10 +19,10 @@
 <table id="customers_detail">
 <tr><th></th><th>{{action}} {{record_type}}</th></tr>
 
-{% for form in intervento %}
+{% for item in form %}
 <tr>
-    <td class="hdr">{{ form.label }}</td>
-    <td>{{form}}{{form.errors}}</td>
+    <td class="hdr">{{ item.label }}</td>
+    <td>{{item}}{{item.errors}}</td>
 </tr>
 {% endfor %}
 

@@ -138,7 +138,7 @@ def edit_intervento(request, record_id, intervento_id = None):
         else:
             form = models.InterventoForm()
 
-        return render(request, 'intervento_mgr.sub', {'action': 'Modifica',
+        return render(request, 'record_type_mgr.sub', {'action': 'Modifica',
                                                       'intervento': form,
                                                       'record_id': record_id,
                                                       'intervento_id': intervento_id})
@@ -156,7 +156,7 @@ def edit_intervento(request, record_id, intervento_id = None):
             return _diplay_scheda(request, record_id, "L'intervento del %s e' stato modificato correttamente." %
                                                                 form.cleaned_data['data'].strftime("%d/%m/%y"))
         else:
-            return render(request, 'intervento_mgr.sub', {'action': 'Modifica',
+            return render(request, 'record_type_mgr.sub', {'action': 'Modifica',
                                                           'intervento': form,
                                                           'record_id': record_id,
                                                           'intervento_id': intervento_id})
@@ -205,8 +205,8 @@ def new_typeRecord(request, record_id = None, record_type = None):
                 form = models.BollinoForm(initial={'cliente': clienti.select_record(models.Cliente.objects, record_id)})
 
         # TODO: cambiare il nome..
-        return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
-                                                      'intervento': form,
+        return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
+                                                      'form': form,
                                                       'record_id': record_id,
                                                       'record_type': record_type })
 
@@ -227,8 +227,8 @@ def new_typeRecord(request, record_id = None, record_type = None):
             return _diplay_scheda(request, record_id, s)
         else:
             # TODO: cambiare il nome..
-            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
-                                                          'intervento': form,
+            return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
+                                                          'form': form,
                                                           'record_id': record_id,
                                                           'record_type': record_type })
 
@@ -241,7 +241,7 @@ def new_intervento(request, record_id = None):
         else:
             form = models.InterventoForm(initial={'cliente': clienti.select_record(models.Cliente.objects, record_id)})
 
-        return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+        return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
                                                       'intervento': form,
                                                       'record_id': record_id })
 
@@ -253,7 +253,7 @@ def new_intervento(request, record_id = None):
             return _diplay_scheda(request, record_id, "L'intervento \"%s\" del %s e' stato aggiunto correttamente." %
                             (models.interventi_choicesExteded(form.cleaned_data['tipo']), form.cleaned_data['data'].strftime("%d/%m/%y")))
         else:
-            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+            return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
                                                           'intervento': form,
                                                           'record_id': record_id})
 
@@ -266,7 +266,7 @@ def new_bollino(request, record_id = None):
         else:
             form = models.BollinoForm(initial={'cliente': clienti.select_record(models.Cliente.objects, record_id)})
 
-        return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+        return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
                                                     'intervento': form,
                                                     'record_id': record_id })
 
@@ -278,7 +278,7 @@ def new_bollino(request, record_id = None):
             return _diplay_scheda(request, record_id, "L'bollino \"%s\" del %s e' stato aggiunto correttamente." %
                             (models.interventi_choicesExteded(form.cleaned_data['tipo']), form.cleaned_data['data'].strftime("%d/%m/%y")))
         else:
-            return render(request, 'intervento_mgr.sub', {'action': 'Nuovo',
+            return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
                                                           'intervento': form,
                                                           'record_id': record_id})
 
@@ -291,7 +291,7 @@ def edit_bollino(request, record_id, bollino_id = None):
         else:
             form = models.BollinoForm()
 
-        return render(request, 'intervento_mgr.sub', {'action': 'Modifica',
+        return render(request, 'record_type_mgr.sub', {'action': 'Modifica',
                                                       'intervento': form,
                                                       'record_id': record_id,
                                                       'intervento_id': bollino_id})
