@@ -9,15 +9,19 @@
 {% endblock %}
 
 {% block center_block %}
-<form action="{% url anagrafe %}{{record_id}}/delete/intervento/{{intervento_id}}/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}{{record_id}}/delete/{{record_type}}/{{record_type_id}}/" method="post">{% csrf_token %}
 <table id="customers_detail">
-<tr><th></th><th>{{action}} Intervento</th></tr>
+<tr><th></th><th>{{action}} {{record_type}}</th></tr>
+{% if record_type == "intervento" %}
 {% include "anagrafe_scheda_intervento.inc" %}
+{% else %}
+{% include "anagrafe_scheda_bollino.inc" %}
+{% endif %}
 </table>
 <input class=navigation_buttons type="submit" value="Cancella"/>
 </form>
 
-<form action="{% url anagrafe %}{{record_id}}/interventi/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}{{record_id}}/{{record_type}}/" method="post">{% csrf_token %}
 <input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
 

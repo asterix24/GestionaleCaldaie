@@ -65,12 +65,16 @@ def insert_bollino(cli, bl):
     node.save()
     return node
 
-def select_bollini(cli):
-    return cli.bollino_set.values()
+def select_bollini(ctx, id = None):
+    if id is None:
+        return ctx.bollino_set.values()
+
+    return ctx.get(pk=id)
 
 def select_interventi(ctx, id = None):
     if id is None:
         return ctx.intervento_set.values()
+
     return ctx.get(pk=id)
 
 def insert_clientiBollini(all):

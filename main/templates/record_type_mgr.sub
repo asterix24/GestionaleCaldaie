@@ -9,10 +9,10 @@
 {% endblock %}
 
 {% block center_block %}
-{% if record_id != None and intervento_id == None %}
+{% if record_id != None and record_type_id == None %}
 <form action="{% url anagrafe %}{{record_id}}/new/{{record_type}}/" method="post">{% csrf_token %}
-{% elif intervento_id != None %}
-<form action="{% url anagrafe %}{{record_id}}/edit/{{record_type}}/{{intervento_id}}/" method="post">{% csrf_token %}
+{% elif record_type_id != None %}
+<form action="{% url anagrafe %}{{record_id}}/edit/{{record_type}}/{{record_type_id}}/" method="post">{% csrf_token %}
 {% else %}
 <form action="{% url anagrafe %}new/{{record_type}}/" method="post">{% csrf_token %}
 {% endif %}

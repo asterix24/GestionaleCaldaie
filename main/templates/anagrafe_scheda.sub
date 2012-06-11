@@ -11,8 +11,9 @@
 <li><a href="{% url anagrafe %}{{cliente.pk}}/new/bollino/">Aggiungi Bollino</a></li>
 {% if bollini_history %}
 <li><a href="{% url anagrafe %}{{cliente.pk}}/edit/bollino/{{bollino.id}}/">Modifica Bollino</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/bollino/{{bollino.id}}/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/bollino/{{bollino.id}}/">Cancella Bollino</a></li>
 {% endif %}
+<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
