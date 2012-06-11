@@ -10,14 +10,14 @@
 
 {% block center_block %}
 {% if record_id != None and intervento_id == None %}
-<form action="{% url anagrafe %}{{record_id}}/new/intervento/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}{{record_id}}/new/{{record_type}}/" method="post">{% csrf_token %}
 {% elif intervento_id != None %}
-<form action="{% url anagrafe %}{{record_id}}/edit/intervento/{{intervento_id}}/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}{{record_id}}/edit/{{record_type}}/{{intervento_id}}/" method="post">{% csrf_token %}
 {% else %}
-<form action="{% url anagrafe %}new/intervento/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}new/{{record_type}}/" method="post">{% csrf_token %}
 {% endif %}
 <table id="customers_detail">
-<tr><th></th><th>{{action}} Intervento</th></tr>
+<tr><th></th><th>{{action}} {{record_type}}</th></tr>
 
 {% for form in intervento %}
 <tr>
@@ -30,7 +30,7 @@
 <input class=navigation_buttons type="submit" value="Salva"/>
 </form>
 {% if record_id != None %}
-<form action="{% url anagrafe %}{{record_id}}/interventi/" method="post">{% csrf_token %}
+<form action="{% url anagrafe %}{{record_id}}/{{record_type}}/" method="post">{% csrf_token %}
 {% else %}
 <form action="{% url anagrafe %}" method="post">{% csrf_token %}
 {% endif %}

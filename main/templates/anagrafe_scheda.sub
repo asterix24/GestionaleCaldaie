@@ -8,9 +8,11 @@
 <li><a href="{% url anagrafe %}{{cliente.pk}}/edit/intervento/{{intervento.id}}/">Modifica Intervento</a></li>
 <li><a href="{% url anagrafe %}{{cliente.pk}}/delete/intervento/{{intervento.id}}/">Cancella Intervento</a></li>
 {% endif %}
-<li><a href="{% url anagrafe %}">Aggiungi Bollino</a></li>
-<li><a href="{% url anagrafe %}">Modifica Bollino</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/new/bollino/">Aggiungi Bollino</a></li>
+{% if bollini_history %}
+<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/bollino/{{bollino.id}}/">Modifica Bollino</a></li>
+<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/bollino/{{bollino.id}}/">Cancella Cliente</a></li>
+{% endif %}
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -18,7 +20,7 @@
 
 {% block center_block %}
 
-{%if top_msg != "" %}<h1>{{top_msg}}</h1>{% endif %}
+{%if top_msg != "" %}<h2>{{top_msg}}</h2>{% endif %}
 
 <table id="customers_detail">
 <tr><th></th><th>Dettaglio Cliente</th></tr>

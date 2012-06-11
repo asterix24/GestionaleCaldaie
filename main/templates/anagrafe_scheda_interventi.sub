@@ -11,7 +11,7 @@
 
 {% block center_block %}
 
-{%if top_msg != "" %}<h1>{{top_msg}}</h1>{% endif %}
+{%if top_msg != "" %}<h2>{{top_msg}}</h2>{% endif %}
 
 <table id="customers_detail">
 <tr><th></th><th>Dettaglio Cliente</th></tr>
