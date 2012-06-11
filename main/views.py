@@ -238,7 +238,7 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
     try:
         if request.method == 'GET':
 
-            return render(request, 'intervento_delete.sub', {'action': 'Cancella',
+            return render(request, 'record_type_delete.sub', {'action': 'Cancella',
                                                            record_type: _model_ctx(record_type, record_type_id),
                                                            'record_id': record_id,
                                                            'record_type': record_type,
