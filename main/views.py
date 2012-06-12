@@ -20,20 +20,21 @@ def _diplay_ok(request, msg):
           'msg_body': msg})
 
 
-def _detail_select(request, record_id, msg='', _type="interventi"):
+def _detail_select(request, record_id, detail_type=None, msg=''):
     cliente = clienti.select_record(models.Cliente.objects, record_id)
 
-    if _type == "interventi":
-        data_to_render = clienti.select_interventi(cliente)
-    elif _type == "bollini":
-        data_to_render = clienti.select_bollini(cliente)
-    else:
+    if detail_type is None:
         return _diplay_error(request, "Detail non sensato..")
 
-    return render(request, 'anagrafe_scheda_' + _type + '.sub',
-                    {'top_msg':msg,
-                     'cliente': cliente,
-                     _type: data_to_render})
+    if detail_type == "interventi":
+        data_to_render = clienti.select_interventi(cliente)
+    else:
+        data_to_render = clienti.select_bollini(cliente)
+
+    return render(request, 'anagrafe_scheda_interventi.sub',{ 'top_msg':msg,
+                                                              'cliente': cliente,
+                                                              'detail_type':detail_type,
+                                                              'data_to_render': data_to_render})
 
 def _diplay_scheda(request, record_id, msg=''):
     cliente = clienti.select_record(models.Cliente.objects, record_id)
@@ -64,7 +65,7 @@ def detail_record(request, record_id, detail_type = None):
     if detail_type == "detail":
         return _diplay_scheda(request, record_id)
     else:
-        return _detail_select(request, record_id, '', detail_type)
+        return _detail_select(request, record_id, detail_type, "")
 
 def edit_record(request, record_id):
     if request.method == 'GET':

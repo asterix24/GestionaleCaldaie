@@ -34,7 +34,7 @@
 <tr>
     <td class="hdr">Storico</td>
     {% if bollini_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/bollini">{{ bollini_history }}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/bollini/">{{ bollini_history }}</a></td>
     {% else %}
     <td>{{ bollini_history }}</td>
     {% endif %}
@@ -54,7 +54,7 @@
 <tr>
     <td class="hdr">Storico</td>
     {% if interventi_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/interventi">{{ interventi_history }}</a></td>
+    <td><a href="{% url anagrafe %}{{cliente.pk}}/interventi/">{{ interventi_history }}</a></td>
     {% else %}
     <td>{{ interventi_history }}</td>
     {% endif %}
