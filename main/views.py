@@ -31,10 +31,10 @@ def _detail_select(request, record_id, detail_type=None, msg=''):
     else:
         data_to_render = clienti.select_bollini(cliente)
 
-    return render(request, 'anagrafe_scheda_interventi.sub',{ 'top_msg':msg,
-                                                              'cliente': cliente,
-                                                              'detail_type':detail_type,
-                                                              'data_to_render': data_to_render})
+    return render(request, 'anagrafe_scheda_history.sub',{ 'top_msg':msg,
+                                                   'cliente': cliente,
+                                                   'detail_type':detail_type,
+                                                   'data_to_render': data_to_render})
 
 def _diplay_scheda(request, record_id, msg=''):
     cliente = clienti.select_record(models.Cliente.objects, record_id)
