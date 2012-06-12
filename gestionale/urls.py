@@ -14,19 +14,14 @@ urlpatterns = patterns('',
     url(r'^anagrafe/(?P<record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
     url(r'^anagrafe/(?P<record_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
 
+    url(r'^anagrafe/new/(?P<record_type>intervento)/$', 'main.views.new_typeRecord', name='new_intervento'),
+    url(r'^anagrafe/new/(?P<record_type>bollino)/$', 'main.views.new_typeRecord', name='new_bollino'),
     url(r'^anagrafe/(?P<record_id>\d+)/new/(?P<record_type>intervento)/$', 'main.views.new_typeRecord', name='new_intervento'),
     url(r'^anagrafe/(?P<record_id>\d+)/new/(?P<record_type>bollino)/$', 'main.views.new_typeRecord', name='new_bollino'),
     url(r'^anagrafe/(?P<record_id>\d+)/edit/(?P<record_type>intervento)/(?P<record_type_id>\d+)/$', 'main.views.edit_typeRecord', name='edit_intervento'),
     url(r'^anagrafe/(?P<record_id>\d+)/edit/(?P<record_type>bollino)/(?P<record_type_id>\d+)/$', 'main.views.edit_typeRecord', name='edit_bollino'),
     url(r'^anagrafe/(?P<record_id>\d+)/delete/(?P<record_type>intervento)/(?P<record_type_id>\d+)/$', 'main.views.delete_typeRecord', name='delete_intervento'),
     url(r'^anagrafe/(?P<record_id>\d+)/delete/(?P<record_type>bollino)/(?P<record_type_id>\d+)/$', 'main.views.delete_typeRecord', name='delete_bollino'),
-
-    # Intervento
-    #url(r'^anagrafe/new/intervento/$', 'main.views.new_intervento', name='new_intervento'),
-
-
-    # Bollino
-    #url(r'^anagrafe/new/bollino/$', 'main.views.new_bollino', name='new_bollino'),
 
 
     # Record detail view
