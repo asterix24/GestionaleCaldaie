@@ -90,6 +90,14 @@ class InterventoForm(forms.ModelForm):
         exclude = ('scadenza')
         fields = ('data', 'cliente', 'tipo', 'altro', 'numero_rapporto', 'data_scadenza', 'note')
 
+BOLLINO_COLOR_CHOICES = (
+    ('Blu','Blu'),
+    ('Verde','Verde'),
+    ('Giallo','Giallo'),
+    ('Arancione','Arancione'),
+    ('No','No'),
+    )
+
 class Bollino(models.Model):
     presente = models.BooleanField()
     data = models.DateField(default=datetime.date.today(),null=True, blank=True)
@@ -107,5 +115,6 @@ class Bollino(models.Model):
         return ("%s: %s") %  (self.presente, self.data.__str__())
 
 class BollinoForm(forms.ModelForm):
+    colore = forms.CharField(widget=forms.Select(choices=BOLLINO_COLOR_CHOICES))
     class Meta:
         model = Bollino
