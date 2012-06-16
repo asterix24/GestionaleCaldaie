@@ -8,6 +8,9 @@ def is_elapse(self):
         return False
     return True
 
+from django.utils.datastructures import SortedDict
+
+
 MODELS_EMPTY_STRING="-"
 
 class Cliente(models.Model):
@@ -35,6 +38,32 @@ class Cliente(models.Model):
     def __unicode__(self):
         return ("%s, %s: %s") % (self.cognome, self.nome, self.citta)
 
+    def get_all_fields(self):
+        """Returns a list of all field names on the instance."""
+        fields = []
+        for f in self._meta.fields:
+            fname = f.name
+            # resolve picklists/choices, with get_xyz_display() function
+            get_choice = 'get_'+fname+'_display'
+            if hasattr( self, get_choice):
+                value = getattr( self, get_choice)()
+            else:
+                try :
+                    value = getattr(self, fname)
+                except User.DoesNotExist:
+                    value = None
+
+            # only display fields with values and skip some fields entirely
+            if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete') :
+                fields.append(
+                  {
+                   'label':f.verbose_name,
+                   'name':f.name,
+                   'value':value,
+                  }
+                )
+        return fields
+    
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
