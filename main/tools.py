@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import clienti
+#import clienti
 import datetime
 import csv
 
@@ -21,7 +21,7 @@ def load_csv(file_name, handler):
         try:
             if e != []:
                 table_dict = handler(e)
-        except (ValueError, IndexError), m:
+        except (ValueError, IndexError, KeyError), m:
             print "ValueError (%s)" % m , e
             exit (0)
 
@@ -29,51 +29,48 @@ def load_csv(file_name, handler):
 
     return all
 
-def load_intervento(e):
-    ref = {}
-    d = {}
-    ref['id'] = int(e[0].strip())
-    d['data'] = data_fmt(e[1])
-    d['tipo'] = e[2].strip()
-    d['numero_rapporto'] = int(e[3].strip())
-    d['scadenza'] = int(e[4].strip())
-    d['data_scadenza'] = data_fmt(e[5])
-    d['note'] = e[6]
 
-    return [ref, d]
+def value_str(row, d, key):
+    return row[d[key]]
+
+cliente_csv_dict = {
+    'cognome':1,
+    'nome':2,
+    'codice_fiscale':3,
+    'via':4,
+    'citta':5,
+    'numero_telefono':7,
+    'numero_cellulare':6,
+    'mail':None
+}
 
 
-def load_cliente(e):
-
+def cliente_csv(row):
     table_dict = {}
-    if e[0].strip() != '':
-        id = int(e[0], 10)
-        table_dict['codice_id'] = id
-
-    #table_dict['codice_impianto'] = None
-
-    cognome = e[1].capitalize().strip()
+    cognome = value_str(row, cliente_csv_dict, 'cognome').capitalize().strip()
     if  cognome != '':
         table_dict['cognome'] = cognome
 
-    nome = e[2].capitalize().strip()
+    nome = value_str(row, cliente_csv_dict, 'nome').capitalize().strip()
     if nome != '':
         table_dict['nome'] = nome
 
-    if e[3].strip() != '':
-        cdf = e[3].upper().strip()
-        table_dict['codice_fiscale'] = cdf
+    cdf = value_str(row, cliente_csv_dict, 'codice_fiscale')
+    if cdf.strip() != '':
+        table_dict['codice_fiscale'] = cdf.upper().strip()
 
-    table_dict['via'] = e[4].capitalize().strip()
-    table_dict['citta'] = e[5].capitalize().strip()
+    table_dict['via'] = value_str(row, cliente_csv_dict, 'via').capitalize().strip()
+    table_dict['citta'] = value_str(row, cliente_csv_dict, 'citta').capitalize().strip()
 
-    if e[6].strip() != '':
-        cell = e[6].replace(' ', '')
+    cell = value_str(row, cliente_csv_dict, 'numero_cellulare')
+    if cell.strip() != '':
+        cell = cell.replace(' ', '')
     else:
         cell = "-"
 
-    if e[7].strip() != '':
-        tel = e[7].replace(' ', '')
+    tel = value_str(row, cliente_csv_dict, 'numero_telefono')
+    if tel.strip() != '':
+        tel = tel.replace(' ', '')
 
         if tel[0] != '0':
             cell = tel
@@ -81,64 +78,101 @@ def load_cliente(e):
     else:
         tel = "-"
 
-    table_dict['numero_telefono'] = cell
-    table_dict['numero_cellulare'] = tel
+    table_dict['numero_telefono'] = tel
+    table_dict['numero_cellulare'] = cell
 
     #table_dict['mail'] = None
 
-    table_dict['marca_caldaia'] = e[8].strip().upper()
-    table_dict['tipo'] = e[9].strip().upper()
-    table_dict['modello_caldaia'] = e[10].strip().upper()
+    return table_dict
 
-    table_dict['combustibile'] = e[11].strip().capitalize()
 
-    table_dict['data_installazione'] = data_fmt(e[12])
-    table_dict['data_contratto'] = data_fmt(e[13])
+impianto_csv_dict = {
+    'codice_id':0,
+    'codice_impianto':None,
+    'marca_caldaia':8,
+    'modello_caldaia':10,
+    'tipo':9,
+    'combustibile':11,
+    'data_installazione':12,
+    'data_analisi_combustione':None,
+    'data_contratto':13,
+}
 
-    table_bollino = {}
-    p = 0
-    if e[14].lower() == 'si':
-        p = 1
-    table_bollino['presente'] = p
+def impianto_csv(row):
+    table_dict = {}
 
-    dt = e[15].strip()
+    id_imp = value_str(row, impianto_csv_dict, 'codice_id')
+    if id_imp.strip() != '':
+        table_dict['codice_id'] = id_imp
+
+    #table_dict['codice_impianto'] = None
+    table_dict['marca_caldaia'] = value_str(row, impianto_csv_dict, 'marca_caldaia').strip().upper()
+    table_dict['tipo'] = value_str(row, impianto_csv_dict, 'tipo').strip().upper()
+    table_dict['modello_caldaia'] = value_str(row, impianto_csv_dict, 'modello_caldaia').strip().upper()
+    table_dict['combustibile'] = value_str(row, impianto_csv_dict, 'combustibile').strip().capitalize()
+    table_dict['data_installazione'] = data_fmt(value_str(row, impianto_csv_dict, 'data_installazione'))
+    table_dict['data_contratto'] = data_fmt(value_str(row, impianto_csv_dict, 'data_contratto'))
+
+    return table_dict
+
+verifiche_csv_dict = {
+    'data':15,
+    'tipo':None,
+    'numerorapporto':None,
+    'colore_bollino':16,
+    'numero_bollino':18,
+    'valore_bollino':17,
+    'scadenza':None,
+    'data_scadenza':None,
+    'note':None
+}
+
+def verifiche_csv(row):
+    table_dict = {}
+
+    table_dict['tipo'] = 'analisi combustione'
+    dt = value_str(row, verifiche_csv_dict, 'data').strip()
     if dt != "":
         dt = datetime.date(int(dt), 1, 1)
     else:
         dt = None
-    table_bollino['data'] = dt
+    table_dict['data'] = dt
+    table_dict['colore_bollino'] = value_str(row, verifiche_csv_dict, 'colore_bollino').capitalize().strip()
 
-    c = e[16].capitalize().strip()
-    if c == 'No' or c == 'Si':
-        c = "-"
-    table_bollino['colore'] = c
-
-    v = e[17].strip()
+    v = value_str(row, verifiche_csv_dict, 'valore_bollino').strip()
     if v == "":
         v = 0
     else:
         v = int(v)
-    table_bollino['valore'] = v
+    table_dict['valore_bollino'] = v
 
-    n = e[18].strip()
+    n = value_str(row, verifiche_csv_dict, 'valore_bollino').strip()
     if n != "":
         n = int(n)
     else:
         n = 0
-    table_bollino['numero_bollino'] = n
-    table_bollino['scadenza'] = None
-    table_bollino['note'] = None
+    table_dict['valore_bollino'] = n
 
-    return [table_dict, table_bollino]
+    return table_dict
 
+def load_all():
+    x = load_csv("main/elenco2010.csv", cliente_csv)
+    y = load_csv("main/elenco2010.csv", impianto_csv)
+    z = load_csv("main/elenco2010.csv", verifiche_csv)
+
+    for n,i in enumerate(x):
+        k = dict(i.items() + y[n].items())
+        j = dict(z[n].items() + k.items())
+        for i in j.keys():
+            print ("%s: %s") % (i, j[i])
+	print
 
 def dump(l, key = None):
     if key is not None:
         print l[key]
     else:
-        print l
         for i in l.keys():
-            print l[i],
+            print ("%s: %s") % (i, l[i])
 
         print
 
@@ -146,15 +180,11 @@ def dump_all(l, key = None):
     for i in l:
         dump(i, key)
 
-def load_all():
-    cli = load_csv("main/elenco2010.csv", load_cliente)
-    int = load_csv("main/interventi.csv", load_intervento)
-
-    clienti.insert_clientiBollini(cli)
-    clienti.insert_interventi(int)
-
 if __name__ == "__main__":
     import sys
+
+    load_all()
+    exit (1)
 
     if len(sys.argv) < 2:
         print sys.argv[0], " <csv file name>"

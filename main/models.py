@@ -13,9 +13,10 @@ def is_elapse(self):
 MODELS_EMPTY_STRING="-"
 
 class Cliente(models.Model):
+    """
+    Anagrafica del cliente
+    """
     data_creazione = models.DateField(default=datetime.date.today(), editable=False)
-    codice_id = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
-    codice_impianto = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
     cognome = models.CharField(default="", max_length=100)
     nome = models.CharField(default="", max_length=100, null=True, blank=True)
     codice_fiscale = models.CharField(default=MODELS_EMPTY_STRING, max_length=17, null=True, blank=True)
@@ -26,7 +27,7 @@ class Cliente(models.Model):
     mail = models.EmailField(default="", null=True, blank=True)
 
     class Meta:
-        ordering = ['cognome']
+        ordering = ['cognome', 'nome']
 
     def __unicode__(self):
         return ("%s, %s: %s") % (self.cognome, self.nome, self.citta)
@@ -64,6 +65,8 @@ class ClienteForm(forms.ModelForm):
 class Impianto(models.Model):
     data_creazione = models.DateField(default=datetime.date.today(), editable=False)
     cliente = models.ForeignKey(Cliente)
+    codice_id = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
+    codice_impianto = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
     marca_caldaia = models.CharField(default=MODELS_EMPTY_STRING, max_length=100, null=True, blank=True)
     modello_caldaia = models.CharField(default=MODELS_EMPTY_STRING, max_length=100, null=True, blank=True)
     tipo = models.CharField(default=MODELS_EMPTY_STRING, max_length=1, null=True, blank=True)
@@ -127,7 +130,6 @@ class Intervento(models.Model):
         return ("%s: %s") %  (self.tipo, self.data.__str__())
 
 
-
 """
 class BollinoForm(forms.ModelForm):
     colore = forms.CharField(widget=forms.Select(choices=BOLLINO_COLOR_CHOICES))
@@ -155,5 +157,4 @@ class InterventoForm(forms.ModelForm):
         model = Intervento
         exclude = ('scadenza')
         fields = ('data', 'cliente', 'tipo', 'altro', 'numero_rapporto', 'data_scadenza', 'note')
-
 """
