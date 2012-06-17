@@ -39,10 +39,10 @@ def load_intervento(e):
     d['scadenza'] = int(e[4].strip())
     d['data_scadenza'] = data_fmt(e[5])
     d['note'] = e[6]
-    
+
     return [ref, d]
 
-        
+
 def load_cliente(e):
 
     table_dict = {}
@@ -55,7 +55,7 @@ def load_cliente(e):
     cognome = e[1].capitalize().strip()
     if  cognome != '':
         table_dict['cognome'] = cognome
-        
+
     nome = e[2].capitalize().strip()
     if nome != '':
         table_dict['nome'] = nome
@@ -71,21 +71,21 @@ def load_cliente(e):
         cell = e[6].replace(' ', '')
     else:
         cell = "-"
-    
+
     if e[7].strip() != '':
         tel = e[7].replace(' ', '')
-        
+
         if tel[0] != '0':
             cell = tel
             tel = "-"
     else:
         tel = "-"
-    
-    table_dict['numero_telefono'] = cell    
+
+    table_dict['numero_telefono'] = cell
     table_dict['numero_cellulare'] = tel
-    
+
     #table_dict['mail'] = None
-    
+
     table_dict['marca_caldaia'] = e[8].strip().upper()
     table_dict['tipo'] = e[9].strip().upper()
     table_dict['modello_caldaia'] = e[10].strip().upper()
@@ -93,33 +93,33 @@ def load_cliente(e):
     table_dict['combustibile'] = e[11].strip().capitalize()
 
     table_dict['data_installazione'] = data_fmt(e[12])
-    table_dict['data_contratto'] = data_fmt(e[13])      
+    table_dict['data_contratto'] = data_fmt(e[13])
 
     table_bollino = {}
     p = 0
     if e[14].lower() == 'si':
         p = 1
     table_bollino['presente'] = p
-    
+
     dt = e[15].strip()
     if dt != "":
         dt = datetime.date(int(dt), 1, 1)
     else:
         dt = None
     table_bollino['data'] = dt
-    
+
     c = e[16].capitalize().strip()
     if c == 'No' or c == 'Si':
         c = "-"
     table_bollino['colore'] = c
-    
+
     v = e[17].strip()
     if v == "":
         v = 0
     else:
         v = int(v)
     table_bollino['valore'] = v
-    
+
     n = e[18].strip()
     if n != "":
         n = int(n)
@@ -149,18 +149,18 @@ def dump_all(l, key = None):
 def load_all():
     cli = load_csv("main/elenco2010.csv", load_cliente)
     int = load_csv("main/interventi.csv", load_intervento)
-    
+
     clienti.insert_clientiBollini(cli)
     clienti.insert_interventi(int)
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) < 2:
         print sys.argv[0], " <csv file name>"
         exit (1)
-    
+
     all = load_csv(sys.argv[1], load_cliente)
     print all
-    
+
     print "Records: ", len(all)
