@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django import http
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
@@ -5,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from main import models
 from main import myforms
 from main import clienti
+from main import tools
 
 def home(request):
     return render(request, 'home.sub', {})
@@ -266,8 +270,66 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
+
+from django.forms.models import model_to_dict
+from django.core.exceptions import ObjectDoesNotExist
+
+def render_item(item, fill_string, header=False):
+    content = ""
+    for f in item._meta.fields:
+        # resolve picklists/choices, with get_xyz_display() function
+        get_choice = 'get_'+f.name+'_display'
+        if hasattr(item, get_choice):
+            value = getattr(item, get_choice)()
+        else:
+            try :
+                value = getattr(item, f.name)
+            except ObjectDoesNotExist:
+                value = None
+
+        # only display fields with values and skip some fields entirely
+        if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete'):
+            if not header:
+                string = value
+                if f.name in ('nome', 'cognome'):
+                    string = "<a href=\"/anagrafe/%s/detail\">%s</a>" % (item.pk, value)
+
+                content += fill_string % string
+            else:
+                content += fill_string % f.verbose_name.capitalize()
+
+    return content
+
+def render_toTable(items):
+    cycle = False
+    display_header = True
+
+    table = "<table id=\"customers\">"
+    for item in items:
+        if display_header:
+            table += render_item(item, "<th>%s</th>", header=True)
+            display_header = False
+
+        cycle_str = ""
+        if cycle:
+            cycle_str = " class=\"alt\""
+        cycle = not cycle
+
+        table += "<tr%s>" % cycle_str
+        table += render_item(item, "<td>%s</td>", header=False)
+        table += "</tr>"
+
+    table += "</table>"
+
+    return table
+
+def test(request):
+    table = render_toTable(models.Cliente.objects.all())
+    return render(request, 'test', {'data':table})
+
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
+    data = ""
 
     if request.method == 'GET' and request.GET != {}:
         form = myforms.FullTextSearchForm(request.GET)
@@ -278,12 +340,9 @@ def anagrafe(request):
             form = myforms.FullTextSearchForm()
             data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
 
-        return render(request, 'anagrafe.sub',
-            {'clienti': data_to_render,
-             'display_data':1,
-             'display_search_bot':1,
-             'form': form })
+        if data_to_render != "":
+            data = render_toTable(data_to_render)
+        else:
+            data = "<tr><h2>La ricerca non ha prodotto risultati</h2></tr>"
 
-    return render(request, 'anagrafe.sub', {'display_data':0,
-                                        'display_search_bot':0,
-                                        'form': form })
+    return render(request, 'anagrafe.sub', {'data': data,'form': form })

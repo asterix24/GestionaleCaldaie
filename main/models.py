@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django import forms
-from django.utils.datastructures import SortedDict
 
 import datetime
 
@@ -28,9 +30,10 @@ class Cliente(models.Model):
 
     class Meta:
         ordering = ['cognome', 'nome']
+        unique_together = ('data_creazione', 'cognome', 'nome', 'codice_fiscale')
 
     def __unicode__(self):
-        return ("%s, %s: %s") % (self.cognome, self.nome, self.citta)
+        return self.cognome
 
     def get_all_fields(self):
         """Returns a list of all field names on the instance."""
@@ -39,7 +42,7 @@ class Cliente(models.Model):
             fname = f.name
             # resolve picklists/choices, with get_xyz_display() function
             get_choice = 'get_'+fname+'_display'
-            if hasattr( self, get_choice):
+            if hasattr(self, get_choice):
                 value = getattr( self, get_choice)()
             else:
                 try :
@@ -77,9 +80,10 @@ class Impianto(models.Model):
 
     class Meta:
         ordering = ['marca_caldaia']
+        unique_together = ('data_creazione', 'codice_id', 'codice_impianto', 'marca_caldaia', 'modello_caldaia', 'data_installazione')
 
     def __unicode__(self):
-        return ("%s, %s: %s") % (self.marca_caldaia, self.modello_caldaia)
+        return self.marca_caldaia
 
 
 BOLLINO_COLOR_CHOICES = (
@@ -114,7 +118,7 @@ class VerificheManutenzione(models.Model):
         ordering = ['-data'] # Ordina per data in modo decrescente
 
     def __unicode__(self):
-        return ("%s: %s") %  (self.tipo, self.data.__str__())
+        return self.tipo
 
 
 class Intervento(models.Model):
@@ -127,7 +131,7 @@ class Intervento(models.Model):
         ordering = ['-data'] # Ordina per data in modo decrescente
 
     def __unicode__(self):
-        return ("%s: %s") %  (self.tipo, self.data.__str__())
+        return self.tipo
 
 
 """

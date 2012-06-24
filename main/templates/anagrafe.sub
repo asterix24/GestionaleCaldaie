@@ -12,65 +12,14 @@
 {% endblock %}
 
 {% block navigation_search_block_bot %}
-{% if display_search_bot %}
-    <div class="navigation_buttons">{% now "d F Y H:i" %}</div>
-    <form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
-    {{ form.s }}
-    <input type="submit" value="Cerca"/>
-    </form>
-    {% if display_data %}
-        <div class="navigation_buttons">Clienti trovati: {{clienti|length }}</div>
-    {% endif %}
-{% endif %}
 {% endblock %}
 
 
 
 {% block center_block %}
 
-{% if display_data %}
-<table id="customers">
-<tr>
-    <th>Cod. ID</th>
-    <th>Cod. Impianto</th>
-    <th>Nome</th>
-    <th>Cognome</th>
-    <th>Cod. Fiscale</th>
-    <th>Via</th>
-    <th>Citta'</th>
-    <th>Telefono</th>
-    <th>Cellulare</th>
-    <th>Mail</th>
-    <th>Caldaia</th>
-    <th>Modello</th>
-    <th>Tipo</th>
-    <th>Combustibile</th>
-    <th>Data Inst.</th>
-    <th>Data Contr.</th>
-</tr>
-{% for cliente in clienti %}
-<tr {% cycle '' 'class="alt"' %} >
-    <td>{{cliente.codice_id}}</td>
-    <td>{{cliente.codice_impianto}}</td>
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/detail">{{cliente.nome}}</a></td>
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/detail">{{cliente.cognome}}</a></td>
-    <td>{{cliente.codice_fiscale}}</td>
-    <td>{{cliente.via}}</td>
-    <td>{{cliente.citta}}</td>
-    <td>{{cliente.numero_telefono}}</td>
-    <td>{{cliente.numero_cellulare}}</td>
-    <td>{{cliente.mail}}</td>
-    <td>{{cliente.marca_caldaia}}</td>
-    <td>{{cliente.modello_caldaia}}</td>
-    <td>{{cliente.tipo}}</td>
-    <td>{{cliente.combustibile}}</td>
-    <td>{{cliente.data_installazione|date:"d/m/y"}}</td>
-    <td>{{cliente.data_contratto|date:"d/m/y"}}</td>
-</tr>
-{% empty %}
-    <tr><h2>La ricerca non ha prodotto risultati</h2></tr>
-{% endfor %}
-</table>
-{% endif %}
+{% autoescape off %}
+    {{ data }}
+{% endautoescape %}
 
 {% endblock %}

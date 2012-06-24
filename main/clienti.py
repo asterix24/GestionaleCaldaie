@@ -7,10 +7,6 @@ from tools import *
 from django.db.models import Q
 
 from models import Cliente
-from models import Intervento
-from models import Bollino
-
-
 
 
 FILTER_MODE_START =    '__istartswith'
@@ -53,40 +49,6 @@ def insert_cliente(r):
     node.save()
     return node
 
-def insert_intervento(cli, interv):
-    node = Intervento(cliente=cli, **interv)
-#    dump(interv)
-    node.save()
-    return node
-
-def insert_bollino(cli, bl):
-    node = Bollino(cliente=cli, **bl)
- #   dump(bl)
-    node.save()
-    return node
-
-def select_bollini(ctx, id = None):
-    if id is None:
-        return ctx.bollino_set.values()
-
-    return ctx.get(pk=id)
-
-def select_interventi(ctx, id = None):
-    if id is None:
-        return ctx.intervento_set.values()
-
-    return ctx.get(pk=id)
-
-def insert_clientiBollini(all):
-    for i in all:
-        cli = insert_cliente(i[0])
-        insert_bollino(cli, i[1])
-
-def insert_interventi(all):
-    for i in all:
-        cli = select_record(Cliente.objects, i[0]['id'])
-        insert_intervento(cli, i[1])
-
 def search_fullText(ctx, s):
     """
     If users search one word and is number we search only in some
@@ -111,18 +73,13 @@ def search_fullText(ctx, s):
 
     for key in search_key:
         if len(key) >= 3:
-            result = ctx.filter(Q(codice_impianto__icontains = key) |
-                           Q(codice_id__icontains = key)|
-                           Q(numero_telefono__icontains = key) |
+            result = ctx.filter(Q(numero_telefono__icontains = key) |
                            Q(numero_cellulare__icontains = key) |
                            Q(nome__icontains = key) |
                            Q(cognome__icontains = key) |
                            Q(via__icontains = key) |
                            Q(citta__icontains = key) |
-                           Q(mail__icontains = key) |
-                           Q(marca_caldaia__icontains = key) |
-                           Q(combustibile__icontains = key) |
-                           Q(modello_caldaia__icontains = key)
+                           Q(mail__icontains = key)
                            )
         else:
             if key[0] in string.letters:
