@@ -169,9 +169,22 @@ def insert_csv_files():
 			impianto_node = models.Impianto(cliente = cli, **impianto_dict[index])
 			impianto_node.save()
 		except IntegrityError, m:
+			impianto_search = models.Impianto.objects.filter(marca_caldaia__iexact = impianto_dict[index]['marca_caldaia'])
+			impianto_search = impianto_search.filter(modello_caldaia__iexact = impianto_dict[index]['modello_caldaia'])
+			impianto_search = impianto_search.filter(data_installazione__iexact = impianto_dict[index]['data_installazione'])
+
+			try:
+				if item['codice_id'] is not None:
+					cli_search = cli_search.filter(codice_id__iexact = impianto_dict[index]['codice_id'])
+			except KeyError, m:
+				print item, m
+
+			if len(cli_search) >= 1:
+				impianto_node = impianto_search[0]
+
 			print "%d %s skipped.. (%s)" % (index, impianto_node.modello_caldaia, m)
 
-		verifiche_node = models.VerificheManutenzione(cliente = cli, **verifiche_dict[index])
+		verifiche_node = models.VerificheManutenzione(impianto = impianto_node, **verifiche_dict[index])
 		verifiche_node.save()
 
 		print "Ok", cli.pk, cli.nome, verifiche_node.tipo, impianto_node.modello_caldaia, "Row: ", index

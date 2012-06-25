@@ -49,6 +49,51 @@ def insert_cliente(r):
     node.save()
     return node
 
+
+def item_toDict(item):
+    fields = []
+    for f in item._meta.fields:
+        get_choice = 'get_'+f.name+'_display'
+        if hasattr(item, get_choice):
+            value = getattr(item, get_choice)()
+        else:
+            try :
+                value = getattr(item, f.name)
+            except ObjectDoesNotExist:
+                value = None
+
+        # only display fields with values and skip some fields entirely
+        if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete'):
+                fields.append({'label':f.verbose_name,'value':value})
+
+    return fields
+
+def table_diplay():
+    table = []
+    cli = Cliente.objects.select_related()
+    for c in cli:
+        l = item_toDict(c)
+        row = ""
+        for j in l:
+            row += (u"%s;") % j['value']
+
+        imp = c.impianto_set.all()
+        for k in imp:
+            ll = item_toDict(k)
+            for jj in ll:
+                row += (u"%s;") % jj['value']
+
+            verf = k.verifichemanutenzione_set.all()
+            for v in verf:
+                lv = item_toDict(v)
+                for llv in lv:
+                    row += (u"%s;") % llv['value']
+
+        table.append(row)
+
+    for n in table:
+        print n
+
 def search_fullText(ctx, s):
     """
     If users search one word and is number we search only in some

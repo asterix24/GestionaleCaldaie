@@ -104,7 +104,7 @@ INTERVENTI_CHOICES = (
 
 class VerificheManutenzione(models.Model):
     data = models.DateField(default=datetime.date.today())
-    cliente = models.ForeignKey(Cliente)
+    impianto = models.ForeignKey(Impianto)
     tipo = models.CharField(default=MODELS_EMPTY_STRING, max_length=80, null=True, blank=True)
     numero_rapporto = models.CharField(default=MODELS_EMPTY_STRING, max_length=15, null=True, blank=True)
     colore_bollino = models.CharField(default=MODELS_EMPTY_STRING,max_length = 100, null=True, blank=True)
@@ -123,7 +123,7 @@ class VerificheManutenzione(models.Model):
 
 class Intervento(models.Model):
     data = models.DateField(default=datetime.date.today())
-    cliente = models.ForeignKey(Cliente)
+    impianto = models.ForeignKey(Impianto)
     tipo = models.CharField(default=MODELS_EMPTY_STRING, max_length=80, null=True, blank=True)
     note = models.TextField(null=True, blank=True)
 
