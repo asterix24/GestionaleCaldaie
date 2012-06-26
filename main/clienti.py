@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import decimal
 import string
 
 from tools import *
@@ -50,8 +51,15 @@ def insert_cliente(r):
     return node
 
 
-def item_toDict(item):
+VALUE_ONLY = 0
+LABEL_ONLY = 1
+
+DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
+
+def item_toDict(item, value_type=None, exclude=[]):
     fields = []
+    exclude = ['id', 'status', 'workshop', 'user', 'complete'] + exclude
+
     for f in item._meta.fields:
         get_choice = 'get_'+f.name+'_display'
         if hasattr(item, get_choice):
@@ -63,36 +71,80 @@ def item_toDict(item):
                 value = None
 
         # only display fields with values and skip some fields entirely
-        if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete'):
-                fields.append({'label':f.verbose_name,'value':value})
+        if f.editable and value and f.name not in exclude:
+            if value_type == VALUE_ONLY:
+                data = value
+                try:
+                    if type(value) == datetime.date:
+                        data = value.strftime(DATA_FIELD_STR_FORMAT)
+                    if type(value) == int or type(value) == decimal.Decimal:
+                        data = u"%s" % value
+                except ValueError, m:
+                    print m, value
+                    data=""
+
+            elif value_type == LABEL_ONLY:
+                data = f.verbose_name
+            else:
+                data = {'label':f.verbose_name,'value':value}
+
+            fields.append(data)
 
     return fields
 
-def table_diplay():
-    table = []
-    cli = Cliente.objects.select_related()
+"""
+vista albero
+    cli = clienti_selection.select_related()
     for c in cli:
-        l = item_toDict(c)
-        row = ""
-        for j in l:
-            row += (u"%s;") % j['value']
+        row = ";".join(item_toDict(c, VALUE_ONLY)) + '\n'
+        impianto_set = c.impianto_set.all()
 
-        imp = c.impianto_set.all()
-        for k in imp:
-            ll = item_toDict(k)
-            for jj in ll:
-                row += (u"%s;") % jj['value']
+        for i in impianto_set:
+            row += '\t' + ";".join(item_toDict(i, VALUE_ONLY, exclude = ['cliente'])) + '\n'
+            verifiche_set = i.verifichemanutenzione_set.all()
 
-            verf = k.verifichemanutenzione_set.all()
-            for v in verf:
-                lv = item_toDict(v)
-                for llv in lv:
-                    row += (u"%s;") % llv['value']
+            for v in verifiche_set:
+                row += '\t\t' +  ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
+
+
+        table.append(row)
+"""
+
+
+"""
+Vista tabella ok.
+TODO:ci sono delle anomalie nel db, ovvero ci sono campi verifiche che sono duplicati
+e dei campi data importati male.
+"""
+def table_diplay(clienti_selection, header=False):
+    table = []
+    cliente_str = ""
+    impianto_str = ""
+    verifiche_str = ""
+    row = ''
+
+    cli = clienti_selection.select_related()
+    for c in cli:
+        cliente_str = ";".join(item_toDict(c, VALUE_ONLY))
+        impianto_set = c.impianto_set.all()
+
+        if impianto_set != []:
+            for i in impianto_set:
+                impianto_str = ";".join(item_toDict(i, VALUE_ONLY, exclude = ['cliente']))
+                verifiche_set = i.verifichemanutenzione_set.all()
+
+                if verifiche_set != []:
+                    for v in verifiche_set:
+                        row += cliente_str + impianto_str + ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
+                else:
+                    row = cliente_str + impianto_str + '\n'
+
+        else:
+            row = cliente_str + '\n'
 
         table.append(row)
 
-    for n in table:
-        print n
+    return table
 
 def search_fullText(ctx, s):
     """
