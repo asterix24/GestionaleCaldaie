@@ -58,7 +58,7 @@ def cliente_csv(row):
 	if cell.strip() != '':
 		cell = cell.replace(' ', '')
 	else:
-		cell = "-"
+		cell = ''
 
 	tel = row[ID_NUMERO_TELEFONO]
 	if tel.strip() != '':
@@ -66,9 +66,9 @@ def cliente_csv(row):
 
 		if tel[0] != '0':
 			cell = tel
-			tel = "-"
+			tel = ''
 	else:
-		tel = "-"
+		tel = ''
 
 	table_dict['numero_telefono'] = tel
 	table_dict['numero_cellulare'] = cell
