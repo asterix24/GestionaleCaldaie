@@ -112,38 +112,30 @@ vista albero
         table.append(row)
 """
 
-
-"""
-Vista tabella ok.
-TODO:ci sono delle anomalie nel db, ovvero ci sono campi verifiche che sono duplicati
-e dei campi data importati male.
-"""
-def table_diplay(clienti_selection, header=False):
+def table_view(clienti_selection, header=False, exclude_col=[]):
     table = []
 
     cli = clienti_selection.select_related()
     for c in cli:
-        cliente_str = ''
-        impianto_str = ''
-        verifiche_str = ''
-        row = ''
+        cliente_str = []
+        impianto_str = []
+        row = []
 
-        cliente_str = ";".join(item_toDict(c, VALUE_ONLY))
+        cliente_str = item_toDict(c, VALUE_ONLY, exclude_col)
         impianto_set = c.impianto_set.all()
 
         if impianto_set != []:
             for i in impianto_set:
-                impianto_str = ";".join(item_toDict(i, VALUE_ONLY, exclude = ['cliente']))
+                impianto_str = item_toDict(i, VALUE_ONLY, exclude = (['cliente'] + exclude_col))
                 verifiche_set = i.verifichemanutenzione_set.all()
 
                 if verifiche_set != []:
                     for v in verifiche_set:
-                        row += cliente_str + ";" + impianto_str + ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
+                        row += cliente_str + impianto_str + item_toDict(v, VALUE_ONLY, exclude = (['impianto'] + exclude_col))
                 else:
-                    row = cliente_str  + ";" + impianto_str + '\n'
-
+                    row = cliente_str  + impianto_str
         else:
-            row = cliente_str + '\n'
+            row = cliente_str
 
         table.append(row)
 
