@@ -70,7 +70,9 @@ def item_toDict(item, value_type=None, exclude=[]):
             except ObjectDoesNotExist:
                 value = None
 
-        # only display fields with values and skip some fields entirely
+        if value is None:
+            value = ''
+
         if f.editable and value and f.name not in exclude:
             if value_type == VALUE_ONLY:
                 data = value
@@ -118,13 +120,14 @@ e dei campi data importati male.
 """
 def table_diplay(clienti_selection, header=False):
     table = []
-    cliente_str = ""
-    impianto_str = ""
-    verifiche_str = ""
-    row = ''
 
     cli = clienti_selection.select_related()
     for c in cli:
+        cliente_str = ''
+        impianto_str = ''
+        verifiche_str = ''
+        row = ''
+
         cliente_str = ";".join(item_toDict(c, VALUE_ONLY))
         impianto_set = c.impianto_set.all()
 
@@ -135,9 +138,9 @@ def table_diplay(clienti_selection, header=False):
 
                 if verifiche_set != []:
                     for v in verifiche_set:
-                        row += cliente_str + impianto_str + ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
+                        row += cliente_str + ";" + impianto_str + ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
                 else:
-                    row = cliente_str + impianto_str + '\n'
+                    row = cliente_str  + ";" + impianto_str + '\n'
 
         else:
             row = cliente_str + '\n'
