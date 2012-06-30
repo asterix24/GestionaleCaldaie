@@ -298,9 +298,9 @@ def anagrafe(request):
             form = myforms.FullTextSearchForm()
             data_to_render = database_manager.database_manager_displayAll(models.Cliente.objects)
 
-        if data_to_render != "":
-            data = render_toTable(data_to_render)
+        if data_to_render:
+            data = data_render.render_toTable(database_manager.table_doDict(data_to_render), show_colum=ANAGRAFE_COLUM)
         else:
-            data = "<tr><h2>La ricerca non ha prodotto risultati</h2></tr>"
+            data = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
