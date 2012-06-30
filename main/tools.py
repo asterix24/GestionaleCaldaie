@@ -58,7 +58,7 @@ def cliente_csv(row):
 	if cell.strip() != '':
 		cell = cell.replace(' ', '')
 	else:
-		cell = ''
+		cell = None
 
 	tel = row[ID_NUMERO_TELEFONO]
 	if tel.strip() != '':
@@ -66,9 +66,9 @@ def cliente_csv(row):
 
 		if tel[0] != '0':
 			cell = tel
-			tel = ''
+			tel = None
 	else:
-		tel = ''
+		tel = None
 
 	table_dict['numero_telefono'] = tel
 	table_dict['numero_cellulare'] = cell
@@ -92,7 +92,7 @@ def impianto_csv(row):
 		table_dict['codice_id'] = id_imp
 
 	table_dict['marca_caldaia'] = row[ID_MARCA_CALDAIA].strip().upper()
-	table_dict['tipo'] = row[ID_TIPO].strip().upper()
+	table_dict['tipo_caldaia'] = row[ID_TIPO].strip().upper()
 	table_dict['modello_caldaia'] = row[ID_MODELLO_CALDAIA].strip().upper()
 	table_dict['combustibile'] = row[ID_COMBUSTIBILE].strip().capitalize()
 
@@ -109,14 +109,14 @@ ID_VALORE_BOLLINO=17
 def verifiche_csv(row):
 	table_dict = {}
 
-	table_dict['tipo'] = 'analisi combustione'
+	table_dict['tipo_verifica_manutenzione'] = 'analisi combustione'
 
 	dt = row[ID_DATA].strip()
 	if dt != "":
 		dt = datetime.date(int(dt), 1, 1)
 	else:
 		dt = datetime.date.today()
-	table_dict['data'] = dt
+	table_dict['data_verifica_manutenzione'] = dt
 
 	table_dict['colore_bollino'] = row[ID_COLORE_BOLLINO].capitalize().strip()
 
@@ -131,7 +131,7 @@ def verifiche_csv(row):
 	if n != "":
 		n = int(n)
 	else:
-		n = 0
+		n = None
 	table_dict['numero_bollino'] = n
 
 	return table_dict
@@ -166,7 +166,7 @@ def insert_csv_files():
 			print "Skip %d %s (%s)" % (index, cli.nome, m)
 
 		try:
-			impianto_node = models.Impianto(cliente = cli, **impianto_dict[index])
+			impianto_node = models.Impianto(cliente_impianto = cli, **impianto_dict[index])
 			impianto_node.save()
 		except IntegrityError, m:
 			impianto_search = models.Impianto.objects.filter(marca_caldaia__iexact = impianto_dict[index]['marca_caldaia'])
@@ -184,10 +184,10 @@ def insert_csv_files():
 
 			print "%d %s skipped.. (%s)" % (index, impianto_node.modello_caldaia, m)
 
-		verifiche_node = models.VerificheManutenzione(impianto = impianto_node, **verifiche_dict[index])
+		verifiche_node = models.VerificheManutenzione(verifiche_impianto = impianto_node, **verifiche_dict[index])
 		verifiche_node.save()
 
-		print "Ok", cli.pk, cli.nome, verifiche_node.tipo, impianto_node.modello_caldaia, "Row: ", index
+		print "Ok", cli.pk, cli.nome, verifiche_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia, "Row: ", index
 
 	print "Record inseriti: %s, record totoali: %s" % (clienti_count, index)
 

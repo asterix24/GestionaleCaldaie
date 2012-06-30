@@ -1,55 +1,66 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.forms.models import model_to_dict
-from django.core.exceptions import ObjectDoesNotExist
+SHOW_ALL_COLUM=[
+	'cliente_data_inserimento',
+	'cognome',
+	'nome',
+	'codice_fiscale',
+	'via',
+	'citta',
+	'numero_telefono',
+	'numero_cellulare',
+	'mail',
+	'impianto_data_inserimento',
+	'codice_id',
+	'codice_impianto',
+	'marca_caldaia',
+	'modello_caldaia',
+	'tipo_caldaia',
+	'combustibile',
+	'data_installazione',
+	'data_analisi_combustione',
+	'data_contratto',
+	'data_verifica_manutenzione',
+	'tipo_verifica_manutenzione',
+	'numero_rapporto',
+	'colore_bollino',
+	'numero_bollino',
+	'valore_bollino',
+	'scadenza',
+	'data_scadenza',
+	'note_verifiche_manutenzione',
+	'data_intervento',
+	'tipo_intervento',
+	'note_intervento',
+	]
 
-def render_item(item, fill_string, header=False):
-    content = ""
-    for f in item._meta.fields:
-        # resolve picklists/choices, with get_xyz_display() function
-        get_choice = 'get_'+f.name+'_display'
-        if hasattr(item, get_choice):
-            value = getattr(item, get_choice)()
-        else:
-            try :
-                value = getattr(item, f.name)
-            except ObjectDoesNotExist:
-                value = None
+def render_toTable(items, diplay_heder=True, show_colum=SHOW_ALL_COLUM):
+	cycle = False
 
-        # only display fields with values and skip some fields entirely
-        if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete'):
-            if not header:
-                string = value
-                if f.name in ('nome', 'cognome'):
-                    string = "<a href=\"/anagrafe/%s/detail\">%s</a>" % (item.pk, value)
+	table = "<table id=\"customers\">"
+	for item_dict in items:
 
-                content += fill_string % string
-            else:
-                content += fill_string % f.verbose_name.capitalize()
+		cycle_str = ""
+		if cycle:
+			cycle_str = " class=\"alt\""
+		cycle = not cycle
 
-    return content
+		table += "<tr%s>" % cycle_str
 
-def render_toTable(items):
-    cycle = False
-    display_header = True
+		for i in show_colum:
+			try:
+				s  = item_dict[i]
+				if s is None:
+					s = '-'
 
-    table = "<table id=\"customers\">"
-    for item in items:
-        if display_header:
-            table += render_item(item, "<th>%s</th>", header=True)
-            display_header = False
+				table += "<td>%s</td>" % s
 
-        cycle_str = ""
-        if cycle:
-            cycle_str = " class=\"alt\""
-        cycle = not cycle
+			except KeyError, m:
+				print m
 
-        table += "<tr%s>" % cycle_str
-        table += render_item(item, "<td>%s</td>", header=False)
-        table += "</tr>"
+		table += "</tr>"
 
-    table += "</table>"
+	table += "</table>"
 
-    return table
-
+	return table
