@@ -7,7 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from main import models
 from main import myforms
-from main import clienti
 from main import tools
 
 def home(request):
@@ -25,15 +24,15 @@ def _diplay_ok(request, msg):
 
 
 def _detail_select(request, record_id, detail_type=None, msg=''):
-    cliente = clienti.select_record(models.Cliente.objects, record_id)
+    cliente = database_manager.select_record(models.Cliente.objects, record_id)
 
     if detail_type is None:
         return _diplay_error(request, "Detail non sensato..")
 
     if detail_type == "interventi":
-        data_to_render = clienti.select_interventi(cliente)
+        data_to_render = database_manager.select_interventi(cliente)
     else:
-        data_to_render = clienti.select_bollini(cliente)
+        data_to_render = database_manager.select_bollini(cliente)
 
     return render(request, 'anagrafe_scheda_history.sub',{ 'top_msg':msg,
                                                    'cliente': cliente,
@@ -41,9 +40,9 @@ def _detail_select(request, record_id, detail_type=None, msg=''):
                                                    'data_to_render': data_to_render})
 
 def _diplay_scheda(request, record_id, msg=''):
-    cliente = clienti.select_record(models.Cliente.objects, record_id)
-    bollini = clienti.select_bollini(cliente)
-    interventi = clienti.select_interventi(cliente)
+    cliente = database_manager.select_record(models.Cliente.objects, record_id)
+    bollini = database_manager.select_bollini(cliente)
+    interventi = database_manager.select_interventi(cliente)
 
     bollini_history = len(bollini)
     if bollini_history >= 1:
@@ -74,7 +73,7 @@ def detail_record(request, record_id, detail_type = None):
 def edit_record(request, record_id):
     if request.method == 'GET':
         if record_id != "":
-            select = clienti.select_record(models.Cliente.objects, record_id)
+            select = database_manager.select_record(models.Cliente.objects, record_id)
             form = models.ClienteForm(instance=select)
             return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
                                                         'record_id': record_id,
@@ -86,7 +85,7 @@ def edit_record(request, record_id):
     if request.method == 'POST':
         #If we found a id take the record to edit it.
         if record_id != "":
-            select = clienti.select_record(models.Cliente.objects, record_id)
+            select = database_manager.select_record(models.Cliente.objects, record_id)
             form = models.ClienteForm(request.POST, instance=select)
 
             if form.is_valid():
@@ -120,10 +119,10 @@ def delete_record(request, record_id):
     try:
         if request.method == 'GET':
             return render(request, 'anagrafe_delete.sub', {'record_id':record_id,
-                                                           'cliente': clienti.select_record(models.Cliente.objects, record_id)})
+                                                           'cliente': database_manager.select_record(models.Cliente.objects, record_id)})
 
         if request.method == 'POST':
-            cli = clienti.select_record(models.Cliente.objects, record_id)
+            cli = database_manager.select_record(models.Cliente.objects, record_id)
             nome = cli.nome
             cognome = cli.cognome
             cli.delete()
@@ -151,9 +150,9 @@ def _model_ctx(record_type, record_type_id):
         return None
 
     if record_type == "intervento":
-        model_ctx = clienti.select_interventi(models.Intervento.objects, record_type_id)
+        model_ctx = database_manager.select_interventi(models.Intervento.objects, record_type_id)
     else:
-        model_ctx = clienti.select_bollini(models.Bollino.objects, record_type_id)
+        model_ctx = database_manager.select_bollini(models.Bollino.objects, record_type_id)
 
     return model_ctx
 
@@ -167,7 +166,7 @@ def new_typeRecord(request, record_id = None, record_type = None):
         if record_id is None:
             form = model_form()
         else:
-            form = model_form(initial={'cliente': clienti.select_record(models.Cliente.objects, record_id)})
+            form = model_form(initial={'cliente': database_manager.select_record(models.Cliente.objects, record_id)})
 
         return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
                                                       'form': form,
@@ -334,11 +333,11 @@ def anagrafe(request):
     if request.method == 'GET' and request.GET != {}:
         form = myforms.FullTextSearchForm(request.GET)
         if form.is_valid():
-            data_to_render = clienti.search_fullText(models.Cliente.objects, form.cleaned_data['s'])
+            data_to_render = database_manager.search_fullText(models.Cliente.objects, form.cleaned_data['s'])
         else:
             """stringa vuota faccio vedere tutto"""
             form = myforms.FullTextSearchForm()
-            data_to_render = clienti.clienti_displayAll(models.Cliente.objects)
+            data_to_render = database_manager.database_manager_displayAll(models.Cliente.objects)
 
         if data_to_render != "":
             data = render_toTable(data_to_render)
