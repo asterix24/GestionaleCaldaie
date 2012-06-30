@@ -271,9 +271,18 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
+
+ANAGRAFE_COLUM=[
+	'cognome',
+	'nome',
+	'codice_fiscale',
+	'via',
+	'citta',
+	]
+
 def test(request):
     t = database_manager.table_doDict(models.Cliente.objects.all())
-    table = data_render.render_toTable(t)
+    table = data_render.render_toTable(t, show_colum=ANAGRAFE_COLUM)
     return render(request, 'test', {'data':table})
 
 def anagrafe(request):

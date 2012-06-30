@@ -35,13 +35,19 @@ SHOW_ALL_COLUM=[
 	'note_intervento',
 	]
 
-def render_toTable(items, diplay_heder=True, show_colum=SHOW_ALL_COLUM):
+def render_toTable(items, display_header=True, show_colum=SHOW_ALL_COLUM):
 	cycle = False
 
 	table = "<table id=\"customers\">"
 	for item_dict in items:
+		if display_header:
+			table += "<tr>"
+			for j in show_colum:
+				table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
+			table += "</tr>"
+			display_header = False
 
-		cycle_str = ""
+		cycle_str = ''
 		if cycle:
 			cycle_str = " class=\"alt\""
 		cycle = not cycle
@@ -53,14 +59,14 @@ def render_toTable(items, diplay_heder=True, show_colum=SHOW_ALL_COLUM):
 				s  = item_dict[i]
 				if s is None:
 					s = '-'
-
-				table += "<td>%s</td>" % s
-
+				elif i in ['nome', 'cognome']:
+					s = '<a href=\"/anagrafe/%s/detail/\">%s</a>' % (item_dict['id'], s)
 			except KeyError, m:
-				print m
+				s = '-'
+
+			table += "<td>%s</td>" % s
 
 		table += "</tr>"
-
 	table += "</table>"
 
 	return table
