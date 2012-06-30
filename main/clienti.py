@@ -50,95 +50,24 @@ def insert_cliente(r):
     node.save()
     return node
 
-
-VALUE_ONLY = 0
-LABEL_ONLY = 1
-
-DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
-
-def item_toDict(item, value_type=None, exclude=[]):
-    fields = []
-    exclude = ['id', 'status', 'workshop', 'user', 'complete'] + exclude
-
-    for f in item._meta.fields:
-        get_choice = 'get_'+f.name+'_display'
-        if hasattr(item, get_choice):
-            value = getattr(item, get_choice)()
-        else:
-            try :
-                value = getattr(item, f.name)
-            except ObjectDoesNotExist:
-                value = None
-
-        if value is None:
-            value = ''
-
-        if f.editable and value and f.name not in exclude:
-            if value_type == VALUE_ONLY:
-                data = value
-                try:
-                    if type(value) == datetime.date:
-                        data = value.strftime(DATA_FIELD_STR_FORMAT)
-                    if type(value) == int or type(value) == decimal.Decimal:
-                        data = u"%s" % value
-                except ValueError, m:
-                    print m, value
-                    data=""
-
-            elif value_type == LABEL_ONLY:
-                data = f.verbose_name
-            else:
-                data = {'label':f.verbose_name,'value':value}
-
-            fields.append(data)
-
-    return fields
-
-"""
-vista albero
-    cli = clienti_selection.select_related()
-    for c in cli:
-        row = ";".join(item_toDict(c, VALUE_ONLY)) + '\n'
-        impianto_set = c.impianto_set.all()
-
-        for i in impianto_set:
-            row += '\t' + ";".join(item_toDict(i, VALUE_ONLY, exclude = ['cliente'])) + '\n'
-            verifiche_set = i.verifichemanutenzione_set.all()
-
-            for v in verifiche_set:
-                row += '\t\t' +  ";".join(item_toDict(v, VALUE_ONLY, exclude = ['impianto'])) + '\n'
-
-
-        table.append(row)
-"""
-
-def table_view(clienti_selection, header=False, exclude_col=[]):
+def table_doDict(clienti_selection):
     table = []
+    clienti_items = clienti_selection.select_related()
+    for i in clienti_items.values():
+        row = {}
+        impianto_items = models.Cliente.objects.get(pk=i['id']).impianto_set.values()
+        for j in impianto_items:
+            row = dict(i.items() + j.items())
 
-    cli = clienti_selection.select_related()
-    for c in cli:
-        cliente_str = []
-        impianto_str = []
-        row = []
+            verifichemanutenzione_items = models.Impianto.objects.get(pk=j['id']).verifichemanutenzione_set.values()
+            for v in verifichemanutenzione_items:
+                row = dict(row.items() + v.items())
 
-        cliente_str = item_toDict(c, VALUE_ONLY, exclude_col)
-        impianto_set = c.impianto_set.all()
-
-        if impianto_set != []:
-            for i in impianto_set:
-                impianto_str = item_toDict(i, VALUE_ONLY, exclude = (['cliente'] + exclude_col))
-                verifiche_set = i.verifichemanutenzione_set.all()
-
-                if verifiche_set != []:
-                    for v in verifiche_set:
-                        row += cliente_str + impianto_str + item_toDict(v, VALUE_ONLY, exclude = (['impianto'] + exclude_col))
-                else:
-                    row = cliente_str  + impianto_str
-        else:
-            row = cliente_str
+            intervento_items = models.Impianto.objects.get(pk=j['id']).intervento_set.values()
+            for m in intervento_items:
+                row = dict(row.items() + m.items())
 
         table.append(row)
-
     return table
 
 def search_fullText(ctx, s):
