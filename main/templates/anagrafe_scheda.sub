@@ -2,18 +2,6 @@
 
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/">Modifica Anagrafica</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/new/intervento/">Aggiungi Intervento</a></li>
-{% if interventi_history %}
-<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/intervento/{{intervento.id}}/">Modifica Intervento</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/intervento/{{intervento.id}}/">Cancella Intervento</a></li>
-{% endif %}
-<li><a href="{% url anagrafe %}{{cliente.pk}}/new/bollino/">Aggiungi Bollino</a></li>
-{% if bollini_history %}
-<li><a href="{% url anagrafe %}{{cliente.pk}}/edit/bollino/{{bollino.id}}/">Modifica Bollino</a></li>
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/bollino/{{bollino.id}}/">Cancella Bollino</a></li>
-{% endif %}
-<li><a href="{% url anagrafe %}{{cliente.pk}}/delete/">Cancella Cliente</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -23,48 +11,8 @@
 
 {%if top_msg != "" %}<h2>{{top_msg}}</h2>{% endif %}
 
-<table id="customers_detail">
-<tr><th></th><th>Dettaglio Cliente</th></tr>
-{% include "anagrafe_scheda_cliente.inc" %}
-</table>
-
-<table id="customers_detail">
-<tr><th></th><th>Bollino</th></tr>
-{% if bollino.presente %}
-<tr>
-    <td class="hdr">Storico</td>
-    {% if bollini_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/bollini/">{{ bollini_history }}</a></td>
-    {% else %}
-    <td>{{ bollini_history }}</td>
-    {% endif %}
-</tr>
-    {% include "anagrafe_scheda_bollino.inc" %}
-{% else %}
-<tr>
-    <td class="hdr">Note</td>
-    <td>Non ci sono bollini per questo cliente</td>
-</tr>
-{% endif %}
-</table>
-
-<table id="customers_detail">
-<tr><th></th><th>Interventi</th></tr>
-{% if interventi_history %}
-<tr>
-    <td class="hdr">Storico</td>
-    {% if interventi_history > 1 %}
-    <td><a href="{% url anagrafe %}{{cliente.pk}}/interventi/">{{ interventi_history }}</a></td>
-    {% else %}
-    <td>{{ interventi_history }}</td>
-    {% endif %}
-</tr>
-    {% include "anagrafe_scheda_intervento.inc" %}
-{% else %}
-<tr><td class="hdr">Note</td>
-    <td>Non ci sono interventi per questo cliente</td>
-</tr>
-{% endif %}
-</table>
+{% autoescape off %}
+    {{ data }}
+{% endautoescape %}
 
 {% endblock %}

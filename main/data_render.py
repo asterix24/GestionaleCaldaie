@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import datetime
+
 SHOW_ALL_COLUM=[
 	'cliente_data_inserimento',
 	'cognome',
@@ -35,9 +37,11 @@ SHOW_ALL_COLUM=[
 	'note_intervento',
 	]
 
-def render_toTable(items, display_header=True, show_colum=SHOW_ALL_COLUM):
-	cycle = False
+DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
+ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
 
+def render_toTable(items, show_colum, display_header=True):
+	cycle = False
 	table = "<table id=\"customers\">"
 	for item_dict in items:
 		if display_header:
@@ -60,13 +64,41 @@ def render_toTable(items, display_header=True, show_colum=SHOW_ALL_COLUM):
 				if s is None:
 					s = '-'
 				elif i in ['nome', 'cognome']:
-					s = '<a href=\"/anagrafe/%s/detail/\">%s</a>' % (item_dict['id'], s)
-			except KeyError, m:
+					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['id']), s)
+				elif type(s) == datetime.date:
+					s = s.strftime(DATA_FIELD_STR_FORMAT)
+
+			except (KeyError, ValueError), m:
 				s = '-'
 
 			table += "<td>%s</td>" % s
 
 		table += "</tr>"
+	table += "</table>"
+
+	return table
+
+
+def render_toList(items, show_colum, header_msg):
+	table = "<table id=\"customers_detail\">"
+	table += "<tr><th></th><th>%s</th></tr>" % header_msg
+	for item_dict in items:
+		for i in show_colum:
+			try:
+				table += "<tr>"
+				table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+				s  = item_dict[i]
+				if s is None:
+					s = '-'
+				elif type(s) == datetime.date:
+					s = s.strftime(DATA_FIELD_STR_FORMAT)
+
+			except (KeyError, ValueError), m:
+				s = '-'
+
+			table += "<td>%s</td>" % s
+			table += "</tr>"
+
 	table += "</table>"
 
 	return table
