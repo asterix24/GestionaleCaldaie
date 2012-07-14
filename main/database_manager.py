@@ -54,22 +54,33 @@ def insert_cliente(r):
 
 def table_doDict(clienti_selection):
     table = []
-    clienti_items = clienti_selection.select_related()
-    for i in clienti_items.values():
+    clienti_items = clienti_selection.select_related().values()
+    for i in clienti_items:
         row = {}
         impianto_items = models.Cliente.objects.get(pk=i['id']).impianto_set.values()
         for j in impianto_items:
             row = dict(i.items() + j.items())
+            row['cliente_id'] = i['id']
+            row['impianto_id'] = j['id']
 
             verifichemanutenzione_items = models.Impianto.objects.get(pk=j['id']).verifichemanutenzione_set.values()
             for v in verifichemanutenzione_items:
                 row = dict(row.items() + v.items())
+                row['verifiche_id'] = v['id']
+                del(row['id'])
+                table.append(row)
 
             intervento_items = models.Impianto.objects.get(pk=j['id']).intervento_set.values()
             for m in intervento_items:
                 row = dict(row.items() + m.items())
+                row['intervento_id'] = m['id']
+                del(row['id'])
+                table.append(row)
 
-        table.append(row)
+        if verifichemanutenzione_items == [] and intervento_items == []:
+            del(row['id'])
+            table.append(row)
+
     return table
 
 def search_fullText(ctx, s):

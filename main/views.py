@@ -334,6 +334,7 @@ def detail_record(request, record_id, detail_type = None):
     selected_cliente = models.Cliente.objects.get(pk=record_id)
     t = model_to_dict(selected_cliente)
     data_to_render = data_render.render_toList(t, SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+    data_to_render += "<br>"
     data_to_render += data_render.render_toTable(selected_cliente.impianto_set.values(), SCHEDA_ANAGRAFE_IMPIANTI, True)
 
     return render(request, 'anagrafe_scheda.sub', {'data': data_to_render })

@@ -39,6 +39,7 @@ SHOW_ALL_COLUM=[
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
 ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
+IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
 
 def render_toTable(items, show_colum, display_header=True):
 	cycle = False
@@ -61,18 +62,17 @@ def render_toTable(items, show_colum, display_header=True):
 		for i in show_colum:
 			try:
 				s  = item_dict[i]
-				if s is None:
+				if s is None and i != 'codice_impianto':
 					s = '-'
 				elif i in ['nome', 'cognome']:
-					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['id']), s)
+					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
+				elif i in ['codice_impianto']:
+					s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
 				elif type(s) == datetime.date:
 					s = s.strftime(DATA_FIELD_STR_FORMAT)
-
 			except (KeyError, ValueError), m:
 				s = '-'
-
 			table += "<td>%s</td>" % s
-
 		table += "</tr>"
 	table += "</table>"
 
