@@ -79,25 +79,24 @@ def render_toTable(items, show_colum, display_header=True):
 	return table
 
 
-def render_toList(items, show_colum, header_msg):
+def render_toList(item_dict, show_colum, header_msg):
 	table = "<table id=\"customers_detail\">"
 	table += "<tr><th></th><th>%s</th></tr>" % header_msg
-	for item_dict in items:
-		for i in show_colum:
-			try:
-				table += "<tr>"
-				table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
-				s  = item_dict[i]
-				if s is None:
-					s = '-'
-				elif type(s) == datetime.date:
-					s = s.strftime(DATA_FIELD_STR_FORMAT)
-
-			except (KeyError, ValueError), m:
+	for i in show_colum:
+		try:
+			table += "<tr>"
+			table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+			s  = item_dict[i]
+			if s is None:
 				s = '-'
+			elif type(s) == datetime.date:
+				s = s.strftime(DATA_FIELD_STR_FORMAT)
 
-			table += "<td>%s</td>" % s
-			table += "</tr>"
+		except (KeyError, ValueError), m:
+			s = '-'
+
+		table += "<td>%s</td>" % s
+		table += "</tr>"
 
 	table += "</table>"
 

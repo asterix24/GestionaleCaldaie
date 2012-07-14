@@ -271,6 +271,11 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
+def test(request):
+    t = database_manager.table_doDict(models.Cliente.objects.all())
+    table = data_render.render_toTable(t, show_colum=ANAGRAFE_COLUM)
+    return render(request, 'test', {'data':table})
+
 
 ANAGRAFE_COLUM=[
 	'cognome',
@@ -294,17 +299,43 @@ ANAGRAFE_COLUM=[
 	'data_scadenza',
 	]
 
-def test(request):
-    t = database_manager.table_doDict(models.Cliente.objects.all())
-    table = data_render.render_toTable(t, show_colum=ANAGRAFE_COLUM)
-    return render(request, 'test', {'data':table})
+SCHEDA_ANAGRAFE=[
+	'cognome',
+	'nome',
+	'codice_fiscale',
+	'via',
+	'citta',
+	'numero_telefono',
+	'numero_cellulare',
+	'mail'
+	]
+
+SCHEDA_ANAGRAFE_IMPIANTI=[
+	'codice_impianto',
+	'marca_caldaia',
+	'modello_caldaia',
+	'tipo_caldaia',
+	'combustibile',
+	'data_installazione',
+	'data_analisi_combustione',
+	'data_contratto',
+	'data_verifica_manutenzione',
+	'colore_bollino',
+	'data_scadenza',
+	]
+
+
+from django.forms.models import model_to_dict
 
 def detail_record(request, record_id, detail_type = None):
     if record_id == "":
         _diplay_error(request, "Id non trovato.")
 
-    t = database_manager.table_doDict(models.Cliente.objects.filter(pk__iexact=record_id))
-    data_to_render = data_render.render_toList(t, ANAGRAFE_COLUM, "Dettaglio Cliente")
+    selected_cliente = models.Cliente.objects.get(pk=record_id)
+    t = model_to_dict(selected_cliente)
+    data_to_render = data_render.render_toList(t, SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+    data_to_render += data_render.render_toTable(selected_cliente.impianto_set.values(), SCHEDA_ANAGRAFE_IMPIANTI, True)
+
     return render(request, 'anagrafe_scheda.sub', {'data': data_to_render })
 
 def anagrafe(request):

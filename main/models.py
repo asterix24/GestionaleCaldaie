@@ -12,8 +12,6 @@ def is_elapse(self):
 		return False
 	return True
 
-MODELS_EMPTY_STRING="-"
-
 class Cliente(models.Model):
 	"""
 	Anagrafica del cliente
@@ -30,7 +28,7 @@ class Cliente(models.Model):
 
 	class Meta:
 		ordering = ['cognome', 'nome']
-		unique_together = ('cliente_data_inserimento', 'cognome', 'nome', 'codice_fiscale')
+		unique_together = ('cognome', 'nome')
 
 	def __unicode__(self):
 		return self.cognome
@@ -54,7 +52,7 @@ class Impianto(models.Model):
 
 	class Meta:
 		ordering = ['marca_caldaia']
-		unique_together = ('impianto_data_inserimento', 'codice_id', 'codice_impianto', 'marca_caldaia', 'modello_caldaia', 'data_installazione')
+		unique_together = ('codice_impianto', 'data_installazione')
 
 	def __unicode__(self):
 		return self.marca_caldaia
@@ -90,7 +88,6 @@ class VerificheManutenzione(models.Model):
 
 	class Meta:
 		ordering = ['-data_verifica_manutenzione'] # Ordina per data in modo decrescente
-		unique_together = ('data_verifica_manutenzione', 'numero_rapporto', 'colore_bollino', 'numero_bollino')
 
 	def __unicode__(self):
 		return self.tipo

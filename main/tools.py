@@ -158,7 +158,7 @@ def insert_csv_files():
 				if item['nome'] is not None:
 					cli_search = cli_search.filter(nome__iexact = item['nome'])
 			except KeyError, m:
-				print item, m
+				print "Error", item, m
 
 			if len(cli_search) >= 1:
 				cli = cli_search[0]
