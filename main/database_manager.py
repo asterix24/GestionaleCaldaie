@@ -8,6 +8,7 @@ import string
 
 from tools import *
 from django.db.models import Q
+from django.forms.models import model_to_dict
 
 from models import Cliente
 
@@ -52,6 +53,16 @@ def insert_cliente(r):
     node.save()
     return node
 
+def record_toDict(record):
+    record_dict = model_to_dict(record)
+    if type(record) == models.Cliente:
+        record_dict['cliente_id'] = record_dict['id']
+    if type(record) == models.Impianto:
+        record_dict['impianto_id'] = record_dict['id']
+
+    del record_dict['id']
+    return record_dict
+
 def table_doDict(clienti_selection):
     table = []
     clienti_items = clienti_selection.select_related().values()
@@ -64,22 +75,22 @@ def table_doDict(clienti_selection):
             row['impianto_id'] = j['id']
 
             verifichemanutenzione_items = models.Impianto.objects.get(pk=j['id']).verifichemanutenzione_set.values()
-            for v in verifichemanutenzione_items:
-                row = dict(row.items() + v.items())
-                row['verifiche_id'] = v['id']
-                del(row['id'])
+            if verifichemanutenzione_items:
+                row = dict(row.items() + verifichemanutenzione_items[0].items())
+                row['verifiche_id'] = verifichemanutenzione_items[0]['id']
+                del row['id']
                 table.append(row)
 
             intervento_items = models.Impianto.objects.get(pk=j['id']).intervento_set.values()
-            for m in intervento_items:
-                row = dict(row.items() + m.items())
-                row['intervento_id'] = m['id']
-                del(row['id'])
+            if intervento_items:
+                row = dict(row.items() + intervento_items[0].items())
+                row['intervento_id'] = intervento_items[0]['id']
+                del row['id']
                 table.append(row)
 
-        if verifichemanutenzione_items == [] and intervento_items == []:
-            del(row['id'])
-            table.append(row)
+            if verifichemanutenzione_items == [] and intervento_items == []:
+                del row['id']
+                table.append(row)
 
     return table
 
