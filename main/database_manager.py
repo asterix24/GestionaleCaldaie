@@ -94,6 +94,15 @@ def table_doDict(clienti_selection):
 
     return table
 
+def my_custom_sql(param):
+    from django.db import connection, transaction
+    cursor = connection.cursor()
+
+    cursor.execute("select c.*, i.* from main_cliente as c join main_impianto as i on i.cliente_impianto_id = c.id where c.cognome like %s order by c.nome desc", param)
+    row = cursor.fetchall()
+
+    return row
+
 def search_fullText(ctx, s):
     """
     If users search one word and is number we search only in some
@@ -132,5 +141,7 @@ def search_fullText(ctx, s):
                                Q(cognome__istartswith = key) |
                                Q(citta__istartswith = key))
         ctx = result
+        # Print the current query_set
+        #print result.query
 
     return result
