@@ -63,16 +63,16 @@ def render_toTable(items, show_colum, display_header=True):
 		for i in show_colum:
 			try:
 				s  = item_dict[i]
+				if type(s) == datetime.date:
+					s = s.strftime(DATA_FIELD_STR_FORMAT)
+				if s is None:
+					s = '-'
 				if i in ['nome', 'cognome']:
 					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
 				if i == 'codice_impianto':
 					s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % item_dict['impianto_id']), s)
 				if i == 'data_verifica_manutenzione':
 					s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % item_dict['verifiche_id']), s)
-				if type(s) == datetime.date:
-					s = s.strftime(DATA_FIELD_STR_FORMAT)
-				if s is None:
-					s = '-'
 			except (KeyError, ValueError), m:
 				s = '-'
 			table += "<td>%s</td>" % s

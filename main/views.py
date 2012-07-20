@@ -271,10 +271,41 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
 	return _diplay_error(request, "Qualcosa e' andato storto..")
 
+from django.db import connection
+
+def table_out(clienti_selection):
+    table = []
+    clienti_items = clienti_selection.select_related()
+    for i in clienti_items:
+        row = ""
+        cliente_str = ""
+        impianto_str = ""
+        
+        for k in SCHEDA_ANAGRAFE:
+        	cliente_str += "%s, " % getattr(i, k)
+        	
+        impianto_items = i.impianto_set.all()
+        for j in impianto_items:
+            for h in SCHEDA_ANAGRAFE_IMPIANTI:
+            	impianto_str += cliente_str + "%s, " % getattr(j, h)
+            
+            verifichemanutenzione_items = j.verifichemanutenzione_set.all()
+            for g in SCHEDA_ANAGRAFE_VERIFICHE:
+            	row += impianto_str + "%s, " % getattr(verifichemanutenzione_items[0], g)
+                table.append(row)
+
+
+            if verifichemanutenzione_items == []:
+                table.append(row)
+	print connection.queries
+	print len(connection.queries)
+    return table
+
 def test(request):
-	t = database_manager.table_doDict(models.Cliente.objects.all())
-	table = data_render.render_toTable(t, show_colum=ANAGRAFE_COLUM)
-	return render(request, 'test', {'data':table})
+	c = table_out(models.Cliente.objects.all())
+	for i in c:
+		print i
+	return render(request, 'test', {'data':""})
 
 
 ANAGRAFE_COLUM = [
@@ -294,7 +325,6 @@ ANAGRAFE_COLUM = [
 	'data_installazione',
 	'data_analisi_combustione',
 	'data_contratto',
-	'data_verifica_manutenzione',
 	'colore_bollino',
 	'data_scadenza',
 	]
@@ -319,9 +349,6 @@ SCHEDA_ANAGRAFE_IMPIANTI = [
 	'data_installazione',
 	'data_analisi_combustione',
 	'data_contratto',
-	'data_verifica_manutenzione',
-	'colore_bollino',
-	'data_scadenza',
 	]
 
 SCHEDA_ANAGRAFE_VERIFICHE = [
@@ -348,46 +375,23 @@ def detail_record(request, record_id, detail_type = None):
 	if record_id == "":
 		_diplay_error(request, "Id non trovato.")
 
-	selected_cliente = models.Cliente.objects.get(pk=record_id)
-	t = database_manager.record_toDict(selected_cliente)
+	#selected_cliente = models.Cliente.objects.get(pk=record_id)
+	selected_cliente = models.Cliente.objects.filter(pk__exact=record_id)
+	t = database_manager.table_doDict(selected_cliente)
 
-	data_to_render = data_render.render_toList(t, SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+	# TODO: fare in modo che prende una lista.
+	data_to_render = data_render.render_toList(t[0], SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
 	if detail_type is None:
-		data_to_render += "<br>"
-		d = selected_cliente.impianto_set.values()
-		ld = []
-		for k in d:
-			k['impianto_id'] = k['id']
-			del k['id']
-			ld.append(k)
-		data_to_render += data_render.render_toTable(ld, SCHEDA_ANAGRAFE_IMPIANTI, True)
+		data_to_render += data_render.render_toTable(t, SCHEDA_ANAGRAFE_IMPIANTI, True)
 
 	elif detail_type == "impianto":
-		data_to_render += "<br>"
-		selected_impianto = models.Impianto.objects.get(pk=record_id)
+		selected_impianto = models.Impianto.objects.filter(pk__exact=record_id)
+		m = database_manager.table_doDict(selected_impianto)
 
-		data_to_render += data_render.render_toList(database_manager.record_toDict(selected_impianto), SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
-		data_to_render += "<br>"
-
-		v = selected_impianto.verifichemanutenzione_set.values()
-		lv = []
-		for k in v:
-			k['verifiche_id'] = k['id']
-			del k['id']
-			lv.append(k)
-
-		data_to_render += data_render.render_toTable(lv, SCHEDA_ANAGRAFE_VERIFICHE, True)
-		data_to_render += "<br>"
-
-		it = selected_impianto.intervento_set.values()
-		lit = []
-		for k in it:
-			k['intervento_id'] = k['id']
-			del k['id']
-			lit.append(k)
-
-		data_to_render += data_render.render_toTable(it, SCHEDA_ANAGRAFE_INTERVENTI, True)
+		data_to_render += data_render.render_toList(m[0], SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+		data_to_render += data_render.render_toTable(m, SCHEDA_ANAGRAFE_VERIFICHE, True)
+		data_to_render += data_render.render_toTable(m, SCHEDA_ANAGRAFE_INTERVENTI, True)
 
 	elif detail_type is "verifiche":
 		pass

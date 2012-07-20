@@ -63,6 +63,16 @@ def record_toDict(record):
     del record_dict['id']
     return record_dict
 
+def record_set_fixDict(record, key_name):
+    r = record.values()
+    r_list = []
+    for k in r:
+        k[key_name] = k['id']
+        del k['id']
+        r_list.append(k)
+
+    return r_list
+
 def table_doDict(clienti_selection):
     table = []
     clienti_items = clienti_selection.select_related().values()
@@ -93,15 +103,33 @@ def table_doDict(clienti_selection):
                 table.append(row)
 
     return table
+    
+    
+from django.db import connection, transaction
 
-def my_custom_sql(param):
-    from django.db import connection, transaction
-    cursor = connection.cursor()
 
-    cursor.execute("select c.*, i.* from main_cliente as c join main_impianto as i on i.cliente_impianto_id = c.id where c.cognome like %s order by c.nome desc", param)
-    row = cursor.fetchall()
+TEST = "SELECT main_cliente.*, main_impianto.* \
+FROM main_cliente JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
+WHERE ( \
+main_cliente.nome LIKE %s OR \
+main_cliente.cognome LIKE %s OR \
+main_cliente.via LIKE %s OR \
+main_cliente.citta LIKE %s OR \
+main_cliente.numero_telefono LIKE %s OR \
+main_cliente.numero_cellulare LIKE %s OR \
+main_cliente.mail LIKE %s \
+) \
+ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
-    return row
+def generate_query(s):
+	
+	cursor = connection.cursor()
+	cursor.execute(TEST, [s, s, s, s, s, s, s])
+	
+
+	row = cursor.fetchall()
+	return row
+	
 
 def search_fullText(ctx, s):
     """
@@ -141,7 +169,7 @@ def search_fullText(ctx, s):
                                Q(cognome__istartswith = key) |
                                Q(citta__istartswith = key))
         ctx = result
-        # Print the current query_set
-        #print result.query
+        #Print the current query_set
+        print result.query
 
     return result
