@@ -271,128 +271,25 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
 	return _diplay_error(request, "Qualcosa e' andato storto..")
 
-from django.db import connection
 
-def table_out(clienti_selection):
-    table = []
-    clienti_items = clienti_selection.select_related()
-    for i in clienti_items:
-        row = ""
-        cliente_str = ""
-        impianto_str = ""
-        
-        for k in SCHEDA_ANAGRAFE:
-        	cliente_str += "%s, " % getattr(i, k)
-        	
-        impianto_items = i.impianto_set.all()
-        for j in impianto_items:
-            for h in SCHEDA_ANAGRAFE_IMPIANTI:
-            	impianto_str += cliente_str + "%s, " % getattr(j, h)
-            
-            verifichemanutenzione_items = j.verifichemanutenzione_set.all()
-            for g in SCHEDA_ANAGRAFE_VERIFICHE:
-            	row += impianto_str + "%s, " % getattr(verifichemanutenzione_items[0], g)
-                table.append(row)
-
-
-            if verifichemanutenzione_items == []:
-                table.append(row)
-	print connection.queries
-	print len(connection.queries)
-    return table
-
-def test(request):
-	c = table_out(models.Cliente.objects.all())
-	for i in c:
-		print i
+def test(request)
 	return render(request, 'test', {'data':""})
-
-
-ANAGRAFE_COLUM = [
-	'cognome',
-	'nome',
-	'codice_fiscale',
-	'via',
-	'citta',
-	'numero_telefono',
-	'numero_cellulare',
-	'mail',
-	'codice_impianto',
-	'marca_caldaia',
-	'modello_caldaia',
-	'tipo_caldaia',
-	'combustibile',
-	'data_installazione',
-	'data_analisi_combustione',
-	'data_contratto',
-	'colore_bollino',
-	'data_scadenza',
-	]
-
-SCHEDA_ANAGRAFE = [
-	'cognome',
-	'nome',
-	'codice_fiscale',
-	'via',
-	'citta',
-	'numero_telefono',
-	'numero_cellulare',
-	'mail'
-	]
-
-SCHEDA_ANAGRAFE_IMPIANTI = [
-	'codice_impianto',
-	'marca_caldaia',
-	'modello_caldaia',
-	'tipo_caldaia',
-	'combustibile',
-	'data_installazione',
-	'data_analisi_combustione',
-	'data_contratto',
-	]
-
-SCHEDA_ANAGRAFE_VERIFICHE = [
-	'data_verifica_manutenzione',
-	'tipo_verifica_manutenzione',
-	'numero_rapporto',
-	'colore_bollino',
-	'numero_bollino',
-	'valore_bollino',
-	'scadenza',
-	'data_scadenza',
-	]
-
-SCHEDA_ANAGRAFE_INTERVENTI = [
-	'note_verifiche_manutenzione',
-	'data_intervento',
-	'tipo_intervento',
-	'note_intervento',
-	]
-
-
 
 def detail_record(request, record_id, detail_type = None):
 	if record_id == "":
 		_diplay_error(request, "Id non trovato.")
 
 	#selected_cliente = models.Cliente.objects.get(pk=record_id)
-	selected_cliente = models.Cliente.objects.filter(pk__exact=record_id)
-	t = database_manager.table_doDict(selected_cliente)
+	#selected_cliente = models.Cliente.objects.filter(pk__exact=record_id)
+	#t = database_manager.table_doDict(selected_cliente)
 
 	# TODO: fare in modo che prende una lista.
-	data_to_render = data_render.render_toList(t[0], SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+	#data_to_render = data_render.render_toList(t[0], SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
 	if detail_type is None:
-		data_to_render += data_render.render_toTable(t, SCHEDA_ANAGRAFE_IMPIANTI, True)
-
+		pass
 	elif detail_type == "impianto":
-		selected_impianto = models.Impianto.objects.filter(pk__exact=record_id)
-		m = database_manager.table_doDict(selected_impianto)
-
-		data_to_render += data_render.render_toList(m[0], SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
-		data_to_render += data_render.render_toTable(m, SCHEDA_ANAGRAFE_VERIFICHE, True)
-		data_to_render += data_render.render_toTable(m, SCHEDA_ANAGRAFE_INTERVENTI, True)
-
+		pass
 	elif detail_type is "verifiche":
 		pass
 	elif detail_type is "intervento":
@@ -416,7 +313,8 @@ def anagrafe(request):
 			data_to_render = models.Cliente.objects.all()
 
 		if data_to_render:
-			data = data_render.render_toTable(database_manager.table_doDict(data_to_render), show_colum=ANAGRAFE_COLUM)
+			#data = data_render.render_toTable("", show_colum=ANAGRAFE_COLUM)
+			pass
 		else:
 			data = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 

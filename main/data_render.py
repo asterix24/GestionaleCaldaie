@@ -3,6 +3,68 @@
 
 import datetime
 
+ANAGRAFE_COLUM = [
+	'cognome',
+	'nome',
+	'codice_fiscale',
+	'via',
+	'citta',
+	'numero_telefono',
+	'numero_cellulare',
+	'mail',
+	'codice_impianto',
+	'marca_caldaia',
+	'modello_caldaia',
+	'tipo_caldaia',
+	'combustibile',
+	'data_installazione',
+	'data_analisi_combustione',
+	'data_contratto',
+	'colore_bollino',
+	'data_scadenza',
+	]
+
+SCHEDA_ANAGRAFE = [
+	'cognome',
+	'nome',
+	'codice_fiscale',
+	'via',
+	'citta',
+	'numero_telefono',
+	'numero_cellulare',
+	'mail'
+	]
+
+SCHEDA_ANAGRAFE_IMPIANTI = [
+	'codice_impianto',
+	'marca_caldaia',
+	'modello_caldaia',
+	'tipo_caldaia',
+	'combustibile',
+	'data_installazione',
+	'data_analisi_combustione',
+	'data_contratto',
+	]
+
+SCHEDA_ANAGRAFE_VERIFICHE = [
+	'data_verifica_manutenzione',
+	'tipo_verifica_manutenzione',
+	'numero_rapporto',
+	'colore_bollino',
+	'numero_bollino',
+	'valore_bollino',
+	'scadenza',
+	'data_scadenza',
+	]
+
+SCHEDA_ANAGRAFE_INTERVENTI = [
+	'note_verifiche_manutenzione',
+	'data_intervento',
+	'tipo_intervento',
+	'note_intervento',
+	]
+
+
 SHOW_ALL_COLUM=[
 	'cliente_data_inserimento',
 	'cognome',

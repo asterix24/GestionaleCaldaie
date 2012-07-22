@@ -6,170 +6,117 @@ import datetime
 import decimal
 import string
 
-from tools import *
 from django.db.models import Q
 from django.forms.models import model_to_dict
+from django.db import connection, transaction
 
 from models import Cliente
+from tools import *
 
 
-FILTER_MODE_START =    '__istartswith'
-FILTER_MODE_EXACT =    '__iexact'
+FILTER_MODE_START =	'__istartswith'
+FILTER_MODE_EXACT =	'__iexact'
 FILTER_MODE_CONTAIN =  '__icontains'
 FILTER_SHORT_ASCEN =   0
 FILTER_SHORT_DESCEND = 1
 
 def filter_records(ctx, key, value, mode = FILTER_MODE_CONTAIN):
-    return ctx.filter(**{ key + mode : value })
+	return ctx.filter(**{ key + mode : value })
 
 def filter_dataInstallazione(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
-    if stop_y is not None and stop_m is not None and stop_d is not None:
-        return ctx.filter(data_installazione__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
-    if start_m is not None:
-        return ctx.filter(data_installazione__year = start_y).filter(data_installazione__month = start_m)
-    else:
-        return ctx.filter(data_installazione__year = start_y)
+	if stop_y is not None and stop_m is not None and stop_d is not None:
+		return ctx.filter(data_installazione__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
+	if start_m is not None:
+		return ctx.filter(data_installazione__year = start_y).filter(data_installazione__month = start_m)
+	else:
+		return ctx.filter(data_installazione__year = start_y)
 
 def filter_dataContratto(ctx, start_y, start_m = None, start_d = None, stop_y = None, stop_m = None, stop_d = None):
-    if stop_y is not None and stop_m is not None and stop_d is not None:
-        return ctx.filter(data_contratto__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
-    if start_m is not None:
-        return ctx.filter(data_contratto__year = start_y).filter(data_installazione__month = start_m)
-    else:
-        return ctx.filter(data_contratto__year = start_y)
+	if stop_y is not None and stop_m is not None and stop_d is not None:
+		return ctx.filter(data_contratto__range = (datetime.date(start_y, start_m, start_d),datetime.date(stop_y, stop_m, stop_d)))
+	if start_m is not None:
+		return ctx.filter(data_contratto__year = start_y).filter(data_installazione__month = start_m)
+	else:
+		return ctx.filter(data_contratto__year = start_y)
 
 def clienti_displayAll(ctx):
-    return ctx.all()
+	return ctx.all()
 
 def select_record(ctx, id):
-    return ctx.get(pk=id)
+	return ctx.get(pk=id)
 
 def delete_record(ctx, id):
-    return ctx.objects.get(pk=id).delete()
+	return ctx.objects.get(pk=id).delete()
 
 def insert_cliente(r):
-    node = Cliente(**r)
-#    dump(r)
-    node.save()
-    return node
-
-def record_toDict(record):
-    record_dict = model_to_dict(record)
-    if type(record) == models.Cliente:
-        record_dict['cliente_id'] = record_dict['id']
-    if type(record) == models.Impianto:
-        record_dict['impianto_id'] = record_dict['id']
-
-    del record_dict['id']
-    return record_dict
-
-def record_set_fixDict(record, key_name):
-    r = record.values()
-    r_list = []
-    for k in r:
-        k[key_name] = k['id']
-        del k['id']
-        r_list.append(k)
-
-    return r_list
-
-def table_doDict(clienti_selection):
-    table = []
-    clienti_items = clienti_selection.select_related().values()
-    for i in clienti_items:
-        row = {}
-        impianto_items = models.Cliente.objects.get(pk=i['id']).impianto_set.values()
-        for j in impianto_items:
-            row = dict(i.items() + j.items())
-            row['cliente_id'] = i['id']
-            row['impianto_id'] = j['id']
-
-            verifichemanutenzione_items = models.Impianto.objects.get(pk=j['id']).verifichemanutenzione_set.values()
-            if verifichemanutenzione_items:
-                row = dict(row.items() + verifichemanutenzione_items[0].items())
-                row['verifiche_id'] = verifichemanutenzione_items[0]['id']
-                del row['id']
-                table.append(row)
-
-            intervento_items = models.Impianto.objects.get(pk=j['id']).intervento_set.values()
-            if intervento_items:
-                row = dict(row.items() + intervento_items[0].items())
-                row['intervento_id'] = intervento_items[0]['id']
-                del row['id']
-                table.append(row)
-
-            if verifichemanutenzione_items == [] and intervento_items == []:
-                del row['id']
-                table.append(row)
-
-    return table
-    
-    
-from django.db import connection, transaction
+	node = Cliente(**r)
+#	dump(r)
+	node.save()
+	return node
 
 
-TEST = "SELECT main_cliente.*, main_impianto.* \
-FROM main_cliente JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
-WHERE ( \
+
+DB_SELECT_ALL = "\
+SELECT * FROM main_cliente \
+JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
+JOIN main_verifichemanutenzione ON main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id \
+"
+
+DB_WHERE_MAIN_CLIENTE = "\
+(\
 main_cliente.nome LIKE %s OR \
 main_cliente.cognome LIKE %s OR \
 main_cliente.via LIKE %s OR \
 main_cliente.citta LIKE %s OR \
 main_cliente.numero_telefono LIKE %s OR \
 main_cliente.numero_cellulare LIKE %s OR \
-main_cliente.mail LIKE %s \
-) \
-ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
+main_cliente.mail LIKE %s OR \
+main_impianto.codice_impianto LIKE %s OR \
+main_impianto.marca_caldaia  LIKE %s OR \
+main_impianto.modello_caldaia LIKE %s OR \
+main_impianto.tipo_caldaia LIKE %s OR \
+main_impianto.combustibile LIKE %s OR \
+main_impianto.data_installazione LIKE %s OR \
+main_impianto.data_analisi_combustione LIKE %s OR \
+main_impianto.data_contratto LIKE %s OR \
+main_verifichemanutenzione.data_verifica_manutenzione LIKE %s OR \
+main_verifichemanutenzione.tipo_verifica_manutenzione LIKE %s OR \
+main_verifichemanutenzione.numero_rapporto LIKE %s OR \
+main_verifichemanutenzione.colore_bollino LIKE %s OR \
+main_verifichemanutenzione.numero_bollino LIKE %s OR \
+main_verifichemanutenzione.valore_bollino LIKE %s OR \
+main_verifichemanutenzione.scadenza LIKE %s OR \
+main_verifichemanutenzione.data_scadenza LIKE %s \
+)"
 
-def generate_query(s):
-	
-	cursor = connection.cursor()
-	cursor.execute(TEST, [s, s, s, s, s, s, s])
-	
-
-	row = cursor.fetchall()
-	return row
-	
+DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 def search_fullText(ctx, s):
-    """
-    If users search one word and is number we search only in some
-    table field, otherwise apply some euristic to make a full text search
-    on all db fields
-    """
-    result = []
 
-    if ":" in s:
-        if "pk:" in s:
-            _, pk = s.strip().split(":")
-            return [select_record(ctx, pk)]
+	search_key = []
+	if " " in s:
+		search_key = s.strip().split(" ")
+	else:
+		search_key.append(s.strip())
 
-        key, value = s.strip().split(":")
-        return  ctx.filter(**{ key + '__icontains' : value })
+	query_str = DB_SELECT_ALL
+	query_str += " WHERE ( "
+	param = []
+	for i, key in enumerate(search_key):
+		if len(key) >= 3:
+			key = "%" + key + "%"
+		else:
+			key = key + "%"
 
-    search_key = []
-    if " " in s:
-        search_key = s.strip().split(" ")
-    else:
-        search_key.append(s.strip())
+		query_str += DB_WHERE_MAIN_CLIENTE
+		param += [key] * DB_WHERE_MAIN_CLIENTE.count("%s")
 
-    for key in search_key:
-        if len(key) >= 3:
-            result = ctx.filter(Q(numero_telefono__icontains = key) |
-                           Q(numero_cellulare__icontains = key) |
-                           Q(nome__icontains = key) |
-                           Q(cognome__icontains = key) |
-                           Q(via__icontains = key) |
-                           Q(citta__icontains = key) |
-                           Q(mail__icontains = key)
-                           )
-        else:
-            if key[0] in string.letters:
-                result = ctx.filter(Q(nome__istartswith = key) |
-                               Q(cognome__istartswith = key) |
-                               Q(citta__istartswith = key))
-        ctx = result
-        #Print the current query_set
-        print result.query
+		if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
+			query_str += " AND "
 
-    return result
+	query_str += " ) " + DB_ORDER
+
+	cursor = connection.cursor()
+	cursor.execute(query_str, param)
+
+	return cursor.fetchall()
