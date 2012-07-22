@@ -101,8 +101,8 @@ SHOW_ALL_COLUM=[
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
 ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
-IMPIANTO_DETAILS_URL = "\"/anagrafe/impianto/%s/\""
-VERIFICHE_DETAILS_URL = "\"/anagrafe/veriche/%s/\""
+IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
+VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
 def render_toTable(items, show_colum, display_header=True):
 	cycle = False
@@ -132,9 +132,9 @@ def render_toTable(items, show_colum, display_header=True):
 				if i in ['nome', 'cognome']:
 					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
 				if i == 'codice_impianto':
-					s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % item_dict['impianto_id']), s)
+					s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
 				if i == 'data_verifica_manutenzione':
-					s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % item_dict['verifiche_id']), s)
+					s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)
 			except (KeyError, ValueError), m:
 				print "Errore nel render di %s (%s)" % (i, m)
 				s = '-'

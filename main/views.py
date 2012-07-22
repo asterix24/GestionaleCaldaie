@@ -275,29 +275,33 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 def test(request):
 	return render(request, 'test', {'data':""})
 
-def detail_record(request, record_id, detail_type = None):
+def detail_record(request, record_id, detail_type = None, sub_record_id = None):
 	if record_id == "":
 		_diplay_error(request, "Id non trovato.")
 
-	#selected_cliente = models.Cliente.objects.get(pk=record_id)
-	#selected_cliente = models.Cliente.objects.filter(pk__exact=record_id)
-	#t = database_manager.table_doDict(selected_cliente)
-
-	# TODO: fare in modo che prende una lista.
-	#data_to_render = data_render.render_toList(t[0], SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+	data_to_render = database_manager.search_clienteId(record_id)
+	data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
 	if detail_type is None:
-		pass
+		data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_IMPIANTI)
+
 	elif detail_type == "impianto":
-		pass
-	elif detail_type is "verifiche":
-		pass
-	elif detail_type is "intervento":
-		pass
+		data_to_render = database_manager.search_impiantoId(sub_record_id)
+		data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+		data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_VERIFICHE)
+
+	elif detail_type == "verifiche":
+		data_to_render = database_manager.search_verificheId(sub_record_id)
+		data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICHE, "Dettaglio Verifiche e Manutenzioni")
+
+	elif detail_type == "intervento":
+		data_to_render = database_manager.search_interventoId(sub_record_id)
+		data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_INTERVENTI, "Dettaglio Intervento")
+
 	else:
 		_diplay_error(request, "Qualcosa e' andato storto!")
 
-	return render(request, 'anagrafe_scheda.sub', {'data': data_to_render })
+	return render(request, 'anagrafe_scheda.sub', {'data': data })
 
 def anagrafe(request):
 	form = myforms.FullTextSearchForm()
@@ -305,7 +309,7 @@ def anagrafe(request):
 	data = ""
 
 	if request.method == 'GET' and request.GET != {}:
-		form = myforms.FullTextSearchForm(request.GET)
+		form = myforms.FullTextSearchForm(request.`GET)
 		if form.is_valid():
 			search_string = form.cleaned_data['s']
 

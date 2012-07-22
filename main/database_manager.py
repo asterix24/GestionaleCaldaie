@@ -92,6 +92,42 @@ main_verifichemanutenzione.data_scadenza LIKE %s \
 
 DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
+def search_runQuery(query_str, param):
+	cursor = connection.cursor()
+	cursor.execute(query_str, param)
+
+	desc = cursor.description
+	l = []
+	i = 0
+	for col in desc:
+		c = col[0]
+		if c == 'id':
+			c = ETICHETTE_ID[i]
+			i += 1
+
+		l.append(c)
+
+	return [
+		dict(zip(l, row))
+		for row in cursor.fetchall()
+    ]
+
+def search_clienteId(id):
+	query_str = DB_SELECT_ALL + " WHERE main_cliente.id = %s " + DB_ORDER
+	return search_runQuery(query_str, [id])
+
+def search_impiantoId(id):
+	query_str = DB_SELECT_ALL + " WHERE main_impianto.id = %s " + DB_ORDER
+	return search_runQuery(query_str, [id])
+
+def search_verificheId(id):
+	query_str = DB_SELECT_ALL + " WHERE main_verifichemanutenzione.id = %s " + DB_ORDER
+	return search_runQuery(query_str, [id])
+	
+def search_interventoId(id):
+	query_str = DB_SELECT_ALL + " WHERE main_intervento.id = %s " + DB_ORDER
+	return search_runQuery(query_str, [id])
+
 def search_fullText(s):
 
 	search_key = []
@@ -116,22 +152,5 @@ def search_fullText(s):
 			query_str += " AND "
 
 	query_str += " ) " + DB_ORDER
-
-	cursor = connection.cursor()
-	cursor.execute(query_str, param)
-
-	desc = cursor.description
-	l = []
-	i = 0
-	for col in desc:
-		c = col[0]
-		if c == 'id':
-			c = ETICHETTE_ID[i]
-			i += 1
-
-		l.append(c)
-
-	return [
-		dict(zip(l, row))
-		for row in cursor.fetchall()
-    ]
+	
+	return search_runQuery(query_str, param)
