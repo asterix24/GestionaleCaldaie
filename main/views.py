@@ -309,14 +309,11 @@ def anagrafe(request):
 	data = ""
 
 	if request.method == 'GET' and request.GET != {}:
-		form = myforms.FullTextSearchForm(request.`GET)
+		form = myforms.FullTextSearchForm(request.GET)
 		if form.is_valid():
 			search_string = form.cleaned_data['s']
 
 		data_to_render = database_manager.search_fullText(search_string)
-		if data_to_render:
-			data = data_render.render_toTable(data_to_render, show_colum=data_render.ANAGRAFE_COLUM)
-		else:
-			data = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
+		data = data_render.render_toTable(data_to_render, show_colum=data_render.ANAGRAFE_COLUM)
 
 	return render(request, 'anagrafe.sub', {'data': data,'form': form })

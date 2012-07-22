@@ -104,7 +104,12 @@ ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
 IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
 VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
-def render_toTable(items, show_colum, display_header=True):
+MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
+
+def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY):
+	if items == []:
+		return no_items_msg
+		
 	cycle = False
 	table = "<table id=\"customers\">"
 	for item_dict in items:
