@@ -272,7 +272,7 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 	return _diplay_error(request, "Qualcosa e' andato storto..")
 
 
-def test(request)
+def test(request):
 	return render(request, 'test', {'data':""})
 
 def detail_record(request, record_id, detail_type = None):
@@ -301,20 +301,17 @@ def detail_record(request, record_id, detail_type = None):
 
 def anagrafe(request):
 	form = myforms.FullTextSearchForm()
+	search_string = ""
 	data = ""
 
 	if request.method == 'GET' and request.GET != {}:
 		form = myforms.FullTextSearchForm(request.GET)
 		if form.is_valid():
-			data_to_render = database_manager.search_fullText(models.Cliente.objects, form.cleaned_data['s'])
-		else:
-			"""stringa vuota faccio vedere tutto"""
-			form = myforms.FullTextSearchForm()
-			data_to_render = models.Cliente.objects.all()
+			search_string = form.cleaned_data['s']
 
+		data_to_render = database_manager.search_fullText(search_string)
 		if data_to_render:
-			#data = data_render.render_toTable("", show_colum=ANAGRAFE_COLUM)
-			pass
+			data = data_render.render_toTable(data_to_render, show_colum=data_render.ANAGRAFE_COLUM)
 		else:
 			data = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 

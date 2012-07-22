@@ -136,6 +136,7 @@ def render_toTable(items, show_colum, display_header=True):
 				if i == 'data_verifica_manutenzione':
 					s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % item_dict['verifiche_id']), s)
 			except (KeyError, ValueError), m:
+				print "Errore nel render di %s (%s)" % (i, m)
 				s = '-'
 			table += "<td>%s</td>" % s
 		table += "</tr>"
@@ -158,6 +159,7 @@ def render_toList(item_dict, show_colum, header_msg):
 				s = s.strftime(DATA_FIELD_STR_FORMAT)
 
 		except (KeyError, ValueError), m:
+			print "Errore nel render di %s (%s)" % (i, m)
 			s = '-'
 
 		table += "<td>%s</td>" % s

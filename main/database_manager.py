@@ -55,6 +55,7 @@ def insert_cliente(r):
 	return node
 
 
+ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifiche_id']
 
 DB_SELECT_ALL = "\
 SELECT * FROM main_cliente \
@@ -91,7 +92,7 @@ main_verifichemanutenzione.data_scadenza LIKE %s \
 
 DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
-def search_fullText(ctx, s):
+def search_fullText(s):
 
 	search_key = []
 	if " " in s:
@@ -119,4 +120,18 @@ def search_fullText(ctx, s):
 	cursor = connection.cursor()
 	cursor.execute(query_str, param)
 
-	return cursor.fetchall()
+	desc = cursor.description
+	l = []
+	i = 0
+	for col in desc:
+		c = col[0]
+		if c == 'id':
+			c = ETICHETTE_ID[i]
+			i += 1
+
+		l.append(c)
+
+	return [
+		dict(zip(l, row))
+		for row in cursor.fetchall()
+    ]
