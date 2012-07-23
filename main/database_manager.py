@@ -59,9 +59,11 @@ ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifiche_id']
 
 DB_SELECT_ALL = "\
 SELECT * FROM main_cliente \
-JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
-JOIN main_verifichemanutenzione ON main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id \
+LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
+LEFT JOIN main_verifichemanutenzione ON main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id \
 "
+
+#LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 
 DB_WHERE_MAIN_CLIENTE = "\
 (\
