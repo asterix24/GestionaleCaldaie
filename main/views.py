@@ -41,36 +41,6 @@ def _detail_select(request, record_id, detail_type=None, msg=''):
 												   'detail_type':detail_type,
 												   'data_to_render': data_to_render})
 
-def _diplay_scheda(request, record_id, msg=''):
-	cliente = database_manager.select_record(models.Cliente.objects, record_id)
-	bollini = database_manager.select_bollini(cliente)
-	interventi = database_manager.select_interventi(cliente)
-
-	bollini_history = len(bollini)
-	if bollini_history >= 1:
-		bollini = bollini[0]
-
-	interventi_history = len(interventi)
-	if interventi_history >= 1:
-		interventi = interventi[0]
-
-	return render(request, 'anagrafe_scheda.sub',
-					{'top_msg':msg,
-					 'cliente': cliente,
-					 'bollino': bollini,
-					 'intervento': interventi,
-					 'interventi_history': interventi_history,
-					 'bollini_history': bollini_history,
-					})
-
-def detail_record(request, record_id, detail_type = None):
-	if record_id == "":
-		_diplay_error(request, "Id non trovato.")
-
-	if detail_type == "detail":
-		return _diplay_scheda(request, record_id)
-	else:
-		return _detail_select(request, record_id, detail_type, "")
 
 def edit_record(request, record_id):
 	if request.method == 'GET':
@@ -100,22 +70,7 @@ def edit_record(request, record_id):
 		else:
 			return _diplay_error(request, "Id non trovato.")
 
-def new_record(request):
-	if request.method == 'GET':
-		form = models.ClienteForm()
-		return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
-												'cliente': form})
-	if request.method == 'POST':
-		form = models.ClienteForm(request.POST)
-		if form.is_valid():
-			istance = form.save()
-			s = "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome'))
-			return _diplay_scheda(request, istance.id, s)
-		else:
-			return render(request, 'anagrafe_new.sub', {'action': 'Nuovo',
-													'cliente': form})
 
-	return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def delete_record(request, record_id):
 	try:
@@ -274,6 +229,23 @@ def delete_typeRecord(request, record_id = None, record_type = None, record_type
 
 def test(request):
 	return render(request, 'test', {'data':""})
+
+def new_record(request):
+	if request.method == 'GET':
+		form = models.ClienteForm()
+		return render(request, 'anagrafe_new.sub', {'action': 'Nuovo', 'cliente': form})
+	if request.method == 'POST':
+		print "qui.."
+		form = models.ClienteForm(request.POST)
+		if form.is_valid():
+			istance = form.save()
+			s = "Cliente: %s %s aggiunto correttamente." % (request.POST.get('nome'), request.POST.get('cognome'))
+			return render(request, 'messages.sub', {'msg_hdr': 'Nuovo Cliente', 'msg_body': s})
+		else:
+			print "no.."
+			return render(request, 'anagrafe_new.sub', {'action': 'Nuovo', 'cliente': form})
+
+	return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def detail_record(request, record_id, detail_type = None, sub_record_id = None):
 	if record_id == "":

@@ -108,7 +108,6 @@ def search_runQuery(query_str, param):
 			i += 1
 
 		l.append(c)
-
 	return [
 		dict(zip(l, row))
 		for row in cursor.fetchall()
@@ -131,7 +130,6 @@ def search_interventoId(id):
 	return search_runQuery(query_str, [id])
 
 def search_fullText(s):
-
 	search_key = []
 	if " " in s:
 		search_key = s.strip().split(" ")

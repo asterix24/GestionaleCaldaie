@@ -14,7 +14,7 @@ urlpatterns = patterns('',
 	url(r'^anagrafe/(?P<record_id>\d+)/(?P<detail_type>\w+)/(?P<sub_record_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
 
     # Generic record
-    #url(r'^anagrafe/new/$', 'main.views.new_record', name='new_record'),
+    url(r'^anagrafe/new/$', 'main.views.new_record', name='new_record'),
     #url(r'^anagrafe/(?P<record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
     #url(r'^anagrafe/(?P<record_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
 
