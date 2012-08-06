@@ -104,6 +104,10 @@ ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
 IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
 VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
+EDIT_BAR_URLS = "<img src=\"/static/plus.jpg\" alt=\"Aggiungi..\" title=\"Aggiungi..\" width=\"16\" height=\"16\" /> \
+<img src=\"/static/minus.jpg\" alt=\"Rimuovi..\" title=\"Rimuovi..\"  width=\"16\" height=\"16\" /> \
+<img src=\"/static/edit.jpg\" alt=\"Modifica..\" title=\"Modifica..\" width=\"16\" height=\"16\" />"
+
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
 def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY):
@@ -115,6 +119,7 @@ def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEM
 	for item_dict in items:
 		if display_header:
 			table += "<tr>"
+			table += "<th></th>"
 			for j in show_colum:
 				table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
 			table += "</tr>"
@@ -126,7 +131,7 @@ def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEM
 		cycle = not cycle
 
 		table += "<tr%s>" % cycle_str
-
+		table += "<td>%s</td>" % EDIT_BAR_URLS
 		for i in show_colum:
 			try:
 				s  = item_dict[i]
