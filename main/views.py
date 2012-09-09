@@ -25,189 +25,6 @@ def _diplay_ok(request, msg):
               'msg_body': msg})
 
 
-def _detail_select(request, record_id, detail_type=None, msg=''):
-    cliente = database_manager.select_record(models.Cliente.objects, record_id)
-
-    if detail_type is None:
-            return _diplay_error(request, "Detail non sensato..")
-
-    if detail_type == "interventi":
-            data_to_render = database_manager.select_interventi(cliente)
-    else:
-            data_to_render = database_manager.select_bollini(cliente)
-
-    return render(request, 'anagrafe_scheda_history.sub',{ 'top_msg':msg,
-                                                                                               'cliente': cliente,
-                                                                                               'detail_type':detail_type,
-                                                                                               'data_to_render': data_to_render})
-
-
-def edit_record(request, record_id):
-    if request.method == 'GET':
-            if record_id != "":
-                    select = database_manager.select_record(models.Cliente.objects, record_id)
-                    form = models.ClienteForm(instance=select)
-                    return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
-                                                                                                            'record_id': record_id,
-                                                                                                            'cliente': form})
-            else:
-                    return _diplay_error(request, "Id non trovato.")
-
-    # We manage a post request when we want to save the data.
-    if request.method == 'POST':
-            #If we found a id take the record to edit it.
-            if record_id != "":
-                    select = database_manager.select_record(models.Cliente.objects, record_id)
-                    form = models.ClienteForm(request.POST, instance=select)
-
-                    if form.is_valid():
-                            form.save()
-                            return _diplay_scheda(request, record_id)
-                    else:
-                            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
-                                                                                                            'record_id': record_id,
-                                                                                                            'cliente': form})
-            else:
-                    return _diplay_error(request, "Id non trovato.")
-
-
-
-
-def _model_form(record_type):
-    if record_type is None:
-            return None
-
-    if record_type == "intervento":
-            model_form = models.InterventoForm
-    else:
-            model_form = models.BollinoForm
-
-    return model_form
-
-def _model_ctx(record_type, record_type_id):
-    if record_type is None:
-            return None
-
-    if record_type == "intervento":
-            model_ctx = database_manager.select_interventi(models.Intervento.objects, record_type_id)
-    else:
-            model_ctx = database_manager.select_bollini(models.Bollino.objects, record_type_id)
-
-    return model_ctx
-
-def new_typeRecord(request, record_id = None, record_type = None):
-
-    model_form = _model_form(record_type)
-    if model_form is None:
-            return _diplay_error(request, "Qualcosa e' andato storto..")
-
-    if request.method == 'GET':
-            if record_id is None:
-                    form = model_form()
-            else:
-                    form = model_form(initial={'cliente': database_manager.select_record(models.Cliente.objects, record_id)})
-
-            return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
-                                                                                                      'form': form,
-                                                                                                      'record_id': record_id,
-                                                                                                      'record_type': record_type })
-
-    if request.method == 'POST':
-            form = model_form(request.POST)
-
-            if form.is_valid():
-                    record_id = form.cleaned_data['cliente'].id
-                    form.save()
-                    if record_type == "intervento":
-                            s = "L\'intervento \"%s\" del %s e' stato aggiunto correttamente." % (models.interventi_choicesExteded(form.cleaned_data['tipo']), form.cleaned_data['data'].strftime("%d/%m/%y"))
-                    else:
-                            s = "Il Bollino e' stato aggiunto correttamente."
-                    return _diplay_scheda(request, record_id, s)
-
-            else:
-                    return render(request, 'record_type_mgr.sub', {'action': 'Nuovo',
-                                                                                                              'form': form,
-                                                                                                              'record_id': record_id,
-                                                                                                              'record_type': record_type })
-
-    return _diplay_error(request, "Qualcosa e' andato storto..")
-
-def edit_typeRecord(request, record_id = None, record_type = None, record_type_id = None):
-    model_form = _model_form(record_type)
-    if model_form is None:
-            return _diplay_error(request, "Qualcosa e' andato storto..")
-
-    if request.method == 'GET':
-            if record_type_id is not None:
-                    form = model_form(instance=_model_ctx(record_type, record_type_id))
-            else:
-                    form = model_form()
-
-            return render(request, 'record_type_mgr.sub', {'action': 'Modifica',
-                                                                                                       'form': form,
-                                                                                                            'record_id': record_id,
-                                                                                                            'record_type': record_type,
-                                                                                                            'record_type_id': record_type_id})
-
-    if request.method == 'POST':
-            if record_type_id is not None:
-                    form = model_form(request.POST, instance=_model_ctx(record_type, record_type_id))
-            else:
-                    form = model_form(request.POST)
-
-            if form.is_valid():
-                    record_id = form.cleaned_data['cliente'].id
-                    form.save()
-
-                    if record_type == "intervento":
-                            s = "L\'Intervento del %s e' stato modificato correttamente." % form.cleaned_data['data'].strftime("%d/%m/%y")
-                    else:
-                            s = "Il Bollino e\' stato modificato correttamente."
-
-                    return _diplay_scheda(request, record_id, s)
-            else:
-                    return render(request, 'record_type_mgr.sub', {'action': 'Modifica',
-                                                                                                               'form': form,
-                                                                                                               'record_id': record_id,
-                                                                                                               'record_type': record_type,
-                                                                                                               'record_type_id': record_type_id})
-
-    return _diplay_error(request, "Qualcosa e' andato storto..")
-
-def delete_typeRecord(request, record_id = None, record_type = None, record_type_id = None):
-    if record_type is None:
-            return _diplay_error(request, "Qualcosa e' andato storto..")
-
-    try:
-            if request.method == 'GET':
-
-                    return render(request, 'record_type_delete.sub', {'action': 'Cancella',
-                                                                                                               record_type: _model_ctx(record_type, record_type_id),
-                                                                                                               'record_id': record_id,
-                                                                                                               'record_type': record_type,
-                                                                                                               'record_type_id': record_type_id})
-
-            if request.method == 'POST':
-                    record = _model_ctx(record_type, record_type_id)
-
-                    if record_type == "intervento":
-                            try:
-                                    data = record.data.strftime("%d/%m/%y")
-                            except ValueError:
-                                    data = ""
-                            tipo = models.interventi_choicesExteded(record.tipo)
-                            s = "Intervento \"%s\" del %s, rimosso correttamente." % (tipo, data)
-                    else:
-                            s = "Il Bollino e\' stato rimosso correttamente."
-
-                    record.delete()
-                    return _diplay_scheda(request, record_id, s)
-
-    except ObjectDoesNotExist, m:
-            return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
-
-    return _diplay_error(request, "Qualcosa e' andato storto..")
-
 
 def test(request):
     return render(request, 'test', {'data':""})
@@ -286,6 +103,35 @@ def delete_record(request, record_id):
             return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
+
+def edit_record(request, record_id):
+    if request.method == 'GET':
+            if record_id != "":
+                    select = database_manager.select_record(models.Cliente.objects, record_id)
+                    form = models.ClienteForm(instance=select)
+                    return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                                                                            'record_id': record_id,
+                                                                                                            'cliente': form})
+            else:
+                    return _diplay_error(request, "Id non trovato.")
+
+    # We manage a post request when we want to save the data.
+    if request.method == 'POST':
+            #If we found a id take the record to edit it.
+            if record_id != "":
+                    select = database_manager.select_record(models.Cliente.objects, record_id)
+                    form = models.ClienteForm(request.POST, instance=select)
+
+                    if form.is_valid():
+                            form.save()
+                            return _diplay_scheda(request, record_id)
+                    else:
+                            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                                                                            'record_id': record_id,
+                                                                                                            'cliente': form})
+            else:
+                    return _diplay_error(request, "Id non trovato.")
+
 
 def detail_record(request, record_id, detail_type = None, sub_record_id = None):
 
