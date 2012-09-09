@@ -268,12 +268,13 @@ def delete_record(request, record_id):
     try:
             if request.method == 'GET':
                     data = view_record(record_id)
-                    return render(request, 'anagrafe_delete.sub',
+                    return render(request, 'anagrafe_manager.sub',
                             {'data': data ,
                              'top_message': '<h1>Attenzione! stai per cancellare il Cliente selezionato e tutto la sua storia.</h1>',
                              'record_id': record_id})
 
             if request.method == 'POST':
+                    #data = view_record(record_id)
                     cli = database_manager.select_record(models.Cliente.objects, record_id)
                     nome = cli.nome
                     cognome = cli.cognome
