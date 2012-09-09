@@ -72,24 +72,6 @@ def edit_record(request, record_id):
 
 
 
-def delete_record(request, record_id):
-    try:
-            if request.method == 'GET':
-                    return render(request, 'anagrafe_delete.sub', {'record_id':record_id,
-                                                                                                               'cliente': database_manager.select_record(models.Cliente.objects, record_id)})
-
-            if request.method == 'POST':
-                    cli = database_manager.select_record(models.Cliente.objects, record_id)
-                    nome = cli.nome
-                    cognome = cli.cognome
-                    cli.delete()
-                    s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
-                    return _diplay_ok(request, s)
-
-    except ObjectDoesNotExist, m:
-            return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
-
-    return _diplay_error(request, "Qualcosa e' andato storto..")
 
 def _model_form(record_type):
     if record_type is None:
@@ -282,6 +264,28 @@ def new_record(request):
 
     return _diplay_error(request, "Qualcosa e' andato storto..")
 
+def delete_record(request, record_id):
+    try:
+            if request.method == 'GET':
+                    data = view_record(record_id)
+                    return render(request, 'anagrafe_delete.sub',
+                            {'data': data ,
+                             'top_message': '<h1>Attenzione! stai per cancellare il Cliente selezionato e tutto la sua storia.</h1>',
+                             'record_id': record_id})
+
+            if request.method == 'POST':
+                    cli = database_manager.select_record(models.Cliente.objects, record_id)
+                    nome = cli.nome
+                    cognome = cli.cognome
+                    cli.delete()
+                    s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
+                    return _diplay_ok(request, s)
+
+    except ObjectDoesNotExist, m:
+            return _diplay_error(request, "Qualcosa e' andato storto..(%s)" % m)
+
+    return _diplay_error(request, "Qualcosa e' andato storto..")
+
 def detail_record(request, record_id, detail_type = None, sub_record_id = None):
 
     data = view_record(record_id, detail_type, sub_record_id)
@@ -289,7 +293,7 @@ def detail_record(request, record_id, detail_type = None, sub_record_id = None):
     if data is None:
         _diplay_error(request, "Qualcosa e' andato storto!")
 
-    return render(request, 'anagrafe_scheda.sub', {'data': data })
+    return render(request, 'anagrafe_scheda.sub', {'data': data , 'record_id': record_id})
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()

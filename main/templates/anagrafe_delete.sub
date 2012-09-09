@@ -8,15 +8,25 @@
 {% endblock %}
 
 {% block center_block %}
+
+{%if top_message != "" %}
+    {% autoescape off %}
+        {{top_message}}
+    {% endautoescape %}
+{% endif %}
+
 <form action="{% url anagrafe %}{{record_id}}/delete/" method="post">{% csrf_token %}
-<h1>Attenzione stai per cancellare il seguente cliente!</h1>
-<table id="customers_detail">
-<tr><th></th><th>Cancella Cliente</th></tr>
-{% include "anagrafe_scheda_cliente.inc" %}
-</table>
+
+{% autoescape off %}
+    {{ data }}
+{% endautoescape %}
+<br>
 <input class=navigation_buttons type="submit" value="Cancella Cliente"/>
 </form>
+
 <form action="{% url anagrafe %}{{record_id}}/" method="post">{% csrf_token %}
 <input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
+
+
 {% endblock %}

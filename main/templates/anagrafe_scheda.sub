@@ -2,6 +2,7 @@
 
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
+<li><a href="{% url anagrafe %}{{record_id}}/delete/">Cancella Cliente</a></li>
 {% endblock %}
 
 {% block navigation_search_block_bot %}
@@ -9,7 +10,11 @@
 
 {% block center_block %}
 
-{%if top_msg != "" %}<h2>{{top_msg}}</h2>{% endif %}
+{%if top_message != "" %}
+    {% autoescape off %}
+        {{top_message}}
+    {% endautoescape %}
+{% endif %}
 
 {% autoescape off %}
     {{ data }}

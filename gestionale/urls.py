@@ -10,13 +10,12 @@ urlpatterns = patterns('',
     url(r'^home/$', 'main.views.home', name='home'),
     url(r'^anagrafe/$', 'main.views.anagrafe', name='anagrafe'),
     url(r'^anagrafe/(?P<record_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
-    url(r'^anagrafe/(?P<record_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
 	url(r'^anagrafe/(?P<record_id>\d+)/(?P<detail_type>\w+)/(?P<sub_record_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
 
     # Generic record
     url(r'^anagrafe/new/$', 'main.views.new_record', name='new_record'),
     #url(r'^anagrafe/(?P<record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
-    #url(r'^anagrafe/(?P<record_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
+    url(r'^anagrafe/(?P<record_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
 
     #url(r'^anagrafe/new/(?P<record_type>intervento)/$', 'main.views.new_typeRecord', name='new_intervento'),
     #url(r'^anagrafe/new/(?P<record_type>bollino)/$', 'main.views.new_typeRecord', name='new_bollino'),
