@@ -24,8 +24,6 @@ def _diplay_ok(request, msg):
             { 'msg_hdr':'Ok!',
               'msg_body': msg})
 
-
-
 def test(request):
     return render(request, 'test', {'data':""})
 
@@ -39,7 +37,8 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
 
     if detail_type is None:
         if len(data_to_render) >= 1 and data_to_render[0]['cliente_impianto_id'] != None:
-            data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_IMPIANTI)
+            bar = data_render.add_editBarUrl(record_id, "impianto", sub_record_id)
+            data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_IMPIANTI, decorator=bar)
         else:
             # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
             data += "Aggiungi Impianto al cliente.."
@@ -47,8 +46,9 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(sub_record_id)
+        bar = data_render.add_editBarUrl(record_id, "verifiche", sub_record_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
-        data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_VERIFICHE)
+        data += data_render.render_toTable(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_VERIFICHE, decorator=bar)
 
     elif detail_type == "verifiche":
         data_to_render = database_manager.search_verificheId(sub_record_id)
@@ -106,31 +106,31 @@ def delete_record(request, record_id):
 
 def edit_record(request, record_id):
     if request.method == 'GET':
-            if record_id != "":
-                    select = database_manager.select_record(models.Cliente.objects, record_id)
-                    form = models.ClienteForm(instance=select)
-                    return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
-                                                                                                            'record_id': record_id,
-                                                                                                            'cliente': form})
-            else:
-                    return _diplay_error(request, "Id non trovato.")
+        if record_id != "":
+            select = database_manager.select_record(models.Cliente.objects, record_id)
+            form = models.ClienteForm(instance=select)
+            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                    'record_id': record_id,
+                                                    'cliente': form})
+        else:
+            return _diplay_error(request, "Id non trovato.")
 
     # We manage a post request when we want to save the data.
     if request.method == 'POST':
-            #If we found a id take the record to edit it.
-            if record_id != "":
-                    select = database_manager.select_record(models.Cliente.objects, record_id)
-                    form = models.ClienteForm(request.POST, instance=select)
+        #If we found a id take the record to edit it.
+        if record_id != "":
+            select = database_manager.select_record(models.Cliente.objects, record_id)
+            form = models.ClienteForm(request.POST, instance=select)
 
-                    if form.is_valid():
-                            form.save()
-                            return _diplay_scheda(request, record_id)
-                    else:
-                            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
-                                                                                                            'record_id': record_id,
-                                                                                                            'cliente': form})
-            else:
-                    return _diplay_error(request, "Id non trovato.")
+        if form.is_valid():
+            form.save()
+            return _diplay_scheda(request, record_id)
+        else:
+            return render(request, 'anagrafe_new.sub', {'action': 'Modifica',
+                                                        'record_id': record_id,
+                                                        'cliente': form})
+    else:
+        return _diplay_error(request, "Id non trovato.")
 
 
 def detail_record(request, record_id, detail_type = None, sub_record_id = None):

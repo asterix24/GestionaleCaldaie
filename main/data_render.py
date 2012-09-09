@@ -104,55 +104,62 @@ ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
 IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
 VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
-EDIT_BAR_URLS = "<img src=\"/static/plus.jpg\" alt=\"Aggiungi..\" title=\"Aggiungi..\" width=\"16\" height=\"16\" /> \
-<img src=\"/static/minus.jpg\" alt=\"Rimuovi..\" title=\"Rimuovi..\"  width=\"16\" height=\"16\" /> \
-<img src=\"/static/edit.jpg\" alt=\"Modifica..\" title=\"Modifica..\" width=\"16\" height=\"16\" />"
+BAR_URLS_EDIT = "<a href=\"/anagrafe/%s/%s/%s/delete\"><img src=\"/static/minus.jpg\" alt=\"Rimuovi..\" title=\"Rimuovi..\"  width=\"16\" height=\"16\" /></a> <a href=\"/anagrafe/%s/%s/%s/edit\"><img src=\"/static/edit.jpg\" alt=\"Modifica..\" title=\"Modifica..\" width=\"17\" height=\"16\" /></a>"
+
+BAR_URLS_ADD = "<a href=\"/anagrafe/%s/%s/%s/add\"><img src=\"/static/plus.jpg\" alt=\"Aggiungi..\" title=\"Aggiungi..\" width=\"16\" height=\"16\" /></a>"
 
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
-def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY):
-	if items == []:
-		return no_items_msg
-		
-	cycle = False
-	table = "<table id=\"customers\">"
-	for item_dict in items:
-		if display_header:
-			table += "<tr>"
-			table += "<th></th>"
-			for j in show_colum:
-				table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
-			table += "</tr>"
-			display_header = False
+def add_editBarUrl(record_id, detail_type, sub_record_id):
 
-		cycle_str = ''
-		if cycle:
-			cycle_str = " class=\"alt\""
-		cycle = not cycle
+    return (BAR_URLS_EDIT % (record_id, detail_type, sub_record_id,
+                             record_id, detail_type, sub_record_id))
 
-		table += "<tr%s>" % cycle_str
-		table += "<td>%s</td>" % EDIT_BAR_URLS
-		for i in show_colum:
-			try:
-				s  = item_dict[i]
-				if type(s) == datetime.date:
-					s = s.strftime(DATA_FIELD_STR_FORMAT)
-				if i in ['nome', 'cognome']:
-					s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
-				if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
-					s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
-				if i == 'data_verifica_manutenzione':
-					s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)	
-				if s is None:
-					s = '-'
-			except (KeyError, ValueError), m:
-				print "Errore nel render di %s (%s)" % (i, m)
-				s = '-'
-			table += "<td>%s</td>" % s
-		table += "</tr>"
-	table += "</table>"
 
-	return table
+def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY, decorator=None):
+    if items == []:
+        return no_items_msg
+
+    cycle = False
+    table = "<table id=\"customers\">"
+    for item_dict in items:
+        if display_header:
+            table += "<tr>"
+            table += "<th></th>"
+            for j in show_colum:
+                table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
+            table += "</tr>"
+            display_header = False
+
+        cycle_str = ''
+        if cycle:
+            cycle_str = " class=\"alt\""
+        cycle = not cycle
+
+        table += "<tr%s>" % cycle_str
+        if decorator is not None:
+            table += "<td>%s</td>" % decorator
+        for i in show_colum:
+            try:
+                s  = item_dict[i]
+                if type(s) == datetime.date:
+                    s = s.strftime(DATA_FIELD_STR_FORMAT)
+                if i in ['nome', 'cognome']:
+                    s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
+                if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
+                    s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
+                if i == 'data_verifica_manutenzione':
+                    s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)	
+                if s is None:
+                    s = '-'
+            except (KeyError, ValueError), m:
+                print "Errore nel render di %s (%s)" % (i, m)
+                s = '-'
+            table += "<td>%s</td>" % s
+        table += "</tr>"
+    table += "</table>"
+
+    return table
 
 
 def render_toList(item_dict, show_colum, header_msg):
