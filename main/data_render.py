@@ -104,16 +104,79 @@ ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
 IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
 VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
-BAR_URLS_EDIT = "<a href=\"/anagrafe/%s/%s/%s/delete\"><img src=\"/static/minus.jpg\" alt=\"Rimuovi..\" title=\"Rimuovi..\"  width=\"16\" height=\"16\" /></a> <a href=\"/anagrafe/%s/%s/%s/edit\"><img src=\"/static/edit.jpg\" alt=\"Modifica..\" title=\"Modifica..\" width=\"17\" height=\"16\" /></a>"
-
-BAR_URLS_ADD = "<a href=\"/anagrafe/%s/%s/%s/add\"><img src=\"/static/plus.jpg\" alt=\"Aggiungi..\" title=\"Aggiungi..\" width=\"16\" height=\"16\" /></a>"
-
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
-def add_editBarUrl(record_id, detail_type, sub_record_id):
+URL_TEMPLATE = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\" /></a>"
 
-    return (BAR_URLS_EDIT % (record_id, detail_type, sub_record_id,
-                             record_id, detail_type, sub_record_id))
+class DataRender:
+    def __init__(self, items, show_colum, msg_items_empty = MSG_ITEMS_EMPTY):
+        self.items = items
+        self.show_colum = show_colum
+        self.display_header = True
+        self.msg_items_empty = msg_items_empty
+        self.decorator = None
+
+    def showHeader(self, display_header):
+        self.display_header = display_header
+
+    def msgItemsEmpty(self, msg):
+        self.msg_items_empty = msg
+
+    def editUrlsImpianti(self):
+        self.decorator = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
+
+    def editUrlsVerifiche(self):
+        self.decorator = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
+
+    def _decorator(self, item_dict):
+        self.decorator = (item_dict['cliente_id'],'impianto', item_dict['impianto_id']) + self.decorator
+
+    def toTable(self):
+        if self.items == []:
+            return msg_items_empty
+
+        cycle = False
+        table = "<table id=\"customers\">"
+        for item_dict in self.items:
+            if self.display_header:
+                table += "<tr>"
+                table += "<th></th>"
+                for j in show_colum:
+                    table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
+                table += "</tr>"
+                self.display_header = False
+
+            cycle_str = ''
+            if cycle:
+                cycle_str = " class=\"alt\""
+            cycle = not cycle
+
+            table += "<tr%s>" % cycle_str
+            if self.decorator is not None:
+                table += "<td>%s</td>" % self._decorator(item_dict)
+            for i in show_colum:
+                try:
+                    s  = item_dict[i]
+                    if type(s) == datetime.date:
+                        s = s.strftime(DATA_FIELD_STR_FORMAT)
+                    if i in ['nome', 'cognome']:
+                        s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
+                    if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
+                        s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
+                    if i == 'data_verifica_manutenzione':
+                        s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)
+                    if s is None:
+                        s = '-'
+                except (KeyError, ValueError), m:
+                    print "Errore nel render di %s (%s)" % (i, m)
+                    s = '-'
+                table += "<td>%s</td>" % s
+
+            self.decorator = None
+            table += "</tr>"
+        table += "</table>"
+
+        return table
 
 
 def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY, decorator=None):
