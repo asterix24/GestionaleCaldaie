@@ -114,8 +114,9 @@ class DataRender:
         self.colums = None
         self.display_header = True
         self.msg_items_empty = msg_items_empty
-        self.url_type = None
+        self.url_type = []
         self.detail_type = None
+        self.url_add = None
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -128,13 +129,11 @@ class DataRender:
 
     def urlBar(self, detail_type, url_type):
         if url_type == 'edit':
-            self.url_type = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
-        elif url_type == 'remove':
-            self.url_type = ('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16')
-        elif url_type == 'add':
-            self.url_type = ('add', 'plus.jpg', 'cancella..', 'cancella..', '16', '16')
-        else:
-            self.url_type = None
+            self.url_type.append(('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16'))
+        if url_type == 'remove':
+            self.url_type.append(('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16'))
+        if url_type == 'add':
+            self.url_add = ('add', 'plus.jpg', 'cancella..', 'cancella..', '16', '16')
 
         self.detail_type = detail_type
 
@@ -160,7 +159,10 @@ class DataRender:
 
             table += "<tr%s>" % cycle_str
             if self.detail_type is not None:
-                p = URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + self.url_type)
+                p = ''
+                for j in self.url_type:
+                    p += URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + j)
+
                 table += "<td>%s</td>" % p
 
             for i in self.colums:
@@ -184,7 +186,14 @@ class DataRender:
             table += "</tr>"
         table += "</table>"
 
-        self.url_type = None
+        if self.url_add is not None:
+            table += "<h3>"
+            table += URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + self.url_add)
+            table += " Aggiungi " + self.detail_type.capitalize()
+            table += "</h3><br>"
+
+        self.url_type = []
+        self.url_add = None
         self.detail_type = None
         self.colums = None
 

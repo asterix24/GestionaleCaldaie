@@ -41,6 +41,8 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
         if len(data_to_render) >= 1 and data_to_render[0]['cliente_impianto_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_IMPIANTI)
             dr.urlBar('impianto', 'edit')
+            dr.urlBar('impianto', 'remove')
+            dr.urlBar('impianto', 'add')
             data += dr.toTable()
         else:
             # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
@@ -49,10 +51,12 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(sub_record_id)
-        bar = data_render.add_editBarUrl(record_id, "verifiche", sub_record_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+
         dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
         dr.urlBar('verifiche', 'edit')
+        dr.urlBar('verifiche', 'remove')
+        dr.urlBar('verifiche', 'add')
         data += dr.toTable()
 
     elif detail_type == "verifiche":
