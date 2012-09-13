@@ -200,52 +200,6 @@ class DataRender:
         return table
 
 
-def render_toTable(items, show_colum, display_header=True, no_items_msg=MSG_ITEMS_EMPTY, decorator=None):
-    if items == []:
-        return no_items_msg
-
-    cycle = False
-    table = "<table id=\"customers\">"
-    for item_dict in items:
-        if display_header:
-            table += "<tr>"
-            table += "<th></th>"
-            for j in show_colum:
-                table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
-            table += "</tr>"
-            display_header = False
-
-        cycle_str = ''
-        if cycle:
-            cycle_str = " class=\"alt\""
-        cycle = not cycle
-
-        table += "<tr%s>" % cycle_str
-        if decorator is not None:
-            table += "<td>%s</td>" % decorator
-        for i in show_colum:
-            try:
-                s  = item_dict[i]
-                if type(s) == datetime.date:
-                    s = s.strftime(DATA_FIELD_STR_FORMAT)
-                if i in ['nome', 'cognome']:
-                    s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
-                if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
-                    s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
-                if i == 'data_verifica_manutenzione':
-                    s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)	
-                if s is None:
-                    s = '-'
-            except (KeyError, ValueError), m:
-                print "Errore nel render di %s (%s)" % (i, m)
-                s = '-'
-            table += "<td>%s</td>" % s
-        table += "</tr>"
-    table += "</table>"
-
-    return table
-
-
 def render_toList(item_dict, show_colum, header_msg):
 	table = "<table id=\"customers_detail\">"
 	table += "<tr><th></th><th>%s</th></tr>" % header_msg
