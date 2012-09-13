@@ -96,7 +96,7 @@ def delete_record(request, record_id):
                     data = view_record(record_id)
                     return render(request, 'anagrafe_manager.sub',
                             {'data': data ,
-                             'top_message': '<h1>Attenzione! stai per cancellare il Cliente selezionato e tutto la sua storia.</h1>',
+                             'top_message': '<h1>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h1>',
                              'record_id': record_id})
 
             if request.method == 'POST':

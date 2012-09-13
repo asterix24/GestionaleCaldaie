@@ -125,6 +125,19 @@ em {
     float: left;
     display:inline;
     padding: 2px 5px;
+
+    color: #900;
+    background: #FF0;
+    font-weight: bold;
+    font-size: 130%;
+    border: 1px solid #900;
+    text-transform: uppercase;
+}
+
+.navigation_buttons:hover
+{
+    color: #FFF;
+    background: #900;
 }
 
 #navigation ul
