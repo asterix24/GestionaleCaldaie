@@ -109,12 +109,13 @@ MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br
 URL_TEMPLATE = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\" /></a>"
 
 class DataRender:
-    def __init__(self, items, show_colum, msg_items_empty = MSG_ITEMS_EMPTY):
+    def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
         self.items = items
-        self.show_colum = show_colum
+        self.colums = None
         self.display_header = True
         self.msg_items_empty = msg_items_empty
-        self.decorator = None
+        self.url_type = None
+        self.detail_type = None
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -122,14 +123,20 @@ class DataRender:
     def msgItemsEmpty(self, msg):
         self.msg_items_empty = msg
 
-    def editUrlsImpianti(self):
-        self.decorator = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
+    def selectColums(self, colums):
+        self.colums = colums
 
-    def editUrlsVerifiche(self):
-        self.decorator = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
+    def urlBar(self, detail_type, url_type):
+        if url_type == 'edit':
+            self.url_type = ('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16')
+        elif url_type == 'remove':
+            self.url_type = ('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16')
+        elif url_type == 'add':
+            self.url_type = ('add', 'plus.jpg', 'cancella..', 'cancella..', '16', '16')
+        else:
+            self.url_type = None
 
-    def _decorator(self, item_dict):
-        self.decorator = (item_dict['cliente_id'],'impianto', item_dict['impianto_id']) + self.decorator
+        self.detail_type = detail_type
 
     def toTable(self):
         if self.items == []:
@@ -141,7 +148,7 @@ class DataRender:
             if self.display_header:
                 table += "<tr>"
                 table += "<th></th>"
-                for j in show_colum:
+                for j in self.colums:
                     table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
                 table += "</tr>"
                 self.display_header = False
@@ -152,9 +159,11 @@ class DataRender:
             cycle = not cycle
 
             table += "<tr%s>" % cycle_str
-            if self.decorator is not None:
-                table += "<td>%s</td>" % self._decorator(item_dict)
-            for i in show_colum:
+            if self.detail_type is not None:
+                p = URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + self.url_type)
+                table += "<td>%s</td>" % p
+
+            for i in self.colums:
                 try:
                     s  = item_dict[i]
                     if type(s) == datetime.date:
@@ -172,9 +181,12 @@ class DataRender:
                     s = '-'
                 table += "<td>%s</td>" % s
 
-            self.decorator = None
             table += "</tr>"
         table += "</table>"
+
+        self.url_type = None
+        self.detail_type = None
+        self.colums = None
 
         return table
 

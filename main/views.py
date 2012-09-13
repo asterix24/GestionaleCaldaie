@@ -35,11 +35,13 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
     data_to_render = database_manager.search_clienteId(record_id)
     data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
+    dr = data_render.DataRender(data_to_render)
+
     if detail_type is None:
         if len(data_to_render) >= 1 and data_to_render[0]['cliente_impianto_id'] != None:
-            d = data_render.DataRender(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_IMPIANTI)
-            d.editUrlsImpianti()
-            data += d.render_toTable()
+            dr.selectColums(data_render.SCHEDA_ANAGRAFE_IMPIANTI)
+            dr.urlBar('impianto', 'edit')
+            data += dr.toTable()
         else:
             # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
             data += "Aggiungi Impianto al cliente.."
@@ -49,9 +51,9 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
         data_to_render = database_manager.search_impiantoId(sub_record_id)
         bar = data_render.add_editBarUrl(record_id, "verifiche", sub_record_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
-        d = data_render.DataRender(data_to_render, show_colum=data_render.SCHEDA_ANAGRAFE_VERIFICHE)
-        d.editUrlsVerifiche()
-        data += d.render_toTable()
+        dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
+        dr.urlBar('verifiche', 'edit')
+        data += dr.toTable()
 
     elif detail_type == "verifiche":
         data_to_render = database_manager.search_verificheId(sub_record_id)
