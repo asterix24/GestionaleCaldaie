@@ -106,7 +106,9 @@ VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
-URL_TEMPLATE = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\" /></a>"
+URL_CLIENTE = "<a href=\"/anagrafe/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
+URL_CLIENTE_ADD = "<a href=\"/anagrafe/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
+URL_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 
 class DataRender:
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
@@ -128,14 +130,15 @@ class DataRender:
         self.colums = colums
 
     def urlBar(self, detail_type, url_type):
-        if url_type == 'edit':
+        self.detail_type = detail_type
+
+        if 'edit' in url_type:
             self.url_type.append(('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16'))
-        if url_type == 'remove':
+        if 'remove' in url_type:
             self.url_type.append(('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16'))
-        if url_type == 'add':
+        if 'add' in url_type:
             self.url_add = ('add', 'plus.jpg', 'cancella..', 'cancella..', '16', '16')
 
-        self.detail_type = detail_type
 
     def toTable(self):
         if self.items == []:
@@ -161,7 +164,11 @@ class DataRender:
             if self.detail_type is not None:
                 p = ''
                 for j in self.url_type:
-                    p += URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + j)
+                    print ((item_dict['cliente_id'],) + j)
+                    if self.detail_type == 'cliente':
+                        p += URL_CLIENTE % ((item_dict['cliente_id'],) + j)
+                    else:
+                        p += URL_DETAIL % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + j)
 
                 table += "<td>%s</td>" % p
 
@@ -188,7 +195,10 @@ class DataRender:
 
         if self.url_add is not None:
             table += "<h3>"
-            table += URL_TEMPLATE % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + self.url_add)
+            if self.detail_type == 'cliente':
+                table += URL_CLIENTE_ADD % (self.url_add)
+            else:
+                table += URL_DETAIL % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + self.url_add)
             table += " Aggiungi " + self.detail_type.capitalize()
             table += "</h3><br>"
 
