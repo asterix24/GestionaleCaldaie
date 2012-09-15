@@ -161,6 +161,7 @@ def anagrafe(request):
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(data_render.ANAGRAFE_COLUM)
             dr.urlBar('cliente', ['edit', 'remove', 'add'])
+            dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
             data += dr.toTable()
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })

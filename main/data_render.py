@@ -146,7 +146,7 @@ class DataRender:
 
     def toTable(self):
         if self.items == []:
-            return msg_items_empty
+            return self.msg_items_empty
 
         cycle = False
         table = "<table id=\"customers\">"
