@@ -59,6 +59,9 @@ class Impianto(models.Model):
 	def __unicode__(self):
 		return self.marca_caldaia
 
+class ImpiantoForm(forms.ModelForm):
+	class Meta:
+		model = Impianto
 
 BOLLINO_COLOR_CHOICES = (
 	('Blu','Blu'),
@@ -96,6 +99,9 @@ class VerificheManutenzione(models.Model):
 	def __unicode__(self):
 		return self.tipo
 
+class VerificheForm(forms.ModelForm):
+	class Meta:
+		model = VerificheManutenzione
 
 class Intervento(models.Model):
 	data_intervento = models.DateField(default=datetime.date.today())
@@ -109,6 +115,9 @@ class Intervento(models.Model):
 	def __unicode__(self):
 		return self.tipo
 
+class InterventoForm(forms.ModelForm):
+	class Meta:
+		model = Intervento
 
 """
 class BollinoForm(forms.ModelForm):
