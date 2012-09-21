@@ -149,7 +149,6 @@ class DataRender:
         if 'remove' in url_type:
             self.url_type.append(('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16'))
 
-
     def toTable(self):
         if self.items == []:
             return self.msg_items_empty

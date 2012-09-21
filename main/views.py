@@ -45,7 +45,9 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
             data += dr.toTable()
         else:
             # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
-            data += "Aggiungi Impianto al cliente.."
+            data += data_render.URL_DETAIL_ADD % ((record_id, "impianto") +
+                             ('add', 'plus.jpg', 'aggiungi..', 'aggiungi..', '16', '16'))
+            data += " Aggingi Impianto.."
 
 
     elif detail_type == "impianto":
@@ -71,46 +73,70 @@ def view_record(record_id, detail_type = None, sub_record_id = None):
     return data
 
 def add_record(request, record_id = None, detail_type = None, sub_record_id = None):
+    if record_id is None:
+        header_msg = "Aggiungi Nuovo Cliente"
+        post_url = "add/"
+        return_url = ""
+
+    else:
+        if detail_type == 'impianto':
+            header_msg = "Aggiungi Nuovo Impianto"
+            post_url = "%s/impianto/add/" % record_id
+            return_url = "%s/" % record_id
+
+        if detail_type == 'verifiche':
+            header_msg = "Aggiungi Nuova Verifica e Manutenzione"
+            post_url = "%s/impianto/%s/verifiche/add/" % (record_id, sub_record_id)
+            return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
+
+        if detail_type == 'intervento':
+            header_msg = "Aggiungi Nuovo Intervento"
+            post_url = "%s/impianto/%s/intervento/add/" % (record_id, sub_record_id)
+            return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
+
+        if detail_type is None:
+            return _display_error(request, "Qualcosa e' andato storto..")
+
     if request.method == 'GET':
         if record_id is None:
             form = models.ClienteForm()
-            header_msg = "Aggiungi Nuovo Cliente"
-            post_url = "add/"
-            return_url = ""
-
         else:
             if detail_type == 'impianto':
                 form = models.ImpiantoForm(initial={'cliente_impianto': models.Cliente.objects.get(pk=record_id)})
-                header_msg = "Aggiungi Nuovo Impianto"
-                post_url = "%s/impianto/add/" % record_id
-                return_url = "%s/" % record_id
 
             if detail_type == 'verifiche':
                 form = models.VerificheForm(initial={'verifiche_impianto': models.Impianto.objects.get(pk=record_id)})
-                header_msg = "Aggiungi Nuova Verifica e Manutenzione"
-                post_url = "%s/impianto/%s/verifiche/add/" % (record_id, sub_record_id)
-                return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=record_id)})
-                header_msg = "Aggiungi Nuovo Intervento"
-                post_url = "%s/impianto/%s/intervento/add/" % (record_id, sub_record_id)
-                return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
 
         return render(request, 'anagrafe_add.sub', {'header_msg': header_msg, 'data': form,
             'post_url':post_url, 'return_url':return_url})
 
     if request.method == 'POST':
-        form = models.ClienteForm(request.POST)
+        if record_id is None:
+            form = models.ClienteForm(request.POST)
+        else:
+            if detail_type == 'impianto':
+                form = models.ImpiantoForm(request.POST)
+
+            if detail_type == 'verifiche':
+                form = models.VerificheForm(request.POST)
+
+            if detail_type == 'intervento':
+                form = models.InterventoForm(request.POST)
+
         if form.is_valid():
             instance = form.save()
-            data = view_record(instance.id)
+            data = view_record(record_id, detail_type=detail_type, sub_record_id = instance.id,)
+
             if data is None:
                 return _display_error(request, "Qualcosa e' andato storto..")
 
-        return render(request, 'anagrafe_scheda.sub', {'data': data })
-    else:
-        return render(request, 'anagrafe_add.sub', {'action': 'Nuovo', 'cliente': form})
+            return render(request, 'anagrafe_scheda.sub', {'data': data })
+
+        return render(request, 'anagrafe_add.sub', {'header_msg': header_msg, 'data': form,
+            'post_url':post_url, 'return_url':return_url})
 
     return _display_error(request, "Qualcosa e' andato storto..")
 
