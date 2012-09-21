@@ -80,19 +80,19 @@ def add_record(request, record_id = None, detail_type = None, sub_record_id = No
 
         else:
             if detail_type == 'impianto':
-                form = models.ImpiantoForm()
+                form = models.ImpiantoForm(initial={'cliente_impianto': models.Cliente.objects.get(pk=record_id)})
                 header_msg = "Aggiungi Nuovo Impianto"
                 post_url = "%s/impianto/add/" % record_id
-                return_url = "%s" % record_id
+                return_url = "%s/" % record_id
 
             if detail_type == 'verifiche':
-                form = models.VerificheForm()
+                form = models.VerificheForm(initial={'verifiche_impianto': models.Impianto.objects.get(pk=record_id)})
                 header_msg = "Aggiungi Nuova Verifica e Manutenzione"
                 post_url = "%s/impianto/%s/verifiche/add/" % (record_id, sub_record_id)
                 return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
 
             if detail_type == 'intervento':
-                form = models.InterventoForm()
+                form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=record_id)})
                 header_msg = "Aggiungi Nuovo Intervento"
                 post_url = "%s/impianto/%s/intervento/add/" % (record_id, sub_record_id)
                 return_url = "%s/impianto/%s/" % (record_id, sub_record_id)
