@@ -114,6 +114,7 @@ URL_CLIENTE = "<a href=\"/anagrafe/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" ti
 URL_CLIENTE_ADD = "<a href=\"/anagrafe/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 URL_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 URL_DETAIL_ADD = "<a href=\"/anagrafe/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
+URL_VERIFICHE_ADD = "<a href=\"/anagrafe/%s/impianto/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 URL_SUB_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 
 class DataRender:
