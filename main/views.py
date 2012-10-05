@@ -209,34 +209,71 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
 
     return _display_error(request, "Qualcosa e' andato storto..")
 
-def edit_record(request, cliente_id):
-    if request.method == 'GET':
-        if cliente_id != "":
-            select = database_manager.select_record(models.Cliente.objects, cliente_id)
-            form = models.ClienteForm(instance=select)
-            return render(request, 'anagrafe_form.sub', {'action': 'Modifica',
-                                                    'cliente_id': cliente_id,
-                                                    'cliente': form})
-        else:
-            return _display_error(request, "Id non trovato.")
 
-    # We manage a post request when we want to save the data.
+def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
+    if cliente_id is None:
+        return _display_error(request, "Qualcosa e' andato storto..")
+
+    select = None
+    if detail_type is None:
+        select = models.Cliente.objects.get(pk=cliente_id)
+        form = models.ClienteForm(instance=select)
+        header_msg = "Modifica Cliente"
+        post_url = "%s/edit/" % cliente_id
+        return_url = "%s" % cliente_id
+    else:
+        if detail_type == 'impianto':
+            select = models.Impianto.objects.get(pk=impianto_id)
+            form = models.ImpiantoForm(instance=select)
+            header_msg = "Modifica Impianto"
+            post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
+            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+
+        if detail_type == 'verifiche':
+            select = models.VerificheManutenzione.objects.get(pk=sub_impianto_id)
+            form = models.VerificheForm(instance=select)
+            header_msg = "Modifica Verifica e Manutenzione"
+            post_url = "%s/impianto/%s/verifiche/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "%s/impianto/%s/verifiche/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+
+        if detail_type == 'intervento':
+            select = models.Intervento.objects.get(pk=sub_impianto_id)
+            form = models.InterventoForm(instance=select)
+            header_msg = "Modifica Intervento"
+            post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "%s/impianto/%s/intervento/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+
+        if detail_type is None:
+            return _display_error(request, "Qualcosa e' andato storto..")
+
     if request.method == 'POST':
-        #If we found a id take the record to edit it.
-        if cliente_id != "":
-            select = database_manager.select_record(models.Cliente.objects, cliente_id)
+        if detail_type is None:
             form = models.ClienteForm(request.POST, instance=select)
+        else:
+            if detail_type == 'impianto':
+                form = models.ImpiantoForm(request.POST, instance=select)
+
+            if detail_type == 'verifiche':
+                form = models.VerificheForm(request.POST, instance=select)
+
+            if detail_type == 'intervento':
+                form = models.InterventoForm(request.POST, instance=select)
 
         if form.is_valid():
-            form.save()
-            return _display_scheda(request, cliente_id)
-        else:
-            return render(request, 'anagrafe_form.sub', {'action': 'Modifica',
-                                                        'cliente_id': cliente_id,
-                                                        'cliente': form})
-    else:
-        return _display_error(request, "Id non trovato.")
+            instance = form.save()
+            return _display_ok(request, "Ok, record aggiornato con successo.")
+            """
+            Non funziona correttamente, indagare perchè non va..
+            data = view_record(cliente_id=instance.id, detail_type=detail_type,
+                    impianto_id=instance.id, sub_impianto_id=instance.id)
 
+            if data is None:
+                return _display_error(request, "Qualcosa e' andato storto..")
+            return render(request, 'anagrafe_scheda.sub', {'data': data })
+            """
+
+    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
+        'post_url':post_url, 'return_url':return_url})
 
 def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
 
@@ -265,6 +302,8 @@ def anagrafe(request):
             data += dr.toTable()
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
+
+
 
 
 from main import tools

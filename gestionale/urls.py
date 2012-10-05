@@ -30,9 +30,10 @@ urlpatterns = patterns('',
     # Show Verifiche/Interventi detail of select Impianti
 	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
 
-
-
-	#url(r'^anagrafe/(?P<record_id>\d+)/(?P<detail_type>\w+)/(?P<sub_record_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
+    # /anagrafe/356/impianto/760/edit/
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
+    # /anagrafe/356/impianto/760/verifiche/1/edit/
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

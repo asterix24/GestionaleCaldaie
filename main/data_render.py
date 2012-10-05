@@ -198,7 +198,7 @@ class DataRender:
                         p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
                                 cliente_id=item_dict['cliente_id'],
                                 impianto_id=item_dict['impianto_id'],
-                                sub_impianti_id=item_dict[self.detail_type + '_id'])
+                                sub_impianto_id=item_dict[self.detail_type + '_id'])
 
                 table += "<td>%s</td>" % p
 
