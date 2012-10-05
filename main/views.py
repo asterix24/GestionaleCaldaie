@@ -40,9 +40,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     if detail_type is None:
         if len(data_to_render) >= 1 and data_to_render[0]['cliente_impianto_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_IMPIANTI)
-            dr.urlBar('impianto', ['edit','remove'])
+            dr.urlBar('impianto', ['edit','delete'])
             data += dr.toTable()
-        data += data_render.make_url('icon', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
+        data += data_render.make_url('icon', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -50,12 +50,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if data_to_render[0]['verifiche_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
-            dr.urlBar('verifiche', ['edit','remove'])
+            dr.urlBar('verifiche', ['edit','delete'])
             data += dr.toTable()
-        data += data_render.make_url('icon', 'Aggiungi una verifiche a questo impianto..',
+        data += data_render.make_url('icon', 'add', 'Aggiungi una verifiche a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/verifiche/add', cliente_id, impianto_id, sub_impianto_id)
 
-        data += data_render.make_url('icon', 'Aggiungi un\'intervento a questo impianto..',
+        data += data_render.make_url('icon', 'add', 'Aggiungi un\'intervento a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/intervento/add', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifiche":
@@ -260,7 +260,7 @@ def anagrafe(request):
             data_to_render = database_manager.search_fullText(search_string)
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(data_render.ANAGRAFE_COLUM)
-            dr.urlBar('cliente', ['edit', 'remove', 'add'])
+            dr.urlBar('cliente', ['edit', 'delete'])
             dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
             data += dr.toTable()
 

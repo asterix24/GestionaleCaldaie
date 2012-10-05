@@ -110,14 +110,13 @@ VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
-URL_CLIENTE = "<a href=\"/anagrafe/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
-URL_CLIENTE_ADD = "<a href=\"/anagrafe/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
-URL_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
-URL_DETAIL_ADD = "<a href=\"/anagrafe/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
-URL_VERIFICHE_ADD = "<a href=\"/anagrafe/%s/impianto/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
-URL_SUB_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
+ACTION_DICT = {
+        'add':'plus.jpg',
+        'delete':'minus.jpg',
+        'edit':'edit.jpg'
+        }
 
-def make_url(type, action, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
+def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     if type == 'icon':
         data += "<a href=\""
@@ -130,8 +129,8 @@ def make_url(type, action, path, cliente_id=None, impianto_id=None, sub_impianto
         else:
             return "errore!"
 
-        data += "\"><img src=\"/static/plus.jpg\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/>" % (action, action)
-        data += " %s</a>"  % action
+        data += "\"><img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/>" % (ACTION_DICT[action], action, action)
+        data += " %s</a>"  % message
 
     elif type == 'BAR':
             data = ""
@@ -161,10 +160,7 @@ class DataRender:
 
     def urlBar(self, detail_type, url_type):
         self.detail_type = detail_type
-        if 'edit' in url_type:
-            self.url_type.append(('edit', 'edit.jpg', 'modifica..', 'modifica..', '16', '16'))
-        if 'remove' in url_type:
-            self.url_type.append(('delete', 'minus.jpg', 'cancella..', 'cancella..', '16', '16'))
+        self.url_type = url_type
 
     def toTable(self):
         if self.items == []:
@@ -191,9 +187,18 @@ class DataRender:
                 p = ''
                 for j in self.url_type:
                     if self.detail_type == 'cliente':
-                        p += URL_CLIENTE % ((item_dict['cliente_id'],) + j)
+                        p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
+                    elif self.detail_type == 'impianto':
+                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
+                                cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
                     else:
-                        p += URL_DETAIL % ((item_dict['cliente_id'], self.detail_type, item_dict[self.detail_type + '_id']) + j)
+                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
+                                cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'], )
+
+                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
+                                cliente_id=item_dict['cliente_id'],
+                                impianto_id=item_dict['impianto_id'],
+                                sub_impianti_id=item_dict[self.detail_type + '_id'])
 
                 table += "<td>%s</td>" % p
 
