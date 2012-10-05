@@ -41,13 +41,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if len(data_to_render) >= 1 and data_to_render[0]['cliente_impianto_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_IMPIANTI)
             dr.urlBar('impianto', ['edit','remove'])
-            dr.urlBarAdd(cliente_id, impianto_id)
             data += dr.toTable()
-        else:
-            # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
-            data += data_render.URL_DETAIL_ADD % ((cliente_id, "impianto") +
-                             ('add', 'plus.jpg', 'aggiungi..', 'aggiungi..', '16', '16'))
-            data += " Aggingi Impianto.."
+        data += data_render.make_url('icon', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -56,13 +51,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if data_to_render[0]['verifiche_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
             dr.urlBar('verifiche', ['edit','remove'])
-            dr.urlBarAdd(cliente_id, impianto_id)
             data += dr.toTable()
-        else:
-            # Aggiundi modificatori alle tabelle con il link giusto per aggiungere un impianto.
-            data += data_render.URL_VERIFICHE_ADD % ((cliente_id, impianto_id, "verifiche") +
-                             ('add', 'plus.jpg', 'aggiungi..', 'aggiungi..', '16', '16'))
-            data += " Aggingi Verifiche.."
+        data += data_render.make_url('icon', 'Aggiungi una verifiche a questo impianto..',
+                                '/anagrafe/%s/impianto/%s/verifiche/add', cliente_id, impianto_id, sub_impianto_id)
+
+        data += data_render.make_url('icon', 'Aggiungi un\'intervento a questo impianto..',
+                                '/anagrafe/%s/impianto/%s/intervento/add', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifiche":
         data_to_render = database_manager.search_verificheId(impianto_id)
@@ -115,7 +109,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
 
-        return render(request, 'anagrafe_add.sub', {'header_msg': header_msg, 'data': form,
+        return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
             'post_url':post_url, 'return_url':return_url})
 
     if request.method == 'POST':
@@ -144,30 +138,74 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             return render(request, 'anagrafe_scheda.sub', {'data': data })
             """
 
-        return render(request, 'anagrafe_add.sub', {'header_msg': header_msg, 'data': form,
+        return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
             'post_url':post_url, 'return_url':return_url})
 
     return _display_error(request, "Qualcosa e' andato storto..")
 
-def delete_record(request, cliente_id):
+def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     try:
+        if detail_type is None:
+            header_msg = '<h1>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h1>'
+            action = '\"Cancella Cliente\"'
+            post_url = "%s/delete/" % cliente_id
+            return_url = ""
+
+        else:
+            if detail_type == 'impianto':
+                header_msg = '<h1>Attenzione! stai cancellanodo l\'impianto selezionato.</h1>'
+                action = '\"Cancella Impianto\"'
+                post_url = "%s/impianto/%s/delete/" % (cliente_id, impianto_id)
+                return_url = "%s/" % cliente_id
+
+            if detail_type == 'verifiche':
+                header_msg = '<h1>Attenzione! stai cancellanodo la verifica dell\'impianto.</h1>'
+                action = '\"Cancella Verifica\"'
+                post_url = "%s/impianto/%s/verifiche/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
+                return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+
+            if detail_type == 'intervento':
+                header_msg = '<h1>Attenzione! stai cancellanodo l\'intervento dell\'impianto.</h1>'
+                action = '\"Cancella Intervento\"'
+                post_url = "%s/impianto/%s/intervento/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
+                return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+
+        data = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+
         if request.method == 'GET':
-                data = view_record(cliente_id)
-                return render(request, 'anagrafe_manager.sub',
-                        {'data': data ,
-                         'top_message': '<h1>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h1>',
-                         'cliente_id': cliente_id})
+            return render(request, 'anagrafe_manager.sub', {'header_msg': header_msg,
+                'data': data, 'action': action,
+                'post_url':post_url, 'return_url':return_url})
 
         if request.method == 'POST':
-                cli = database_manager.select_record(models.Cliente.objects, cliente_id)
+            if detail_type is None:
+                cli = models.Cliente.objects.get(pk=cliente_id)
                 nome = cli.nome
                 cognome = cli.cognome
                 cli.delete()
                 s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
-                return _display_ok(request, s)
+
+            else:
+                if detail_type == 'impianto':
+                    imp = models.Impianto.objects.get(pk=impianto_id)
+                    s = "%s" % imp
+                    imp.delete()
+                    s = "Impianto: %s rimosso correttamente." % s
+                if detail_type == 'verifiche':
+                    ver = models.VerificheManutenzione.objects.get(pk=sub_impianto_id)
+                    s = "%s" % ver
+                    ver.delete()
+                    s = "Verifica e Manutezione: %s rimosso correttamente." % s
+                if detail_type == 'intervento':
+                    interv = models.Intervento.objects.get(pk=sub_impianto_id)
+                    s = "%s" % interv
+                    interv.delete()
+                    s = "Verifica e Manutezione: %s rimosso correttamente." % s
+
+            return _display_ok(request, s)
 
     except ObjectDoesNotExist, m:
-            return _display_error(request, "Qualcosa e' andato storto..(%s)" % m)
+        return _display_error(request, "Qualcosa e' andato storto..(%s)" % m)
 
     return _display_error(request, "Qualcosa e' andato storto..")
 
@@ -176,7 +214,7 @@ def edit_record(request, cliente_id):
         if cliente_id != "":
             select = database_manager.select_record(models.Cliente.objects, cliente_id)
             form = models.ClienteForm(instance=select)
-            return render(request, 'anagrafe_add.sub', {'action': 'Modifica',
+            return render(request, 'anagrafe_form.sub', {'action': 'Modifica',
                                                     'cliente_id': cliente_id,
                                                     'cliente': form})
         else:
@@ -193,7 +231,7 @@ def edit_record(request, cliente_id):
             form.save()
             return _display_scheda(request, cliente_id)
         else:
-            return render(request, 'anagrafe_add.sub', {'action': 'Modifica',
+            return render(request, 'anagrafe_form.sub', {'action': 'Modifica',
                                                         'cliente_id': cliente_id,
                                                         'cliente': form})
     else:

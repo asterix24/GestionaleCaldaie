@@ -117,6 +117,29 @@ URL_DETAIL_ADD = "<a href=\"/anagrafe/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%
 URL_VERIFICHE_ADD = "<a href=\"/anagrafe/%s/impianto/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 URL_SUB_DETAIL = "<a href=\"/anagrafe/%s/%s/%s/%s/%s\"><img src=\"/static/%s\" alt=\"%s\" title=\"%s\" width=\"%s\" height=\"%s\"/></a>"
 
+def make_url(type, action, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
+    data = ""
+    if type == 'icon':
+        data += "<a href=\""
+        if path.count('%s') == 3:
+            data += path % (cliente_id, impianto_id, sub_impianto_id)
+        elif path.count('%s') == 2:
+            data += path % (cliente_id, impianto_id)
+        elif path.count('%s') == 1:
+            data += path % (cliente_id)
+        else:
+            return "errore!"
+
+        data += "\"><img src=\"/static/plus.jpg\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/>" % (action, action)
+        data += " %s</a>"  % action
+
+    elif type == 'BAR':
+            data = ""
+
+    else:
+        data = "Qualcosa e\' andata storto.."
+    return data
+
 class DataRender:
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
         self.items = items
@@ -126,8 +149,6 @@ class DataRender:
         self.url_type = []
         self.detail_type = None
         self.url_add = None
-        self.select_record = None
-        self.select_sub_record = None
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -137,11 +158,6 @@ class DataRender:
 
     def selectColums(self, colums):
         self.colums = colums
-
-    def urlBarAdd(self, record_id, sub_record_id):
-        self.url_add = ('add', 'plus.jpg', 'aggiungi..', 'aggiungi..', '16', '16')
-        self.select_record = record_id
-        self.select_sub_record = sub_record_id
 
     def urlBar(self, detail_type, url_type):
         self.detail_type = detail_type
@@ -202,24 +218,7 @@ class DataRender:
             table += "</tr>"
         table += "</table>"
 
-        if self.url_add is not None:
-            table += "<h3>"
-            if self.detail_type == 'cliente':
-                table += URL_CLIENTE_ADD % (self.url_add)
-            else:
-                if self.detail_type == 'impianto':
-                    table += URL_DETAIL_ADD % ((item_dict['cliente_id'], self.detail_type) + self.url_add)
-
-                if self.detail_type in ['verifiche', 'intervento']:
-                    table += URL_SUB_DETAIL % ((item_dict['cliente_id'], 'impianto', self.select_sub_record, self.detail_type) + self.url_add)
-
-            table += " Aggiungi " + self.detail_type.capitalize()
-            table += "</h3><br>"
-
         self.url_type = []
-        self.url_add = None
-        self.select_record = None
-        self.select_sub_record = None
         self.detail_type = None
         self.colums = None
 
