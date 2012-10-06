@@ -109,9 +109,6 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
 
-        return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
-            'post_url':post_url, 'return_url':return_url})
-
     if request.method == 'POST':
         if cliente_id is None:
             form = models.ClienteForm(request.POST)
@@ -138,10 +135,9 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             return render(request, 'anagrafe_scheda.sub', {'data': data })
             """
 
-        return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
-            'post_url':post_url, 'return_url':return_url})
+    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
+        'post_url':post_url, 'return_url':return_url})
 
-    return _display_error(request, "Qualcosa e' andato storto..")
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     try:
@@ -220,7 +216,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         form = models.ClienteForm(instance=select)
         header_msg = "Modifica Cliente"
         post_url = "%s/edit/" % cliente_id
-        return_url = "%s" % cliente_id
+        return_url = "%s/" % cliente_id
     else:
         if detail_type == 'impianto':
             select = models.Impianto.objects.get(pk=impianto_id)

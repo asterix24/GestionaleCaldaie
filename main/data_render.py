@@ -193,9 +193,6 @@ class DataRender:
                                 cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
                     else:
                         p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
-                                cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'], )
-
-                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
                                 cliente_id=item_dict['cliente_id'],
                                 impianto_id=item_dict['impianto_id'],
                                 sub_impianto_id=item_dict[self.detail_type + '_id'])
