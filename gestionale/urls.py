@@ -25,6 +25,9 @@ urlpatterns = patterns('',
 
     # Delete Impianti
     url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
+    # Delete verifiche/interventi
+    #/anagrafe/356/impianto/762/verifiche/758/delete/
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
     # Show Impianti detail of select Cliente
 	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
     # Show Verifiche/Interventi detail of select Impianti

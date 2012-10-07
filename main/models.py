@@ -97,7 +97,7 @@ class VerificheManutenzione(models.Model):
 		ordering = ['-data_verifica_manutenzione'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
-		return self.tipo
+		return self.tipo_verifica_manutenzione
 
 class VerificheForm(forms.ModelForm):
 	class Meta:
@@ -113,7 +113,7 @@ class Intervento(models.Model):
 		ordering = ['-data_intervento'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
-		return self.tipo
+		return self.tipo_intervento
 
 class InterventoForm(forms.ModelForm):
 	class Meta:

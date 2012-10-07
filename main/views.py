@@ -27,13 +27,25 @@ def _display_ok(request, msg):
 def test(request):
     return render(request, 'test', {'data':""})
 
+def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message=None):
+    data = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+
+    if data is None:
+        _display_error(request, "Qualcosa e' andato storto!")
+
+    return render(request, 'anagrafe_scheda.sub', {'data': data,
+                           'top_message': message,
+                           'cliente_id': cliente_id,
+                           'detail_type': detail_type,
+                           'impianto_id': impianto_id,
+                           'sub_impianto_id': sub_impianto_id})
+
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
 
     if cliente_id == "":
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
-
     data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
@@ -113,28 +125,30 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
     if request.method == 'POST':
         if cliente_id is None:
             form = models.ClienteForm(request.POST)
+            if form.is_valid():
+                instance = form.save()
+                return show_record(request, cliente_id=instance.id)
         else:
             if detail_type == 'impianto':
                 form = models.ImpiantoForm(request.POST)
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
             if detail_type == 'verifiche':
                 form = models.VerificheForm(request.POST)
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                            detail_type=detail_type, sub_impianto_id=instance.id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(request.POST)
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                            detail_type=detail_type, sub_impianto_id=instance.id)
 
-        if form.is_valid():
-            instance = form.save()
-            return _display_ok(request, "Ok, record aggiunto.")
-            """
-            Non funziona correttamente, indagare perchè non va..
-            data = view_record(cliente_id=instance.id, detail_type=detail_type,
-                    impianto_id=instance.id, sub_impianto_id=instance.id)
-
-            if data is None:
-                return _display_error(request, "Qualcosa e' andato storto..")
-            return render(request, 'anagrafe_scheda.sub', {'data': data })
-            """
 
     return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
         'post_url':post_url, 'return_url':return_url})
@@ -182,22 +196,29 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
                 cli.delete()
                 s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
 
+                return _display_ok(request, s)
+
             else:
                 if detail_type == 'impianto':
                     imp = models.Impianto.objects.get(pk=impianto_id)
                     s = "%s" % imp
                     imp.delete()
                     s = "Impianto: %s rimosso correttamente." % s
+                    return show_record(request, cliente_id=cliente_id, message=s)
+
                 if detail_type == 'verifiche':
                     ver = models.VerificheManutenzione.objects.get(pk=sub_impianto_id)
                     s = "%s" % ver
                     ver.delete()
                     s = "Verifica e Manutezione: %s rimosso correttamente." % s
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, message=s)
+
                 if detail_type == 'intervento':
                     interv = models.Intervento.objects.get(pk=sub_impianto_id)
                     s = "%s" % interv
                     interv.delete()
                     s = "Verifica e Manutezione: %s rimosso correttamente." % s
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, message=s)
 
             return _display_ok(request, s)
 
@@ -246,44 +267,36 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
     if request.method == 'POST':
         if detail_type is None:
             form = models.ClienteForm(request.POST, instance=select)
+            if form.is_valid():
+                instance = form.save()
+                return show_record(request, cliente_id=instance.id)
         else:
             if detail_type == 'impianto':
                 form = models.ImpiantoForm(request.POST, instance=select)
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
             if detail_type == 'verifiche':
                 form = models.VerificheForm(request.POST, instance=select)
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                            detail_type=detail_type, sub_impianto_id=instance.id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(request.POST, instance=select)
-
-        if form.is_valid():
-            instance = form.save()
-            return _display_ok(request, "Ok, record aggiornato con successo.")
-            """
-            Non funziona correttamente, indagare perchè non va..
-            data = view_record(cliente_id=instance.id, detail_type=detail_type,
-                    impianto_id=instance.id, sub_impianto_id=instance.id)
-
-            if data is None:
-                return _display_error(request, "Qualcosa e' andato storto..")
-            return render(request, 'anagrafe_scheda.sub', {'data': data })
-            """
+                if form.is_valid():
+                    instance = form.save()
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                            detail_type=detail_type, sub_impianto_id=instance.id)
 
     return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
         'post_url':post_url, 'return_url':return_url})
 
 def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
+    return show_record(request, cliente_id, detail_type, impianto_id, sub_impianto_id)
 
-    data = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
-
-    if data is None:
-        _display_error(request, "Qualcosa e' andato storto!")
-
-    return render(request, 'anagrafe_scheda.sub', {'data': data,
-                           'cliente_id': cliente_id,
-                           'detail_type': detail_type,
-                           'impianto_id': impianto_id,
-                           'sub_impianto_id': sub_impianto_id})
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
