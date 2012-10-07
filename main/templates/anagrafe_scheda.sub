@@ -2,7 +2,17 @@
 
 {% block navigation_search_block_top %}
 <li><a href="javascript:history.back()">Indietro</a></li>
-<li><a href="{% url anagrafe %}{{record_id}}/delete/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/delete/">Cancella Cliente</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/edit/">Modifica Cliente</a></li>
+
+{% if impianto_id != None %}
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/edit/">Modifica Impianto</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/delete/">Cancella Impianto</a></li>
+{%endif%}
+{% if detail_type != None and sub_impianto_id != None %}
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/edit/">Modifica Impianto</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/delete/">Cancella Impianto</a></li>
+{%endif%}
 {% endblock %}
 
 {% block navigation_search_block_bot %}

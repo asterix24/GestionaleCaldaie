@@ -278,7 +278,11 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
 
-    return render(request, 'anagrafe_scheda.sub', {'data': data , 'cliente_id': cliente_id})
+    return render(request, 'anagrafe_scheda.sub', {'data': data,
+                           'cliente_id': cliente_id,
+                           'detail_type': detail_type,
+                           'impianto_id': impianto_id,
+                           'sub_impianto_id': sub_impianto_id})
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()

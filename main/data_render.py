@@ -104,9 +104,6 @@ SHOW_ALL_COLUM=[
 	]
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
-ANAGRAFE_DETAILS_URL = "\"/anagrafe/%s/\""
-IMPIANTO_DETAILS_URL = "\"/anagrafe/%s/impianto/%s/\""
-VERIFICHE_DETAILS_URL = "\"/anagrafe/%s/verifiche/%s/\""
 
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 
@@ -118,26 +115,22 @@ ACTION_DICT = {
 
 def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
-    if type == 'icon':
-        data += "<a href=\""
-        if path.count('%s') == 3:
-            data += path % (cliente_id, impianto_id, sub_impianto_id)
-        elif path.count('%s') == 2:
-            data += path % (cliente_id, impianto_id)
-        elif path.count('%s') == 1:
-            data += path % (cliente_id)
-        else:
-            return "errore!"
-
-        data += "\"><img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/>" % (ACTION_DICT[action], action, action)
-        data += " %s</a>"  % message
-
-    elif type == 'BAR':
-            data = ""
-
+    url = "<a href=\""
+    if path.count('%s') == 3:
+        url += path % (cliente_id, impianto_id, sub_impianto_id)
+    elif path.count('%s') == 2:
+        url += path % (cliente_id, impianto_id)
+    elif path.count('%s') == 1:
+        url += path % (cliente_id)
     else:
-        data = "Qualcosa e\' andata storto.."
-    return data
+        return "errore!"
+    url += "\">"
+
+    if type == 'icon':
+        data += "<img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/> " % (ACTION_DICT[action], action, action)
+
+    data += "%s"  % message
+    return url + data + "</a>"
 
 class DataRender:
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
@@ -205,11 +198,12 @@ class DataRender:
                     if type(s) == datetime.date:
                         s = s.strftime(DATA_FIELD_STR_FORMAT)
                     if i in ['nome', 'cognome']:
-                        s = '<a href=%s>%s</a>' % ((ANAGRAFE_DETAILS_URL % item_dict['cliente_id']), s)
+                        s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
                     if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
-                        s = '<a href=%s>%s</a>' % ((IMPIANTO_DETAILS_URL % (item_dict['cliente_id'], item_dict['impianto_id'])), s)
+                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
                     if i == 'data_verifica_manutenzione':
-                        s = '<a href=%s>%s</a>' % ((VERIFICHE_DETAILS_URL % (item_dict['cliente_id'], item_dict['verifiche_id'])), s)
+                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifiche/%s/',
+                                item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifiche_id'])
                     if s is None:
                         s = '-'
                 except (KeyError, ValueError), m:
