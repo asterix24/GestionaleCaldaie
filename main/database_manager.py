@@ -108,10 +108,8 @@ def search_runQuery(query_str, param):
                     i += 1
 
             l.append(c)
-    return [
-            dict(zip(l, row))
-            for row in cursor.fetchall()
-]
+    return [ dict(zip(l, row))
+            for row in cursor.fetchall() ]
 
 def search_clienteId(id):
     query_str = DB_SELECT_ALL + " WHERE main_cliente.id = %s " + DB_ORDER

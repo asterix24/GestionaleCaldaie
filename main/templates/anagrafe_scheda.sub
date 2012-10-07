@@ -10,8 +10,10 @@
 <li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/delete/">Cancella Impianto</a></li>
 {%endif%}
 {% if detail_type != None and sub_impianto_id != None %}
-<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/edit/">Modifica Impianto</a></li>
-<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/delete/">Cancella Impianto</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/edit/">
+Modifica {{detail_type}}</a></li>
+<li><a href="{% url anagrafe %}{{cliente_id}}/impianto/{{impianto_id}}/{{detail_type}}/{{sub_impianto_id}}/delete/">
+Cancella {{detail_type}}</a></li>
 {%endif%}
 {% endblock %}
 

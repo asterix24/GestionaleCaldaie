@@ -33,6 +33,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
+
     data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
@@ -59,11 +60,11 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
                                 '/anagrafe/%s/impianto/%s/intervento/add', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifiche":
-        data_to_render = database_manager.search_verificheId(impianto_id)
+        data_to_render = database_manager.search_verificheId(sub_impianto_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICHE, "Dettaglio Verifiche e Manutenzioni")
 
     elif detail_type == "intervento":
-        data_to_render = database_manager.search_interventoId(impianto_id)
+        data_to_render = database_manager.search_interventoId(sub_impianto_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_INTERVENTI, "Dettaglio Intervento")
 
     else:
