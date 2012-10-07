@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block navigation_search_block_bot %}
+<li><a href="javascript:history.back()">Indietro</a></li>
 {% endblock %}
 
 {% block center_block %}
