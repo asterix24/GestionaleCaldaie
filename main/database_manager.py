@@ -80,7 +80,8 @@ main_impianto.modello_caldaia LIKE %s OR \
 main_impianto.tipo_caldaia LIKE %s OR \
 main_impianto.combustibile LIKE %s OR \
 main_impianto.data_installazione LIKE %s OR \
-main_impianto.data_analisi_combustione LIKE %s OR \
+main_impianto.data_ultima_verifica LIKE %s OR \
+main_impianto.data_ultima_analisi_combustione LIKE %s OR \
 main_impianto.data_contratto LIKE %s OR \
 main_verifichemanutenzione.data_verifica_manutenzione LIKE %s OR \
 main_verifichemanutenzione.tipo_verifica_manutenzione LIKE %s OR \

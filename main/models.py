@@ -49,8 +49,11 @@ class Impianto(models.Model):
 	tipo_caldaia = models.CharField(max_length=1, null=True, blank=True)
 	combustibile = models.CharField(max_length=100, null=True, blank=True)
 	data_installazione = models.DateField(null=True, blank=True)
-	data_analisi_combustione = models.DateField(null=True, blank=True)
 	data_contratto = models.DateField(null=True, blank=True)
+	data_ultima_analisi_combustione = models.DateField(null=True, blank=True)
+	data_ultima_verifica = models.DateField(null=True, blank=True)
+	data_prossima_analisi_combustione = models.CharField(max_length=100, null=True, blank=True)
+	data_prossima_verifica = models.CharField(max_length=100, null=True, blank=True)
 
 	class Meta:
 		ordering = ['marca_caldaia']
@@ -89,7 +92,7 @@ class VerificheManutenzione(models.Model):
 	valore_bollino = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
 	scadenza = models.BooleanField(default=False) # Se l'intervento puo' scadere
 	data_scadenza = models.DateField(null=True, blank=True)
-	stato_pagamento = models.BooleanField(default=False) # Se l'intervento puo' scadere
+	stato_pagamento = models.BooleanField(default=False)
 	costo_intervento = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
 	note_verifiche_manutenzione = models.TextField(null=True, blank=True)
 
