@@ -327,7 +327,8 @@ def anagrafe(request):
 from main import tools
 
 def populatedb(request):
-    data = tools.insert_csv_files(cli_on=False)
+    #data = tools.insert_csv_files(cli_on=False)
+    data = tools.load_csv('main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
 
 def test(request):

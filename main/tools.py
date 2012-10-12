@@ -17,22 +17,9 @@ def data_fmt(s):
 
     return None
 
-def load_csv(file_name, handler):
-	table = csv.reader(open(file_name, 'rb'), delimiter=',', quotechar='\"')
-	all = []
 
-	for e in table:
-		#try:
-		if e != []:
-			table_dict = handler(e)
-		#except (ValueError, IndexError, KeyError), m:
-		#    print "ValueError (%s)" % m , e
-		#    exit (0)
 
-		all.append(table_dict)
-
-	return all
-
+ID_UNIQUE_CODE=30
 # Cliente
 ID_COGNOME=2
 ID_NOME=3
@@ -119,107 +106,82 @@ def impianto_csv(row):
     return table_dict
 
 ID_DATA=19
+ID_NUMERO_RAPPORTO=1
 ID_TIPO_CONTROLLO=17
 ID_COLORE_BOLLINO=22
 ID_NUMERO_BOLLINO=23
 ID_NOTE=29
 
 def verifiche_csv(row):
-	table_dict = {}
+    table_dict = {}
 
-	table_dict['tipo_verifica_manutenzione'] = row[ID_TIPO_CONTROLLO].capitalize().strip()
-	table_dict['data_verifica_manutenzione'] = data_fmt(row[ID_DATA])
+    table_dict['numero_rapporto'] = row[ID_NUMERO_RAPPORTO].strip()
+    table_dict['tipo_verifica_manutenzione'] = row[ID_TIPO_CONTROLLO].capitalize().strip()
+    d = data_fmt(row[ID_DATA])
+    if d is not None:
+        table_dict['data_verifica_manutenzione'] = d
 
-	table_dict['colore_bollino'] = row[ID_COLORE_BOLLINO].capitalize().strip()
+    table_dict['colore_bollino'] = row[ID_COLORE_BOLLINO].capitalize().strip()
 
-	n = row[ID_NUMERO_BOLLINO].strip()
-	if n != "":
-		n = int(n)
-	else:
-		n = None
-	table_dict['numero_bollino'] = n
-	table_dict['note_verifiche_manutenzione'] = row[ID_NOTE]
+    n = row[ID_NUMERO_BOLLINO].strip()
+    if n != "":
+        n = int(n)
+    else:
+        n = None
+    table_dict['numero_bollino'] = n
+    table_dict['note_verifiche_manutenzione'] = row[ID_NOTE]
 
-	return table_dict
+    return table_dict
 
 import models
 from django.db import IntegrityError
-from django.db.models import Q
+#from django.db.models import Q
 
-def insert_csv_files(cli_on = True):
-    try:
-        cliente_dict = load_csv("main/elenco2011.csv", cliente_csv)
-        impianto_dict = load_csv("main/elenco2011.csv", impianto_csv)
-        verifiche_dict = load_csv("main/elenco2011.csv", verifiche_csv)
+def load_csv(file_name):
+    table = csv.reader(open(file_name, 'rb'), delimiter=',', quotechar='\"')
+    data = ""
+    row_dict = {}
+    cli = None
+    clienti_count = 0
+    impianto_count = 0
+    for row in table:
+        d = cliente_csv(row)
+        di = impianto_csv(row)
+        dv = verifiche_csv(row)
+        try:
+            key = key2 = ""
+            for i in d.values():
+                if i != None:
+                    key += "%s" % i
 
-        data = ""
-        index = 0
-        clienti_count = 0
-        for index, item in enumerate(cliente_dict):
-            cli = models.Cliente(**item)
-            try:
-                s = cli.save()
+            for i in (di.values() + dv.values()):
+                if i != None:
+                    key2 += "%s" % i
+
+        except KeyError, m:
+            print row
+
+        try:
+            if key not in row_dict:
+                cli = models.Cliente(**d)
+                cli.save()
+                row_dict[key] = cli
                 clienti_count += 1
-            except IntegrityError, m:
-                cli_search = models.Cliente.objects.filter(cognome__iexact = item['cognome'])
-                try:
-                    if item['nome'] is not None:
-                        cli_search = cli_search.filter(nome__iexact = item['nome'])
-                except KeyError, m:
-                    if cli_on:
-                        print  "Error", item, m
-                    else:
-                        data += "Error %s %s\n" % (item, m)
 
-                if len(cli_search) >= 1:
-                    cli = cli_search[0]
-
-                if cli_on:
-                    print "Skip %d %s (%s)" % (index, cli.nome, m)
-                else:
-                    data += "Skip %d %s (%s)\n" % (index, cli.nome, m)
-
-            try:
-                impianto_node = models.Impianto(cliente_impianto = cli, **impianto_dict[index])
+            if key2 not in row_dict:
+                impianto_node = models.Impianto(cliente_impianto=row_dict[key], **di)
                 impianto_node.save()
-            except IntegrityError, m:
-                impianto_search = models.Impianto.objects.filter(marca_caldaia__iexact = impianto_dict[index]['marca_caldaia'])
-                impianto_search = impianto_search.filter(modello_caldaia__iexact = impianto_dict[index]['modello_caldaia'])
-                impianto_search = impianto_search.filter(data_installazione__iexact = impianto_dict[index]['data_installazione'])
+                row_dict[key2] = impianto_node
 
-                try:
-                    if item['codice_id'] is not None:
-                        cli_search = cli_search.filter(codice_id__iexact = impianto_dict[index]['codice_id'])
-                except KeyError, m:
-                    if cli_on:
-                        print item, m
-                    else:
-                        data += "Error %s %s" % (item, m)
-
-
-                if len(cli_search) >= 1:
-                    impianto_node = impianto_search[0]
-
-                if cli_on:
-                    print "%d %s skipped.. (%s)" % (index, impianto_node.modello_caldaia, m)
-                else:
-                    data += "%d %s skipped.. (%s)\n" % (index, impianto_node.modello_caldaia, m)
-
-            verifiche_node = models.VerificheManutenzione(verifiche_impianto = impianto_node, **verifiche_dict[index])
+            verifiche_node = models.VerificheManutenzione(verifiche_impianto=row_dict[key2], **dv)
             verifiche_node.save()
+            impianto_count += 1
+        except IntegrityError, m:
+            print row, m
+            data +=  "%s %s %s %s\n" % (cli.pk, cli.nome, verifiche_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia)
 
-            if cli_on:
-                print "Ok", cli.pk, cli.nome, verifiche_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia, "Row: ", index
-            else:
-                data +=  "Ok %s %s %s %s Row: %s\n" % (cli.pk, cli.nome, verifiche_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia, index)
-    except IndexError, m:
-        print "Errore:", m
-
-    if cli_on:
-        print "Record inseriti: %s, record totoali: %s" % (clienti_count, index)
-    else:
-        data += "Record inseriti: %s, record totoali: %s\n" % (clienti_count, index)
-        return data
+    data += "Totale clienti %s, impianti %s\n" % (clienti_count, impianto_count)
+    return data
 
 def dump(l, key = None):
 	if key is not None:

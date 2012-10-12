@@ -28,7 +28,7 @@ class Cliente(models.Model):
 
 	class Meta:
 		ordering = ['cognome', 'nome']
-		unique_together = ('cognome', 'nome')
+		#unique_together = ('cognome', 'nome')
 
 	def __unicode__(self):
 		return self.cognome
@@ -57,7 +57,7 @@ class Impianto(models.Model):
 
 	class Meta:
 		ordering = ['marca_caldaia']
-		unique_together = ('codice_impianto', 'data_installazione')
+		#unique_together = ('codice_impianto', 'data_installazione')
 
 	def __unicode__(self):
 		return self.marca_caldaia

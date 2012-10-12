@@ -4,6 +4,9 @@
 
 <h1>{{msg_hdr}}</h1>
 <br>
-<h3>{{msg_body}}<h3>
-
+<h3>
+    {% autoescape off %}
+        {{msg_body}}
+    {% endautoescape %}
+</h3>
 {% endblock %}
