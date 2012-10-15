@@ -183,6 +183,18 @@ def load_csv(file_name):
     data += "Totale clienti %s, impianti %s\n" % (clienti_count, impianto_count)
     return data
 
+def show_all_method():
+    l = [models.Cliente(),
+         models.Impianto(),
+         models.VerificheManutenzione(),
+         models.Intervento() ]
+
+    for k in l:
+        for i in k.__dict__.keys():
+            if ('id' not in i) and (i[0] != '_'):
+                print i
+
+
 def dump(l, key = None):
 	if key is not None:
 		print l[key]

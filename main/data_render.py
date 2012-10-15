@@ -146,7 +146,7 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
     data += "%s"  % message
     return url + data + "</a>"
 
-class DataRender:
+class DataRender(object):
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
         self.items = items
         self.colums = None
