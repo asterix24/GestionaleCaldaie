@@ -55,43 +55,53 @@ def insert_cliente(r):
     return node
 
 
-ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifiche_id']
+ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifiche_id', 'intervento_id' ]
 
 DB_SELECT_ALL = "\
 SELECT * FROM main_cliente \
 LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
 LEFT JOIN main_verifichemanutenzione ON main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id \
+LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id \
 "
 
 #LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 
-DB_WHERE_MAIN_CLIENTE = "\
-(\
-main_cliente.nome LIKE %s OR \
-main_cliente.cognome LIKE %s OR \
-main_cliente.via LIKE %s OR \
-main_cliente.citta LIKE %s OR \
-main_cliente.numero_telefono LIKE %s OR \
-main_cliente.numero_cellulare LIKE %s OR \
-main_cliente.mail LIKE %s OR \
-main_impianto.codice_impianto LIKE %s OR \
-main_impianto.marca_caldaia  LIKE %s OR \
-main_impianto.modello_caldaia LIKE %s OR \
-main_impianto.tipo_caldaia LIKE %s OR \
-main_impianto.combustibile LIKE %s OR \
-main_impianto.data_installazione LIKE %s OR \
-main_impianto.data_ultima_verifica LIKE %s OR \
-main_impianto.data_ultima_analisi_combustione LIKE %s OR \
-main_impianto.data_contratto LIKE %s OR \
-main_verifichemanutenzione.data_verifica_manutenzione LIKE %s OR \
-main_verifichemanutenzione.tipo_verifica_manutenzione LIKE %s OR \
-main_verifichemanutenzione.numero_rapporto LIKE %s OR \
-main_verifichemanutenzione.colore_bollino LIKE %s OR \
-main_verifichemanutenzione.numero_bollino LIKE %s OR \
-main_verifichemanutenzione.valore_bollino LIKE %s OR \
-main_verifichemanutenzione.scadenza LIKE %s OR \
-main_verifichemanutenzione.data_scadenza LIKE %s \
-)"
+DB_WHERE_MAIN_CLIENTE = "(\
+main_cliente.numero_cellulare ILIKE %s OR \
+main_cliente.via ILIKE %s OR \
+main_cliente.nome ILIKE %s OR \
+main_cliente.cognome ILIKE %s OR \
+main_cliente.codice_fiscale ILIKE %s OR \
+CAST(main_cliente.cliente_data_inserimento AS TEXT) ILIKE %s OR \
+main_cliente.numero_telefono ILIKE %s OR \
+main_cliente.mail ILIKE %s OR \
+main_cliente.citta ILIKE %s OR \
+main_impianto.modello_caldaia ILIKE %s OR \
+CAST(main_impianto.impianto_data_inserimento AS TEXT) ILIKE %s OR \
+main_impianto.matricola_caldaia ILIKE %s OR \
+main_impianto.combustibile ILIKE %s OR \
+CAST(main_impianto.data_installazione AS TEXT) ILIKE %s OR \
+CAST(main_impianto.data_contratto AS TEXT) ILIKE %s OR \
+CAST(main_impianto.data_prossima_verifica AS TEXT) ILIKE %s OR \
+CAST(main_impianto.data_ultima_verifica AS TEXT) ILIKE %s OR \
+main_impianto.tipo_caldaia ILIKE %s OR \
+main_impianto.potenza_caldaia ILIKE %s OR \
+CAST(main_impianto.data_ultima_analisi_combustione AS TEXT) ILIKE %s OR \
+main_impianto.marca_caldaia ILIKE %s OR \
+main_impianto.codice_impianto ILIKE %s OR \
+CAST(main_impianto.data_prossima_analisi_combustione AS TEXT) ILIKE %s OR \
+main_intervento.note_intervento ILIKE %s OR \
+main_intervento.tipo_intervento ILIKE %s OR \
+CAST(main_intervento.data_intervento AS TEXT) ILIKE %s OR \
+CAST(main_verifichemanutenzione.data_scadenza AS TEXT) ILIKE %s OR \
+main_verifichemanutenzione.note_verifiche_manutenzione ILIKE %s OR \
+main_verifichemanutenzione.tipo_verifica_manutenzione ILIKE %s OR \
+main_verifichemanutenzione.colore_bollino ILIKE %s OR \
+CAST(main_verifichemanutenzione.data_verifica_manutenzione AS TEXT) ILIKE %s OR \
+CAST(main_verifichemanutenzione.numero_bollino AS TEXT) ILIKE %s OR \
+CAST(main_verifichemanutenzione.scadenza AS TEXT) ILIKE %s OR \
+CAST(main_verifichemanutenzione.numero_rapporto AS TEXT) ILIKE %s )"
+
 
 DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
