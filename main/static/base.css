@@ -26,17 +26,18 @@ em {
 
 #customers th
 {
-    font-size:1.1em;
+    font-size:1em;
     text-align:center;
-    padding-top:5px;
-    padding-bottom:4px;
-    background-color:#A7C942;
-    color:#ffffff;
+    padding-top:4px;
+    padding-bottom:3px;
+    background-color:#FFFFFF;
+    border-bottom:4px solid #99CC00;
+    color:#360;
 }
 
 #customers tr:hover
 {
-   background-color:#CCCC66;
+   background-color:#F0F0F0;
 }
 
 #customers tr.alt
@@ -47,7 +48,7 @@ em {
 
 #customers tr.alt:hover
 {
-   background-color:#CCCC66;
+   background-color:#F0F0F0;
 }
 
 #customers_detail
@@ -65,35 +66,38 @@ em {
 
 #customers_detail th
 {
-    font-size:1.2em;
+    font-size:1.3em;
     text-align:center;
+    font-weight: bold;
     padding-top:5px;
     padding-bottom:4px;
-    background-color:#CC9900;
-    border:1px solid #996600;
-    color:#ffffff;
+    background-color:#FFFFFF;
+    border-bottom:4px solid #99CC00;
+    color:#360;
 }
 
 #customers_detail tr:hover
 {
-   background-color:#CCCC66;
+   background-color:#F0F0F0;
 }
 
 #customers_detail tr.alt td
 {
-    color:#000000;
+    color:#360;
     background-color:#EAF2D3;
 }
 
 #customers_detail td.hdr
 {
     font-size:1.1em;
+    font-weight: bold;
     text-align:center;
     padding-top:5px;
     padding-bottom:4px;
-    background-color:#A7C942;
+    background-color:#FFFFFF;
+    border-right:4px solid #99CC00;
     width:20%;
-    color:#ffffff;
+    color:#360;
 }
 
 #customers_detail td.h_div
@@ -106,7 +110,7 @@ em {
 
 #header
 {
-    background: #ccc;
+    background: #ffffff;
     padding: 20px;
 }
 
@@ -116,7 +120,6 @@ em {
 {
     float: left;
     width: 100%;
-    background: #333;
 }
 
 
@@ -126,18 +129,17 @@ em {
     display:inline;
     padding: 2px 5px;
 
-    color: #900;
-    background: #FF0;
+    color: #336600;
+    background: #FFFFFF;
     font-weight: bold;
     font-size: 130%;
-    border: 1px solid #900;
     text-transform: uppercase;
 }
 
 .navigation_buttons:hover
 {
-    color: #FFF;
-    background: #900;
+    color: #336600;
+    background: #F0F0F0;
 }
 
 #navigation ul
@@ -157,19 +159,20 @@ em {
     display: block;
     float: left;
     padding: 5px 10px;
-    color: #fff;
     text-decoration: none;
-    border-right: 1px solid #fff;
+    border-bottom: 3px solid #660000;
+    color: #336600;
+    font-weight: bold;
 }
 
-#navigation li a:hover { background: #383; }
+#navigation li a:hover { background: #99CC00; }
 
 
 #navigation_search
 {
     float: left;
     width: 100%;
-    background: #CC9900;
+    background: #FFFFFF;
 }
 
 #navigation_search ul
@@ -189,12 +192,12 @@ em {
     display: block;
     float: left;
     padding: 2px 5px;
-    color: #fff;
+    color: #336600;
     text-decoration: none;
-    border-right: 1px solid #fff;
+    border-bottom: 2px solid #600;
 }
 
-#navigation_search li a:hover { background: #383; }
+#navigation_search li a:hover { background: #F0F0F0; }
 
 #content
 {
@@ -211,7 +214,7 @@ em {
 
 #footer
 {
-    background: #ccc;
+    background: #FFFFFF;
     text-align: right;
     padding: 20px;
     height: 1%;

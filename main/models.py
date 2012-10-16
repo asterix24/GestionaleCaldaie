@@ -48,12 +48,15 @@ class Impianto(models.Model):
 	potenza_caldaia = models.CharField(max_length=100, null=True, blank=True)
 	tipo_caldaia = models.CharField(max_length=1, null=True, blank=True)
 	combustibile = models.CharField(max_length=100, null=True, blank=True)
+
 	data_installazione = models.DateField(null=True, blank=True)
 	data_contratto = models.DateField(null=True, blank=True)
-	data_ultima_analisi_combustione = models.DateField(null=True, blank=True)
-	data_ultima_verifica = models.DateField(null=True, blank=True)
+
+	data_ultima_analisi_combustione = models.CharField(max_length=100, null=True, blank=True)
 	data_prossima_analisi_combustione = models.CharField(max_length=100, null=True, blank=True)
+
 	data_prossima_verifica = models.CharField(max_length=100, null=True, blank=True)
+	data_ultima_verifica = models.CharField(max_length=100, null=True, blank=True)
 
 	class Meta:
 		ordering = ['marca_caldaia']
