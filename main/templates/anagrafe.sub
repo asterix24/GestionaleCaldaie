@@ -6,6 +6,7 @@
 {{ form.s }}
 <input type="submit" value="Cerca"/>
 </form>
+<br>
 {% if display_data %}
 <div class="navigation_buttons">Clienti trovati: {{clienti|length }}</div>
 {% endif %}

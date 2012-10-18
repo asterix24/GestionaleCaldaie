@@ -226,7 +226,7 @@ class DataRender(object):
                 table += "<td>%s</td>" % s
 
             table += "</tr>"
-        table += "</table>"
+        table += "</table><br>"
 
         self.url_type = []
         self.detail_type = None
@@ -255,6 +255,6 @@ def render_toList(item_dict, show_colum, header_msg):
 		table += "<td>%s</td>" % s
 		table += "</tr>"
 
-	table += "</table>"
+	table += "</table><br>"
 
 	return table
