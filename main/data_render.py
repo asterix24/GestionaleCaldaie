@@ -231,6 +231,7 @@ class DataRender(object):
         self.url_type = []
         self.detail_type = None
         self.colums = None
+        self.display_header = True
 
         return table
 
