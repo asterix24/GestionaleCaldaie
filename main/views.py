@@ -63,6 +63,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
             dr.urlBar('verifiche', ['edit','delete'])
             data += dr.toTable()
+
+        if data_to_render[0]['intervento_id'] != None:
+            dr.selectColums(data_render.SCHEDA_ANAGRAFE_INTERVENTI)
+            dr.urlBar('intervento', ['edit','delete'])
+            data += dr.toTable()
+
         data += data_render.make_url('icon', 'add', 'Aggiungi una verifiche a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/verifiche/add', cliente_id, impianto_id, sub_impianto_id)
 
