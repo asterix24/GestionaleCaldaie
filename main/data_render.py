@@ -236,26 +236,37 @@ class DataRender(object):
         return table
 
 
-def render_toList(item_dict, show_colum, header_msg):
-	table = "<table id=\"customers_detail\">"
-	table += "<tr><th></th><th>%s</th></tr>" % header_msg
-	for i in show_colum:
-		try:
-			table += "<tr>"
-			table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
-			s  = item_dict[i]
-			if s is None:
-				s = '-'
-			elif type(s) == datetime.date:
-				s = s.strftime(DATA_FIELD_STR_FORMAT)
+def render_toList(item_dict, show_colum, header_msg, detail_type=None):
+    table = "<table id=\"customers_detail\">"
+    return_link = ''
+    if detail_type is not None:
+        if detail_type == 'cliente':
+            return_link += make_url('', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/', cliente_id=item_dict['cliente_id'])
+        elif detail_type == 'impianto':
+            return_link += make_url('', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/',
+                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+        else:
+            return_link = ''
 
-		except (KeyError, ValueError), m:
-			print "Errore nel render di %s (%s)" % (i, m)
-			s = '-'
 
-		table += "<td>%s</td>" % s
-		table += "</tr>"
+    table += "<tr><th>%s</th><th>%s</th></tr>" % (return_link, header_msg)
+    for i in show_colum:
+        try:
+            table += "<tr>"
+            table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+            s  = item_dict[i]
+            if s is None:
+                s = '-'
+            elif type(s) == datetime.date:
+                s = s.strftime(DATA_FIELD_STR_FORMAT)
 
-	table += "</table><br>"
+        except (KeyError, ValueError), m:
+            print "Errore nel render di %s (%s)" % (i, m)
+            s = '-'
 
-	return table
+        table += "<td>%s</td>" % s
+        table += "</tr>"
+
+    table += "</table><br>"
+
+    return table

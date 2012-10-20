@@ -44,7 +44,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
-    data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+    data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente", 'cliente')
 
     dr = data_render.DataRender(data_to_render)
 
@@ -57,7 +57,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
 
         if data_to_render[0]['verifiche_id'] != None:
             dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
@@ -77,17 +77,17 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifiche":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
 
         data_to_render = database_manager.search_verificheId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICHE, "Dettaglio Verifiche e Manutenzioni")
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICHE, "Dettaglio Verifiche e Manutenzioni", 'impianto')
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto")
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
 
         data_to_render = database_manager.search_interventoId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_INTERVENTI, "Dettaglio Intervento")
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_INTERVENTI, "Dettaglio Intervento", 'impianto')
 
     else:
         data = None
