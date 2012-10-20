@@ -31,7 +31,7 @@ em {
     padding-top:4px;
     padding-bottom:3px;
     background-color:#FFFFFF;
-    border-bottom:4px solid #99CC00;
+    border-bottom:4px solid #600;
     color:#360;
 }
 
@@ -72,7 +72,7 @@ em {
     padding-top:5px;
     padding-bottom:4px;
     background-color:#FFFFFF;
-    border-bottom:4px solid #99CC00;
+    border-bottom:4px solid #600;
     color:#360;
 }
 
@@ -95,7 +95,7 @@ em {
     padding-top:5px;
     padding-bottom:4px;
     background-color:#FFFFFF;
-    border-right:4px solid #99CC00;
+    border-right:4px solid #600;
     width:20%;
     color:#360;
 }
@@ -165,7 +165,7 @@ em {
     font-weight: bold;
 }
 
-#navigation li a:hover { background: #99CC00; }
+#navigation li a:hover { background: #600; }
 
 
 #navigation_search
