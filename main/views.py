@@ -44,7 +44,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
-    data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente", 'cliente')
+    data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
 
