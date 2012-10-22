@@ -138,6 +138,10 @@ def search_interventoId(id):
     query_str = DB_SELECT_ALL + " WHERE main_intervento.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
+def search_lastVerifiche(date_str):
+    query_str = DB_SELECT_ALL + " WHERE main_verifichemanutenzione.data_verifica_manutenzione = (SELECT  MAX(main_verifichemanutenzione.data_verifica_manutenzione)" + DB_ORDER
+    return search_runQuery(query_str, [])
+
 def search_fullText(s):
     search_key = []
     if " " in s:
