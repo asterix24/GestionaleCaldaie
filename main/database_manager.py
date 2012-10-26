@@ -55,12 +55,12 @@ def insert_cliente(r):
     return node
 
 
-ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifiche_id', 'intervento_id' ]
+ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id' ]
 
 DB_SELECT_ALL = "\
 SELECT * FROM main_cliente \
 LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
-LEFT JOIN main_verifichemanutenzione ON main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id \
+LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id \
 LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id \
 "
 
@@ -93,17 +93,19 @@ CAST(main_impianto.data_prossima_analisi_combustione AS TEXT) ILIKE %s OR \
 main_intervento.note_intervento ILIKE %s OR \
 main_intervento.tipo_intervento ILIKE %s OR \
 CAST(main_intervento.data_intervento AS TEXT) ILIKE %s OR \
-CAST(main_verifichemanutenzione.data_scadenza AS TEXT) ILIKE %s OR \
-main_verifichemanutenzione.note_verifiche_manutenzione ILIKE %s OR \
-main_verifichemanutenzione.tipo_verifica_manutenzione ILIKE %s OR \
-main_verifichemanutenzione.colore_bollino ILIKE %s OR \
-CAST(main_verifichemanutenzione.data_verifica_manutenzione AS TEXT) ILIKE %s OR \
-CAST(main_verifichemanutenzione.numero_bollino AS TEXT) ILIKE %s OR \
-CAST(main_verifichemanutenzione.scadenza AS TEXT) ILIKE %s OR \
-CAST(main_verifichemanutenzione.numero_rapporto AS TEXT) ILIKE %s )"
+CAST(main_verifica.data_scadenza AS TEXT) ILIKE %s OR \
+main_verifica.note_verifica ILIKE %s OR \
+main_verifica.tipo_verifica ILIKE %s OR \
+main_verifica.colore_bollino ILIKE %s OR \
+CAST(main_verifica.data_verifica AS TEXT) ILIKE %s OR \
+CAST(main_verifica.numero_bollino AS TEXT) ILIKE %s OR \
+CAST(main_verifica.scadenza AS TEXT) ILIKE %s OR \
+CAST(main_verifica.numero_rapporto AS TEXT) ILIKE %s )"
 
 
 DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
+
+LAST_DATE = "SELECT * FROM main_impianto, main_verifichemanutenzione WHERE main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id and main_verifichemanutenzione.data_verifica_manutenzione = (SELECT MAX(data_verifica_manutenzione) from main_verifichemanutenzione where verifiche_impianto_id = main_impianto.id)"
 
 def search_runQuery(query_str, param):
     cursor = connection.cursor()
@@ -130,16 +132,16 @@ def search_impiantoId(id):
     query_str = DB_SELECT_ALL + " WHERE main_impianto.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
-def search_verificheId(id):
-    query_str = DB_SELECT_ALL + " WHERE main_verifichemanutenzione.id = %s " + DB_ORDER
+def search_verificaId(id):
+    query_str = DB_SELECT_ALL + " WHERE main_verifica.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_interventoId(id):
     query_str = DB_SELECT_ALL + " WHERE main_intervento.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
-def search_lastVerifiche(date_str):
-    query_str = DB_SELECT_ALL + " WHERE main_verifichemanutenzione.data_verifica_manutenzione = (SELECT  MAX(main_verifichemanutenzione.data_verifica_manutenzione)" + DB_ORDER
+def search_lastVerifica(date_str):
+    query_str = "SELECT * FROM main_impianto, main_verifichemanutenzione WHERE main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id and main_verifichemanutenzione.data_verifica_manutenzione as ultimo = (SELECT MAX(data_verifica_manutenzione) from main_verifichemanutenzione where verifiche_impianto_id = main_impianto.id)"
     return search_runQuery(query_str, [])
 
 def search_fullText(s):
@@ -164,6 +166,6 @@ def search_fullText(s):
         if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
             query_str += " AND "
 
-    query_str += " ) " + DB_ORDER
+    query_str += " ) " +  DB_ORDER
 
     return search_runQuery(query_str, param)

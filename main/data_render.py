@@ -55,7 +55,7 @@ SCHEDA_ANAGRAFE_IMPIANTI = [
 	'data_verifica_manutenzione',
 	]
 
-SCHEDA_ANAGRAFE_VERIFICHE = [
+SCHEDA_ANAGRAFE_VERIFICA = [
 	'data_verifica_manutenzione',
 	'tipo_verifica_manutenzione',
 	'numero_rapporto',
@@ -67,7 +67,7 @@ SCHEDA_ANAGRAFE_VERIFICHE = [
 	]
 
 SCHEDA_ANAGRAFE_INTERVENTI = [
-	'note_verifiche_manutenzione',
+	'note_verifica',
 	'data_intervento',
 	'tipo_intervento',
 	'note_intervento',
@@ -101,7 +101,7 @@ SHOW_ALL_COLUM=[
 	'data_prossima_analisi_combustione',
 	'data_prossima_verifica',
 	'data_verifica_manutenzione',
-	'verifiche_impianto',
+	'verifica_impianto',
 	'tipo_verifica_manutenzione',
 	'numero_rapporto',
 	'colore_bollino',
@@ -111,7 +111,7 @@ SHOW_ALL_COLUM=[
 	'data_scadenza',
 	'stato_pagamento',
 	'costo_intervento',
-	'note_verifiche_manutenzione',
+	'note_verifica',
 	'intervento_impianto',
 	'tipo_intervento',
 	'note_intervento',
@@ -217,7 +217,7 @@ class DataRender(object):
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
                     if i == 'data_verifica_manutenzione':
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifiche/%s/',
-                                item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifiche_id'])
+                                item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
                     if s is None:
                         s = '-'
                 except (KeyError, ValueError), m:

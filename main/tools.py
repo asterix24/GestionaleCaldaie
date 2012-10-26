@@ -116,10 +116,10 @@ def verifiche_csv(row):
     table_dict = {}
 
     table_dict['numero_rapporto'] = row[ID_NUMERO_RAPPORTO].strip()
-    table_dict['tipo_verifica_manutenzione'] = row[ID_TIPO_CONTROLLO].capitalize().strip()
+    table_dict['tipo_verifica'] = row[ID_TIPO_CONTROLLO].capitalize().strip()
     d = data_fmt(row[ID_DATA])
     if d is not None:
-        table_dict['data_verifica_manutenzione'] = d
+        table_dict['data_verifica'] = d
 
     table_dict['colore_bollino'] = row[ID_COLORE_BOLLINO].capitalize().strip()
 
@@ -129,7 +129,7 @@ def verifiche_csv(row):
     else:
         n = None
     table_dict['numero_bollino'] = n
-    table_dict['note_verifiche_manutenzione'] = row[ID_NOTE]
+    table_dict['note_verifica'] = row[ID_NOTE]
 
     return table_dict
 
@@ -173,12 +173,12 @@ def load_csv(file_name):
                 impianto_node.save()
                 row_dict[key2] = impianto_node
 
-            verifiche_node = models.VerificheManutenzione(verifiche_impianto=row_dict[key2], **dv)
-            verifiche_node.save()
+            verifica_node = models.Verifica(verifica_impianto=row_dict[key2], **dv)
+            verifica_node.save()
             impianto_count += 1
         except IntegrityError, m:
             print row, m
-            data +=  "%s %s %s %s\n" % (cli.pk, cli.nome, verifiche_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia)
+            data +=  "%s %s %s %s\n" % (cli.pk, cli.nome, verifica_node.tipo_verifica_manutenzione, impianto_node.modello_caldaia)
 
     data += "Totale clienti %s, impianti %s\n" % (clienti_count, impianto_count)
     return data
@@ -186,7 +186,7 @@ def load_csv(file_name):
 def show_all_method():
     l = [(models.Cliente(),'main_cliente'),
          (models.Impianto(),'main_impianto'),
-         (models.VerificheManutenzione(),'main_verifichemanutenzione'),
+         (models.Verifica(),'main_verificia'),
          (models.Intervento(), 'main_intervento') ]
 
     print "(\\"

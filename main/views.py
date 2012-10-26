@@ -59,8 +59,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         data_to_render = database_manager.search_impiantoId(impianto_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
 
-        if data_to_render[0]['verifiche_id'] != None:
-            dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICHE)
+        if data_to_render[0]['verifica_id'] != None:
+            dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICA)
             dr.urlBar('verifiche', ['edit','delete'])
             data += dr.toTable()
 
@@ -69,7 +69,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.urlBar('intervento', ['edit','delete'])
             data += dr.toTable()
 
-        data += data_render.make_url('icon', 'add', 'Aggiungi una verifiche a questo impianto..',
+        data += data_render.make_url('icon', 'add', 'Aggiungi una verifica a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/verifiche/add', cliente_id, impianto_id, sub_impianto_id)
 
         data += data_render.make_url('icon', 'add', 'Aggiungi un\'intervento a questo impianto..',
@@ -79,8 +79,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         data_to_render = database_manager.search_impiantoId(impianto_id)
         data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
 
-        data_to_render = database_manager.search_verificheId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICHE, "Dettaglio Verifiche e Manutenzioni", 'impianto')
+        data_to_render = database_manager.search_verificaId(sub_impianto_id)
+        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICA, "Dettaglio Verifica e Manutenzioni", 'impianto')
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -127,7 +127,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                 form = models.ImpiantoForm(initial={'cliente_impianto': models.Cliente.objects.get(pk=cliente_id)})
 
             if detail_type == 'verifiche':
-                form = models.VerificheForm(initial={'verifiche_impianto': models.Impianto.objects.get(pk=impianto_id)})
+                form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
@@ -146,7 +146,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                     return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
             if detail_type == 'verifiche':
-                form = models.VerificheForm(request.POST)
+                form = models.VerificaForm(request.POST)
                 if form.is_valid():
                     instance = form.save()
                     return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
@@ -217,7 +217,7 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
                     return show_record(request, cliente_id=cliente_id, message=s)
 
                 if detail_type == 'verifiche':
-                    ver = models.VerificheManutenzione.objects.get(pk=sub_impianto_id)
+                    ver = models.Verifica.objects.get(pk=sub_impianto_id)
                     s = "%s" % ver
                     ver.delete()
                     s = "Verifica e Manutezione: %s rimosso correttamente." % s
@@ -258,8 +258,8 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
 
         if detail_type == 'verifiche':
-            select = models.VerificheManutenzione.objects.get(pk=sub_impianto_id)
-            form = models.VerificheForm(instance=select)
+            select = models.Verifica.objects.get(pk=sub_impianto_id)
+            form = models.VerificaForm(instance=select)
             header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifiche/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
             return_url = "%s/impianto/%s/verifiche/%s/" % (cliente_id, impianto_id, sub_impianto_id)
@@ -288,7 +288,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
                     return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
             if detail_type == 'verifiche':
-                form = models.VerificheForm(request.POST, instance=select)
+                form = models.VerificaForm(request.POST, instance=select)
                 if form.is_valid():
                     instance = form.save()
                     return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,

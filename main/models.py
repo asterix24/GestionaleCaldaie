@@ -85,10 +85,10 @@ INTERVENTI_CHOICES = (
 	('prima accensione','prima accensione'),
 	)
 
-class VerificheManutenzione(models.Model):
-	data_verifica_manutenzione = models.DateField(default=datetime.date.today())
-	verifiche_impianto = models.ForeignKey(Impianto)
-	tipo_verifica_manutenzione = models.CharField(max_length=80, null=True, blank=True)
+class Verifica(models.Model):
+	data_verifica = models.DateField(default=datetime.date.today())
+	verifica_impianto = models.ForeignKey(Impianto)
+	tipo_verifica  = models.CharField(max_length=80, null=True, blank=True)
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 	colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
@@ -97,17 +97,17 @@ class VerificheManutenzione(models.Model):
 	data_scadenza = models.DateField(null=True, blank=True)
 	stato_pagamento = models.BooleanField(default=False)
 	costo_intervento = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
-	note_verifiche_manutenzione = models.TextField(null=True, blank=True)
+	note_verifica = models.TextField(null=True, blank=True)
 
 	class Meta:
-		ordering = ['-data_verifica_manutenzione'] # Ordina per data in modo decrescente
+		ordering = ['-data_verifica'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
 		return self.tipo_verifica_manutenzione
 
-class VerificheForm(forms.ModelForm):
+class VerificaForm(forms.ModelForm):
 	class Meta:
-		model = VerificheManutenzione
+		model = Verifica
 
 class Intervento(models.Model):
 	data_intervento = models.DateField(default=datetime.date.today())
