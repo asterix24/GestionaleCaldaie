@@ -138,7 +138,7 @@ em {
 
 .navigation_buttons:hover
 {
-    color: #336600;
+    color: #33CC00;
     background: #F0F0F0;
 }
 
@@ -165,7 +165,7 @@ em {
     font-weight: bold;
 }
 
-#navigation li a:hover { background: #600; }
+#navigation li a:hover { background: #33CC00; }
 
 
 #navigation_search
