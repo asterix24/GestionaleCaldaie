@@ -57,57 +57,93 @@ def insert_cliente(r):
 
 ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id' ]
 
-DB_SELECT_ALL = "\
-SELECT * FROM main_cliente \
+
+
+#SELECT
+DB_COLUM = " \
+main_cliente.id, \
+main_cliente.numero_cellulare, \
+main_cliente.via, \
+main_cliente.nome, \
+main_cliente.cognome, \
+main_cliente.codice_fiscale, \
+main_cliente.cliente_data_inserimento, \
+main_cliente.numero_telefono, \
+main_cliente.mail, \
+main_cliente.citta, \
+main_impianto.id, \
+main_impianto.modello_caldaia, \
+main_impianto.impianto_data_inserimento, \
+main_impianto.matricola_caldaia, \
+main_impianto.combustibile, \
+main_impianto.data_installazione, \
+main_impianto.data_contratto, \
+main_impianto.tipo_caldaia, \
+main_impianto.potenza_caldaia, \
+main_impianto.marca_caldaia, \
+main_impianto.codice_impianto, \
+main_intervento.id, \
+main_intervento.note_intervento, \
+main_intervento.tipo_intervento, \
+main_intervento.data_intervento, \
+main_verifica.id, \
+main_verifica.data_scadenza, \
+main_verifica.stato_pagamento, \
+main_verifica.colore_bollino, \
+main_verifica.numero_bollino, \
+main_verifica.costo_intervento, \
+main_verifica.tipo_verifica, \
+main_verifica.note_verifica, \
+main_verifica.valore_bollino, \
+main_verifica.data_verifica AS ultima_verifica, \
+main_verifica.scadenza, \
+main_verifica.numero_rapporto"
+
+#FROM
+DB_FROM_JOIN = " \
+main_cliente \
 LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id \
 LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id \
-LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id \
-"
+LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id"
 
-#LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
+#WHERE
 
-DB_WHERE_MAIN_CLIENTE = "(\
+DB_WHERE_LIKE = "( \
 main_cliente.numero_cellulare ILIKE %s OR \
 main_cliente.via ILIKE %s OR \
 main_cliente.nome ILIKE %s OR \
 main_cliente.cognome ILIKE %s OR \
 main_cliente.codice_fiscale ILIKE %s OR \
-CAST(main_cliente.cliente_data_inserimento AS TEXT) ILIKE %s OR \
 main_cliente.numero_telefono ILIKE %s OR \
 main_cliente.mail ILIKE %s OR \
 main_cliente.citta ILIKE %s OR \
 main_impianto.modello_caldaia ILIKE %s OR \
-CAST(main_impianto.impianto_data_inserimento AS TEXT) ILIKE %s OR \
 main_impianto.matricola_caldaia ILIKE %s OR \
 main_impianto.combustibile ILIKE %s OR \
-CAST(main_impianto.data_installazione AS TEXT) ILIKE %s OR \
-CAST(main_impianto.data_contratto AS TEXT) ILIKE %s OR \
-CAST(main_impianto.data_prossima_verifica AS TEXT) ILIKE %s OR \
-CAST(main_impianto.data_ultima_verifica AS TEXT) ILIKE %s OR \
 main_impianto.tipo_caldaia ILIKE %s OR \
 main_impianto.potenza_caldaia ILIKE %s OR \
-CAST(main_impianto.data_ultima_analisi_combustione AS TEXT) ILIKE %s OR \
 main_impianto.marca_caldaia ILIKE %s OR \
 main_impianto.codice_impianto ILIKE %s OR \
-CAST(main_impianto.data_prossima_analisi_combustione AS TEXT) ILIKE %s OR \
 main_intervento.note_intervento ILIKE %s OR \
 main_intervento.tipo_intervento ILIKE %s OR \
-CAST(main_intervento.data_intervento AS TEXT) ILIKE %s OR \
-CAST(main_verifica.data_scadenza AS TEXT) ILIKE %s OR \
-main_verifica.note_verifica ILIKE %s OR \
-main_verifica.tipo_verifica ILIKE %s OR \
 main_verifica.colore_bollino ILIKE %s OR \
-CAST(main_verifica.data_verifica AS TEXT) ILIKE %s OR \
 CAST(main_verifica.numero_bollino AS TEXT) ILIKE %s OR \
-CAST(main_verifica.scadenza AS TEXT) ILIKE %s OR \
-CAST(main_verifica.numero_rapporto AS TEXT) ILIKE %s )"
+main_verifica.tipo_verifica ILIKE %s OR \
+main_verifica.note_verifica ILIKE %s OR \
+main_verifica.numero_rapporto ILIKE %s \
+)"
 
+# AND
+DB_WHERE_SUBQUERY = "( \
+main_verifica.data_verifica = (SELECT MAX(main_verifica.data_verifica) from main_verifica where verifica_impianto_id = main_impianto.id) \
+OR \
+main_verifica.verifica_impianto_id IS NULL \
+)"
 
-DB_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
-
-LAST_DATE = "SELECT * FROM main_impianto, main_verifichemanutenzione WHERE main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id and main_verifichemanutenzione.data_verifica_manutenzione = (SELECT MAX(data_verifica_manutenzione) from main_verifichemanutenzione where verifiche_impianto_id = main_impianto.id)"
+DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 def search_runQuery(query_str, param):
+    print ">> " + query_str + " <<"
     cursor = connection.cursor()
     cursor.execute(query_str, param)
 
@@ -115,34 +151,42 @@ def search_runQuery(query_str, param):
     l = []
     i = 0
     for col in desc:
-            c = col[0]
-            if c == 'id':
-                    c = ETICHETTE_ID[i]
-                    i += 1
+        c = col[0]
+        if c == 'id':
+            c = ETICHETTE_ID[i]
+            i += 1
 
-            l.append(c)
-    return [ dict(zip(l, row))
+        l.append(c)
+
+    d = [ dict(zip(l, row))
             for row in cursor.fetchall() ]
+    #print d
+    return d
 
 def search_clienteId(id):
-    query_str = DB_SELECT_ALL + " WHERE main_cliente.id = %s " + DB_ORDER
+    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str += " WHERE main_cliente.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_impiantoId(id):
-    query_str = DB_SELECT_ALL + " WHERE main_impianto.id = %s " + DB_ORDER
+    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str += " WHERE main_impianto.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_verificaId(id):
-    query_str = DB_SELECT_ALL + " WHERE main_verifica.id = %s " + DB_ORDER
+    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str +=" WHERE main_verifica.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_interventoId(id):
-    query_str = DB_SELECT_ALL + " WHERE main_intervento.id = %s " + DB_ORDER
+    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str += " WHERE main_intervento.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
-def search_lastVerifica(date_str):
-    query_str = "SELECT * FROM main_impianto, main_verifichemanutenzione WHERE main_verifichemanutenzione.verifiche_impianto_id = main_impianto.id and main_verifichemanutenzione.data_verifica_manutenzione as ultimo = (SELECT MAX(data_verifica_manutenzione) from main_verifichemanutenzione where verifiche_impianto_id = main_impianto.id)"
-    return search_runQuery(query_str, [])
+def query_test(test_str):
+    query_str = QUERY
+    test_str = [test_str] * query_str.count("%s")
+    return search_runQuery(query_str, test_str)
 
 def search_fullText(s):
     search_key = []
@@ -151,8 +195,8 @@ def search_fullText(s):
     else:
         search_key.append(s.strip())
 
-    query_str = DB_SELECT_ALL
-    query_str += " WHERE ( "
+    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN + " WHERE "
+
     param = []
     for i, key in enumerate(search_key):
         if len(key) >= 3:
@@ -160,12 +204,14 @@ def search_fullText(s):
         else:
             key = key + "%"
 
-        query_str += DB_WHERE_MAIN_CLIENTE
-        param += [key] * DB_WHERE_MAIN_CLIENTE.count("%s")
+        query_str += DB_WHERE_LIKE
+        param += [key] * DB_WHERE_LIKE.count("%s")
 
         if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
             query_str += " AND "
 
-    query_str += " ) " +  DB_ORDER
+    query_str += " AND " + DB_WHERE_SUBQUERY
+    query_str += DB_ORDER
 
     return search_runQuery(query_str, param)
+
