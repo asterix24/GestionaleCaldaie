@@ -186,14 +186,14 @@ def load_csv(file_name):
 def show_all_method():
     l = [(models.Cliente(),'main_cliente'),
          (models.Impianto(),'main_impianto'),
-         (models.Verifica(),'main_verificia'),
+         (models.Verifica(),'main_verifica'),
          (models.Intervento(), 'main_intervento') ]
 
     print "(\\"
     for k in sorted(l):
         for i in k[0].__dict__.keys():
-            if ('id' not in i) and (i[0] != '_'):
-                print "%s.%s ILIKE %%s OR \\\n" % (k[1], i),
+            if (i[0] != '_'):
+                print "%s.%s \\\n" % (k[1], i),
 
     print ")"
 

@@ -52,12 +52,6 @@ class Impianto(models.Model):
 	data_installazione = models.DateField(null=True, blank=True)
 	data_contratto = models.DateField(null=True, blank=True)
 
-	data_ultima_analisi_combustione = models.CharField(max_length=100, null=True, blank=True)
-	data_prossima_analisi_combustione = models.CharField(max_length=100, null=True, blank=True)
-
-	data_prossima_verifica = models.CharField(max_length=100, null=True, blank=True)
-	data_ultima_verifica = models.CharField(max_length=100, null=True, blank=True)
-
 	class Meta:
 		ordering = ['marca_caldaia']
 		#unique_together = ('codice_impianto', 'data_installazione')
@@ -103,7 +97,7 @@ class Verifica(models.Model):
 		ordering = ['-data_verifica'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
-		return self.tipo_verifica_manutenzione
+		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
 	class Meta:

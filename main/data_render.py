@@ -24,7 +24,7 @@ ANAGRAFE_COLUM = [
 	'data_ultima_verifica',
 	'data_prossima_analisi_combustione',
 	'data_prossima_verifica',
-	'data_verifica_manutenzione',
+	'data_verifica',
 	]
 
 SCHEDA_ANAGRAFE = [
@@ -52,12 +52,12 @@ SCHEDA_ANAGRAFE_IMPIANTI = [
 	'data_ultima_verifica',
 	'data_prossima_analisi_combustione',
 	'data_prossima_verifica',
-	'data_verifica_manutenzione',
+	'data_verificae',
 	]
 
 SCHEDA_ANAGRAFE_VERIFICA = [
-	'data_verifica_manutenzione',
-	'tipo_verifica_manutenzione',
+	'data_verifica',
+	'tipo_verifica',
 	'numero_rapporto',
 	'colore_bollino',
 	'numero_bollino',
@@ -102,7 +102,7 @@ SHOW_ALL_COLUM=[
 	'data_prossima_verifica',
 	'data_verifica_manutenzione',
 	'verifica_impianto',
-	'tipo_verifica_manutenzione',
+	'tipo_verifica',
 	'numero_rapporto',
 	'colore_bollino',
 	'numero_bollino',
@@ -215,8 +215,8 @@ class DataRender(object):
                         s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
                     if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
-                    if i == 'data_verifica_manutenzione':
-                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifiche/%s/',
+                    if i == 'data_verifica':
+                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
                                 item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
                     if s is None:
                         s = '-'
