@@ -55,13 +55,9 @@ def insert_cliente(r):
     return node
 
 
-ETICHETTE_ID = ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id' ]
-
-
-
 #SELECT
 DB_COLUM = " \
-main_cliente.id, \
+main_cliente.id AS cliente_id, \
 main_cliente.numero_cellulare, \
 main_cliente.via, \
 main_cliente.nome, \
@@ -71,7 +67,7 @@ main_cliente.cliente_data_inserimento, \
 main_cliente.numero_telefono, \
 main_cliente.mail, \
 main_cliente.citta, \
-main_impianto.id, \
+main_impianto.id AS impianto_id, \
 main_impianto.modello_caldaia, \
 main_impianto.impianto_data_inserimento, \
 main_impianto.matricola_caldaia, \
@@ -82,11 +78,11 @@ main_impianto.tipo_caldaia, \
 main_impianto.potenza_caldaia, \
 main_impianto.marca_caldaia, \
 main_impianto.codice_impianto, \
-main_intervento.id, \
+main_intervento.id AS intervento_id, \
 main_intervento.note_intervento, \
 main_intervento.tipo_intervento, \
 main_intervento.data_intervento, \
-main_verifica.id, \
+main_verifica.id AS verifica_id, \
 main_verifica.data_scadenza, \
 main_verifica.stato_pagamento, \
 main_verifica.colore_bollino, \
@@ -152,10 +148,6 @@ def search_runQuery(query_str, param):
     i = 0
     for col in desc:
         c = col[0]
-        if c == 'id':
-            c = ETICHETTE_ID[i]
-            i += 1
-
         l.append(c)
 
     d = [ dict(zip(l, row))
