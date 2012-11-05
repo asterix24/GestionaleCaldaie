@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
-
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
-
 ACTION_DICT = {
         'add':'plus.jpg',
         'delete':'minus.jpg',
@@ -95,6 +96,7 @@ class DataRender(object):
             for i in self.colums:
                 try:
                     s  = item_dict[i]
+                    logger.debug(">> %s=%s" % (i,s))
                     if s is None or s == "":
                         s = '<center>-</center>'
 
