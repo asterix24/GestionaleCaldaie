@@ -95,6 +95,47 @@ main_verifica.data_verifica AS ultima_verifica, \
 main_verifica.scadenza, \
 main_verifica.numero_rapporto"
 
+#
+DB_COLUM_SEARCH_ID = " \
+main_cliente.id AS cliente_id, \
+main_cliente.numero_cellulare, \
+main_cliente.via, \
+main_cliente.nome, \
+main_cliente.cognome, \
+main_cliente.codice_fiscale, \
+main_cliente.cliente_data_inserimento, \
+main_cliente.numero_telefono, \
+main_cliente.mail, \
+main_cliente.citta, \
+main_impianto.id AS impianto_id, \
+main_impianto.modello_caldaia, \
+main_impianto.impianto_data_inserimento, \
+main_impianto.matricola_caldaia, \
+main_impianto.combustibile, \
+main_impianto.data_installazione, \
+main_impianto.data_contratto, \
+main_impianto.tipo_caldaia, \
+main_impianto.potenza_caldaia, \
+main_impianto.marca_caldaia, \
+main_impianto.codice_impianto, \
+main_intervento.id AS intervento_id, \
+main_intervento.note_intervento, \
+main_intervento.tipo_intervento, \
+main_intervento.data_intervento, \
+main_verifica.id AS verifica_id, \
+main_verifica.data_scadenza, \
+main_verifica.stato_pagamento, \
+main_verifica.colore_bollino, \
+main_verifica.numero_bollino, \
+main_verifica.costo_intervento, \
+main_verifica.tipo_verifica, \
+main_verifica.note_verifica, \
+main_verifica.valore_bollino, \
+main_verifica.data_verifica, \
+main_verifica.scadenza, \
+main_verifica.numero_rapporto"
+
+
 #FROM
 DB_FROM_JOIN = " \
 main_cliente \
@@ -156,22 +197,22 @@ def search_runQuery(query_str, param):
     return d
 
 def search_clienteId(id):
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
     query_str += " WHERE main_cliente.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_impiantoId(id):
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
     query_str += " WHERE main_impianto.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_verificaId(id):
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
     query_str +=" WHERE main_verifica.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 
 def search_interventoId(id):
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
+    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
     query_str += " WHERE main_intervento.id = %s " + DB_ORDER
     return search_runQuery(query_str, [id])
 

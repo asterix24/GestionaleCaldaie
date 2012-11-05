@@ -45,28 +45,28 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
-    data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_STD_VIEW, "Dettaglio Cliente")
+    data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
 
     if detail_type is None:
         if len(data_to_render) >= 1 and data_to_render[0]['impianto_id'] != None:
-            dr.selectColums(data_render.SCHEDA_ANAGRAFE_IMPIANTI)
+            dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.urlBar('impianto', ['edit','delete'])
             data += dr.toTable()
         data += data_render.make_url('icon', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
 
         if data_to_render[0]['verifica_id'] != None:
-            dr.selectColums(data_render.SCHEDA_ANAGRAFE_VERIFICA)
+            dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
             dr.urlBar('verifica', ['edit','delete'])
             data += dr.toTable()
 
         if data_to_render[0]['intervento_id'] != None:
-            dr.selectColums(data_render.SCHEDA_ANAGRAFE_INTERVENTI)
+            dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
             dr.urlBar('intervento', ['edit','delete'])
             data += dr.toTable()
 
@@ -78,17 +78,17 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
 
         data_to_render = database_manager.search_verificaId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_VERIFICA, "Dettaglio Verifica e Manutenzioni", 'impianto')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "Dettaglio Verifica e Manutenzioni", 'impianto')
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_IMPIANTI, "Dettaglio Impianto", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
 
         data_to_render = database_manager.search_interventoId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE_INTERVENTI, "Dettaglio Intervento", 'impianto')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento", 'impianto')
 
     else:
         data = None

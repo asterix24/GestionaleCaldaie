@@ -97,17 +97,17 @@ class DataRender(object):
                     s  = item_dict[i]
                     if type(s) == datetime.date:
                         s = s.strftime(DATA_FIELD_STR_FORMAT)
-                    if i in ['nome', 'cognome']:
+                    elif i in ['nome', 'cognome'] and s is not None:
                         s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
-                    if i in ['codice_impianto', 'marca_caldaia'] and s is not None:
+                    elif i in ['codice_impianto', 'marca_caldaia'] and s is not None:
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
-                    if i == 'data_verifica':
+                    elif i in ['data_verifica', 'ultima_verifica'] and s is not None:
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
                                 item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
-                    if s is None:
-                        s = '-'
+                    else:
+                        s = '<center>-</center>'
                 except (KeyError, ValueError), m:
-                    print "Errore nel render di %s (%s)" % (i, m)
+                    print "Errore nel render di %s (%s) s=%s" % (i, m, s)
                     s = '-'
                 table += "<td>%s</td>" % s
 
