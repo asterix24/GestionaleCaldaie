@@ -71,3 +71,4 @@ ANAGRAFE_INTERVENTI_STD_VIEW = [
 'tipo_intervento',
 'note_intervento'
 ]
+

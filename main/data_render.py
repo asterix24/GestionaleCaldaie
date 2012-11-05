@@ -95,20 +95,25 @@ class DataRender(object):
             for i in self.colums:
                 try:
                     s  = item_dict[i]
-                    if type(s) == datetime.date:
-                        s = s.strftime(DATA_FIELD_STR_FORMAT)
-                    elif i in ['nome', 'cognome'] and s is not None:
-                        s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
-                    elif i in ['codice_impianto', 'marca_caldaia'] and s is not None:
-                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
-                    elif i in ['data_verifica', 'ultima_verifica'] and s is not None:
-                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
-                                item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
-                    else:
+                    if s is None or s == "":
                         s = '<center>-</center>'
+
+                    elif type(s) == datetime.date:
+                        s = s.strftime(DATA_FIELD_STR_FORMAT)
+                        if i in ['data_verifica', 'ultima_verifica']:
+                            s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                                    item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
+
+                    elif i in ['nome', 'cognome']:
+                        s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
+
+                    elif i in ['codice_impianto', 'marca_caldaia']:
+                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
+
                 except (KeyError, ValueError), m:
                     print "Errore nel render di %s (%s) s=%s" % (i, m, s)
-                    s = '-'
+                    s = '<center>-</center>'
+
                 table += "<td>%s</td>" % s
 
             table += "</tr>"

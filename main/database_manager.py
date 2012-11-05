@@ -57,7 +57,6 @@ def insert_cliente(r):
 
 #SELECT
 DB_COLUM = " \
-main_cliente.id AS cliente_id, \
 main_cliente.numero_cellulare, \
 main_cliente.via, \
 main_cliente.nome, \
@@ -67,22 +66,23 @@ main_cliente.cliente_data_inserimento, \
 main_cliente.numero_telefono, \
 main_cliente.mail, \
 main_cliente.citta, \
-main_impianto.id AS impianto_id, \
+main_cliente.id AS cliente_id, \
 main_impianto.modello_caldaia, \
 main_impianto.impianto_data_inserimento, \
 main_impianto.matricola_caldaia, \
 main_impianto.combustibile, \
 main_impianto.data_installazione, \
+main_impianto.codice_id, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
 main_impianto.potenza_caldaia, \
 main_impianto.marca_caldaia, \
 main_impianto.codice_impianto, \
-main_intervento.id AS intervento_id, \
+main_impianto.id AS impianto_id, \
 main_intervento.note_intervento, \
 main_intervento.tipo_intervento, \
 main_intervento.data_intervento, \
-main_verifica.id AS verifica_id, \
+main_intervento.id AS intervento_id, \
 main_verifica.data_scadenza, \
 main_verifica.stato_pagamento, \
 main_verifica.colore_bollino, \
@@ -93,11 +93,11 @@ main_verifica.note_verifica, \
 main_verifica.valore_bollino, \
 main_verifica.data_verifica AS ultima_verifica, \
 main_verifica.scadenza, \
-main_verifica.numero_rapporto"
+main_verifica.id AS verifica_id, \
+main_verifica.numero_rapporto "
 
 #
 DB_COLUM_SEARCH_ID = " \
-main_cliente.id AS cliente_id, \
 main_cliente.numero_cellulare, \
 main_cliente.via, \
 main_cliente.nome, \
@@ -107,22 +107,23 @@ main_cliente.cliente_data_inserimento, \
 main_cliente.numero_telefono, \
 main_cliente.mail, \
 main_cliente.citta, \
-main_impianto.id AS impianto_id, \
+main_cliente.id AS cliente_id, \
 main_impianto.modello_caldaia, \
 main_impianto.impianto_data_inserimento, \
 main_impianto.matricola_caldaia, \
 main_impianto.combustibile, \
 main_impianto.data_installazione, \
+main_impianto.codice_id, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
 main_impianto.potenza_caldaia, \
 main_impianto.marca_caldaia, \
 main_impianto.codice_impianto, \
-main_intervento.id AS intervento_id, \
+main_impianto.id AS impianto_id, \
 main_intervento.note_intervento, \
 main_intervento.tipo_intervento, \
 main_intervento.data_intervento, \
-main_verifica.id AS verifica_id, \
+main_intervento.id AS intervento_id, \
 main_verifica.data_scadenza, \
 main_verifica.stato_pagamento, \
 main_verifica.colore_bollino, \
@@ -133,8 +134,8 @@ main_verifica.note_verifica, \
 main_verifica.valore_bollino, \
 main_verifica.data_verifica, \
 main_verifica.scadenza, \
-main_verifica.numero_rapporto"
-
+main_verifica.id AS verifica_id, \
+main_verifica.numero_rapporto "
 
 #FROM
 DB_FROM_JOIN = " \
@@ -180,7 +181,7 @@ main_verifica.verifica_impianto_id IS NULL \
 DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 def search_runQuery(query_str, param):
-    print ">> " + query_str + " <<"
+    #:print ">> " + query_str + " <<"
     cursor = connection.cursor()
     cursor.execute(query_str, param)
 
@@ -191,10 +192,8 @@ def search_runQuery(query_str, param):
         c = col[0]
         l.append(c)
 
-    d = [ dict(zip(l, row))
+    return [ dict(zip(l, row))
             for row in cursor.fetchall() ]
-    #print d
-    return d
 
 def search_clienteId(id):
     query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN

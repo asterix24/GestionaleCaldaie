@@ -187,6 +187,7 @@ models_list = {'main_cliente': models.Cliente(),
         'main_impianto': models.Impianto(),
         'main_verifica': models.Verifica(),
         'main_intervento': models.Intervento()}
+
 def dbColumList(model_type=None):
     l = []
     if (model_type is not None) and (model_type in models_list.keys()):
@@ -202,10 +203,10 @@ def dbColumList(model_type=None):
 
 def show_all_method():
     print "(\\"
-    for k in sorted(models_list):
-        for i in k[0].__dict__.keys():
-            if (i[0] != '_'):
-                print "%s.%s \\\n" % (k[1], i),
+    for k in sorted(models_list.keys()):
+        for i in models_list[k].__dict__.keys():
+            if (i[1] != '_'):
+                print "%s.%s \\\n" % (k, i),
 
     print ")"
 
