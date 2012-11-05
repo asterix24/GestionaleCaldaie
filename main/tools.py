@@ -183,14 +183,26 @@ def load_csv(file_name):
     data += "Totale clienti %s, impianti %s\n" % (clienti_count, impianto_count)
     return data
 
-def show_all_method():
-    l = [(models.Cliente(),'main_cliente'),
-         (models.Impianto(),'main_impianto'),
-         (models.Verifica(),'main_verifica'),
-         (models.Intervento(), 'main_intervento') ]
+models_list = {'main_cliente': models.Cliente(),
+        'main_impianto': models.Impianto(),
+        'main_verifica': models.Verifica(),
+        'main_intervento': models.Intervento()}
+def dbColumList(model_type=None):
+    l = []
+    if (model_type is not None) and (model_type in models_list.keys()):
+        for i in models_list[model_type].__dict__.keys():
+            if (i[0] != '_') and ('id' not in i):
+                l.append(i)
+    else:
+        for k in sorted(models_list.values()):
+            for i in k.__dict__.keys():
+                if (i[0] != '_') and ('id' not in i):
+                    l.append(i)
+    return l
 
+def show_all_method():
     print "(\\"
-    for k in sorted(l):
+    for k in sorted(models_list):
         for i in k[0].__dict__.keys():
             if (i[0] != '_'):
                 print "%s.%s \\\n" % (k[1], i),

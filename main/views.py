@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from main import models
 from main import myforms
+from main import cfg
 from main import tools
 from main import data_render
 from main import database_manager
@@ -44,7 +45,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             return None
 
     data_to_render = database_manager.search_clienteId(cliente_id)
-    data = data_render.render_toList(data_to_render[0], data_render.SCHEDA_ANAGRAFE, "Dettaglio Cliente")
+    data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_STD_VIEW, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
 
@@ -320,7 +321,7 @@ def anagrafe(request):
 
             data_to_render = database_manager.search_fullText(search_string)
             dr = data_render.DataRender(data_to_render)
-            dr.selectColums(data_render.ANAGRAFE_COLUM)
+            dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
             dr.urlBar('cliente', ['edit', 'delete'])
             dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
             data += dr.toTable()

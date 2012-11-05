@@ -1,6 +1,6 @@
- ANAGRAFE_STD_VIEW = [
+ANAGRAFE_STD_VIEW = [
  'codice_impianto',
- 'numero_rapporto'
+ 'numero_rapporto',
  'cognome',
  'nome',
  'codice_fiscale',
@@ -17,17 +17,12 @@
  'tipo_caldaia',
  'data_installazione',
  'data_contratto',
- 'note_intervento',
+ 'tipo_verifica',
+ 'ultima_verifica',
  'tipo_intervento',
  'data_intervento',
- 'data_scadenza',
  'stato_pagamento',
  'colore_bollino',
- 'numero_bollino',
- 'costo_intervento',
- 'tipo_verifica',
- 'note_verifica',
  'valore_bollino',
- 'data_verifica',
- 'scadenza',
+ 'note_verifica',
 ]
