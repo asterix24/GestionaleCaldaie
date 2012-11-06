@@ -42,6 +42,7 @@ class DataRender(object):
         self.url_type = []
         self.detail_type = None
         self.url_add = None
+        logger.info("Data Render Init...")
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -96,7 +97,7 @@ class DataRender(object):
             for i in self.colums:
                 try:
                     s  = item_dict[i]
-                    logger.debug(">> %s=%s" % (i,s))
+                    logger.info(">> %s=%s" % (i,s))
                     if s is None or s == "":
                         s = '<center>-</center>'
 
