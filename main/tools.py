@@ -98,11 +98,6 @@ def impianto_csv(row):
     table_dict['data_installazione'] = data_fmt(row[ID_DATA_INSTALLAZIONE])
     table_dict['codice_impianto'] = row[ID_CODICE_IMPIANTO].strip().capitalize()
 
-    table_dict['data_ultima_analisi_combustione'] = row[ID_DATA_FUMI]
-    table_dict['data_ultima_verifica'] = row[ID_DATA_VERIFICA]
-    table_dict['data_prossima_analisi_combustione'] = row[ID_DATA_PROSSIMI_FUMI]
-    table_dict['data_prossima_verifica'] = row[ID_DATA_PROSSIMA_VERIFICA]
-
     return table_dict
 
 ID_DATA=19
