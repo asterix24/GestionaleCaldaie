@@ -1,22 +1,5 @@
 {% extends "base.html" %}
 
-{% block navigation_search_block_top %}
-<div class="navigation_buttons">{% now "d F Y H:i" %}</div>
-<form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
-{{ form.s }}
-<input type="submit" value="Cerca"/>
-</form>
-<br>
-{% if display_data %}
-<div class="navigation_buttons">Clienti trovati: {{clienti|length }}</div>
-{% endif %}
-{% endblock %}
-
-{% block navigation_search_block_bot %}
-{% endblock %}
-
-
-
 {% block center_block %}
 
 {% autoescape off %}

@@ -14,7 +14,18 @@
 <tr>
     <td><img src="{{ STATIC_URL }}logo.png" alt="Besalba impianti logo" align="bottom" height="100"></td>
     <td></td>
-    <td><h1>Gestionale Caldaie</h1></td>
+    <td>
+        <div id="navigation_search">
+        <ul>
+            <div class="navigation_buttons">{% now "d F Y H:i" %}</div>
+            <form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
+            <input id="id_s" maxlength="200" type="text" name="s" size="40" />
+            <input type="submit" value="Cerca"/>
+            </form>
+        </ul>
+        </div>
+    </td>
+    <td></td>
 </tr>
 </table>
 </div>
@@ -22,7 +33,6 @@
 <div id="navigation">
 <ul>
 <li><a href="{% url home %}">Home</a></li>
-<li><a href="/anagrafe/">Anagrafe</a></li>
 <li><a href="/anagrafe/add/">Nuovo Cliente</a></li>
 {% block navigation_menu_block_top %}
 {% endblock %}
@@ -54,7 +64,6 @@
 <div id="navigation">
 <ul>
 <li><a href="{% url home %}">Home</a></li>
-<li><a href="/anagrafe/">Anagrafe</a></li>
 <li><a href="/anagrafe/add/">Nuovo Cliente</a></li>
 {% block navigation_menu_block_bot %}
 {% endblock %}
