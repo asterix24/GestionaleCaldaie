@@ -97,7 +97,6 @@ class DataRender(object):
             for i in self.colums:
                 try:
                     s  = item_dict[i]
-                    logger.info(">> %s=%s" % (i,s))
                     if s is None or s == "":
                         s = '<center>-</center>'
 

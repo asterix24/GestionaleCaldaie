@@ -72,7 +72,6 @@ main_impianto.impianto_data_inserimento, \
 main_impianto.matricola_caldaia, \
 main_impianto.combustibile, \
 main_impianto.data_installazione, \
-main_impianto.codice_id, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
 main_impianto.potenza_caldaia, \
@@ -83,18 +82,20 @@ main_intervento.note_intervento, \
 main_intervento.tipo_intervento, \
 main_intervento.data_intervento, \
 main_intervento.id AS intervento_id, \
-main_verifica.data_scadenza, \
-main_verifica.stato_pagamento, \
+main_verifica.id AS verifica_id, \
+main_verifica.stato_verifica, \
+main_verifica.data_verifica AS ultima_verifica, \
+main_verifica.tipo_verifica, \
+main_verifica.codice_id, \
+main_verifica.numero_rapporto, \
+main_verifica.prossima_verifica, \
 main_verifica.colore_bollino, \
 main_verifica.numero_bollino, \
-main_verifica.costo_intervento, \
-main_verifica.tipo_verifica, \
-main_verifica.note_verifica, \
 main_verifica.valore_bollino, \
-main_verifica.data_verifica AS ultima_verifica, \
-main_verifica.scadenza, \
-main_verifica.id AS verifica_id, \
-main_verifica.numero_rapporto "
+main_verifica.prossima_analisi_combustione, \
+main_verifica.stato_pagamento, \
+main_verifica.costo_intervento, \
+main_verifica.note_verifica "
 
 #
 DB_COLUM_SEARCH_ID = " \
@@ -113,7 +114,6 @@ main_impianto.impianto_data_inserimento, \
 main_impianto.matricola_caldaia, \
 main_impianto.combustibile, \
 main_impianto.data_installazione, \
-main_impianto.codice_id, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
 main_impianto.potenza_caldaia, \
@@ -124,18 +124,20 @@ main_intervento.note_intervento, \
 main_intervento.tipo_intervento, \
 main_intervento.data_intervento, \
 main_intervento.id AS intervento_id, \
-main_verifica.data_scadenza, \
-main_verifica.stato_pagamento, \
+main_verifica.stato_verifica, \
+main_verifica.data_verifica, \
+main_verifica.tipo_verifica, \
+main_verifica.codice_id, \
+main_verifica.numero_rapporto, \
+main_verifica.prossima_verifica, \
 main_verifica.colore_bollino, \
 main_verifica.numero_bollino, \
-main_verifica.costo_intervento, \
-main_verifica.tipo_verifica, \
-main_verifica.note_verifica, \
 main_verifica.valore_bollino, \
-main_verifica.data_verifica, \
-main_verifica.scadenza, \
-main_verifica.id AS verifica_id, \
-main_verifica.numero_rapporto "
+main_verifica.prossima_analisi_combustione, \
+main_verifica.stato_pagamento, \
+main_verifica.costo_intervento, \
+main_verifica.note_verifica, \
+main_verifica.id AS verifica_id "
 
 #FROM
 DB_FROM_JOIN = " \
