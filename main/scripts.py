@@ -4,19 +4,35 @@
 VERIFICA_ADD_JS = """
 <script>
 $(function() {
-    $("#td_colore_bollino").hide()
-    $("#td_numero_bollino").hide()
-    $("#td_valore_bollino").hide()
+    $("#td_colore_bollino").hide();
+    $("#td_numero_bollino").hide();
+    $("#td_valore_bollino").hide();
+    $("#td_scadenza_tra").hide();
+    $("#td_altro_tipo_manutenzione").hide();
 
-    $("#id_fumi").click( function() {
-        if ($(this).is(':checked')) {
-            $("#td_colore_bollino").show("slow")
-            $("#td_numero_bollino").show("slow")
-            $("#td_valore_bollino").show("slow")
+    $("#id_tipo_manutenzione").change(function () {
+        var str = "";
+        $("#id_tipo_manutenzione option:selected").each(function () {
+            str += $(this).text();
+        });
+        if (str == "Altro..") {
+            $("#td_altro_tipo_manutenzione").show("slow");
+        } else if (str == "Prima Accensione") {
+            $("#id_fumi_eseguiti").attr('ckecked', true);
         } else {
-            $("#td_valore_bollino").slideUp()
-            $("#td_numero_bollino").slideUp()
-            $("#td_colore_bollino").slideUp()
+            $("#td_altro_tipo_manutenzione").slideUp();
+        }
+    });
+
+    $("#id_fumi_eseguiti").click( function() {
+        if ($(this).is(':checked')) {
+            $("#td_colore_bollino").show("slow");
+            $("#td_numero_bollino").show("slow");
+            $("#td_valore_bollino").show("slow");
+        } else {
+            $("#td_valore_bollino").slideUp();
+            $("#td_numero_bollino").slideUp();
+            $("#td_colore_bollino").slideUp();
         }
     });
 });

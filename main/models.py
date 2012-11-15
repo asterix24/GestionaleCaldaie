@@ -116,29 +116,31 @@ class Verifica(models.Model):
 		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
-	tipo = forms.CharField(label='Motivo dell\'intevento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
-	altro = forms.CharField(label='Altro tipo di intervento', max_length=100, required=False)
-	scadenza_fra_mesi = forms.IntegerField(label='Vefica fumi tra mesi', required=True)
-	fumi = forms.BooleanField(label='Eseguito analisi combustione')
+	tipo_manutenzione = forms.CharField(label='Motivo dell\'intevento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
+	altro_tipo_manutenzione = forms.CharField(label='', max_length=100,
+            required=False, widget=forms.TextInput(attrs={'size':'40'}))
+	scadenza_tra = forms.IntegerField(label='Vefica fumi tra mesi', required=True)
+	fumi_eseguiti = forms.BooleanField(label='Analisi combustione')
 
 	def clean(self):
 		cleaned_data = super(forms.ModelForm, self).clean()
-		_tipo = cleaned_data.get("tipo")
-		_altro = cleaned_data.get("altro")
+		_tipo = cleaned_data.get("tipo_manutenzione")
+		_altro = cleaned_data.get("altro_tipo_manutenzione")
 		if _tipo == 'none':
 			if _altro == '':
-				self._errors["altro"] = self.error_class(["Specificare un altro tipo di intervento."])
-				del cleaned_data["altro"]
+				self._errors["altro"] = self.error_class(["Specificare un altro tipo di manutenzione."])
+				del cleaned_data["altro_tipo_manutenzione"]
 
-			cleaned_data["tipo"] = _altro
+			cleaned_data["tipo_manutenzione"] = _altro
 
 		return cleaned_data
 
 	class Meta:
 		model = Verifica
 		exclude = ('stato_verifica')
-		fields = ('data_verifica', 'tipo', 'altro', 'fumi', 'codice_id', 'numero_rapporto', 'scadenza_fra_mesi',
-                'colore_bollino', 'numero_bollino', 'valore_bollino', 'stato_pagamento', 'costo_intervento', 'note_verifica')
+		fields = ('data_verifica', 'tipo_manutenzione',
+                'altro_tipo_manutenzione', 'codice_id', 'numero_rapporto',
+                'fumi_eseguiti', 'scadenza_tra','colore_bollino', 'numero_bollino', 'valore_bollino', 'stato_pagamento', 'costo_intervento', 'note_verifica')
 
 class Intervento(models.Model):
 	data_intervento = models.DateField(default=datetime.date.today())
