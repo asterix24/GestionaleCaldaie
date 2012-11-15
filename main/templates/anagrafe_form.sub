@@ -10,6 +10,10 @@
 
 {% block center_block %}
 
+{% autoescape off %}
+    {{ data }}
+{% endautoescape %}
+
 <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
 
 <table id="customers_detail">
@@ -17,9 +21,9 @@
 <th></th> <th>{{header_msg}}</th>
 </tr>
 
-{% for form in data %}
-<tr>
-    <td class="hdr">{{ form.label }}</td>
+{% for form in data_forms %}
+<tr id="td_{{ form.name}}">
+    <td class="hdr"> {{ form.label }}</td>
     <td>{{form}}{{form.errors}}</td>
 </tr>
 {% endfor %}

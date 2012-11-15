@@ -70,7 +70,7 @@ class ImpiantoForm(forms.ModelForm):
 		model = Impianto
 
 
-VERIFICHE_TYPE = (
+VERIFICHE_TYPE_CHOICES = (
 	('programmata', 'Manutenzione Ordinaria'),
 	('straordinaria', 'Manutenzione Straordinaria'),
 	('accensione','Prima Accensione'),
@@ -90,7 +90,7 @@ class Verifica(models.Model):
 	stato_verifica = models.BooleanField(default=False)
 	data_verifica = models.DateField(default=datetime.date.today())
 	verifica_impianto = models.ForeignKey(Impianto)
-	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE)
+	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
 	codice_id = models.CharField(max_length=15, null=True, blank=True)
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 
@@ -116,8 +116,29 @@ class Verifica(models.Model):
 		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
+	tipo = forms.CharField(label='Motivo dell\'intevento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
+	altro = forms.CharField(label='Altro tipo di intervento', max_length=100, required=False)
+	scadenza_fra_mesi = forms.IntegerField(label='Vefica fumi tra mesi', required=True)
+	fumi = forms.BooleanField(label='Eseguito analisi combustione')
+
+	def clean(self):
+		cleaned_data = super(forms.ModelForm, self).clean()
+		_tipo = cleaned_data.get("tipo")
+		_altro = cleaned_data.get("altro")
+		if _tipo == 'none':
+			if _altro == '':
+				self._errors["altro"] = self.error_class(["Specificare un altro tipo di intervento."])
+				del cleaned_data["altro"]
+
+			cleaned_data["tipo"] = _altro
+
+		return cleaned_data
+
 	class Meta:
 		model = Verifica
+		exclude = ('stato_verifica')
+		fields = ('data_verifica', 'tipo', 'altro', 'fumi', 'codice_id', 'numero_rapporto', 'scadenza_fra_mesi',
+                'colore_bollino', 'numero_bollino', 'valore_bollino', 'stato_pagamento', 'costo_intervento', 'note_verifica')
 
 class Intervento(models.Model):
 	data_intervento = models.DateField(default=datetime.date.today())
@@ -135,38 +156,3 @@ class InterventoForm(forms.ModelForm):
 	class Meta:
 		model = Intervento
 
-"""
-BOLLINO_COLOR_CHOICES = (
-	('Blu','Blu'),
-	('Verde','Verde'),
-	('Giallo','Giallo'),
-	('Arancione','Arancione'),
-	('No','No'),
-	)
-class BollinoForm(forms.ModelForm):
-	colore = forms.CharField(widget=forms.Select(choices=BOLLINO_COLOR_CHOICES))
-	class Meta:
-		model = Bollino
-
-class InterventoForm(forms.ModelForm):
-	tipo = forms.CharField(label='Motivo dell\'intevento', widget=forms.Select(choices=INTERVENTI_CHOICES))
-	altro = forms.CharField(label='Altro tipo di intervento',max_length=100, required=False)
-
-	def clean(self):
-		cleaned_data = super(forms.ModelForm, self).clean()
-		_tipo = cleaned_data.get("tipo")
-		_altro = cleaned_data.get("altro")
-		if _tipo == 'none':
-			if _altro == '':
-				self._errors["altro"] = self.error_class(["Specificare un altro tipo di intervento."])
-				del cleaned_data["altro"]
-
-			cleaned_data["tipo"] = _altro
-
-		return cleaned_data
-
-	class Meta:
-		model = Intervento
-		exclude = ('scadenza')
-		fields = ('data', 'cliente', 'tipo', 'altro', 'numero_rapporto', 'data_scadenza', 'note')
-"""

@@ -11,6 +11,7 @@ from main import cfg
 from main import tools
 from main import data_render
 from main import database_manager
+from main import scripts
 
 def home(request):
     return render(request, 'home.sub', {})
@@ -96,11 +97,11 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     return data
 
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
+    data = ""
     if cliente_id is None:
         header_msg = "Aggiungi Nuovo Cliente"
         post_url = "add/"
         return_url = ""
-
     else:
         if detail_type == 'impianto':
             header_msg = "Aggiungi Nuovo Impianto"
@@ -129,6 +130,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
 
             if detail_type == 'verifica':
                 form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
+                data = scripts.VERIFICA_ADD_JS
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
@@ -161,8 +163,8 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                             detail_type=detail_type, sub_impianto_id=instance.id)
 
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
-        'post_url':post_url, 'return_url':return_url})
+    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
+        'data':data, 'post_url':post_url, 'return_url':return_url})
 
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
