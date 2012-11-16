@@ -140,7 +140,7 @@ class VerificaForm(forms.ModelForm):
 		exclude = ('stato_verifica')
 		fields = ('data_verifica', 'tipo_manutenzione',
                 'altro_tipo_manutenzione', 'codice_id', 'numero_rapporto',
-                'fumi_eseguiti', 'scadenza_tra','colore_bollino', 'numero_bollino', 'valore_bollino', 'stato_pagamento', 'costo_intervento', 'note_verifica')
+                'fumi_eseguiti', 'scadenza_tra','colore_bollino', 'numero_bollino', 'valore_bollino',  'costo_intervento', 'stato_pagamento', 'note_verifica')
 
 class Intervento(models.Model):
 	data_intervento = models.DateField(default=datetime.date.today())

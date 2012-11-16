@@ -10,17 +10,19 @@ $(function() {
     $("#td_scadenza_tra").hide();
     $("#td_altro_tipo_manutenzione").hide();
 
+    $("#id_altro_tipo_manutenzione").hide();
+    $("#id_stato_pagamento").append("Si")
+
     $("#id_tipo_manutenzione").change(function () {
         var str = "";
         $("#id_tipo_manutenzione option:selected").each(function () {
             str += $(this).text();
         });
         if (str == "Altro..") {
-            $("#td_altro_tipo_manutenzione").show("slow");
-        } else if (str == "Prima Accensione") {
-            $("#id_fumi_eseguiti").attr('ckecked', true);
+            $("#id_tipo_manutenzione").parent().append($("#id_altro_tipo_manutenzione"));
+            $("#id_altro_tipo_manutenzione").show("slow");
         } else {
-            $("#td_altro_tipo_manutenzione").slideUp();
+            $("#id_altro_tipo_manutenzione").hide();
         }
     });
 
