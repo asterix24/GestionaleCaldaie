@@ -9,6 +9,7 @@ $(function() {
     $("#td_valore_bollino").hide();
     $("#td_scadenza_tra").hide();
     $("#td_altro_tipo_manutenzione").hide();
+    $("#id_data_verifica").datepicker();
 
     $("#id_altro_tipo_manutenzione").hide();
     $("#id_stato_pagamento").append("Si")
