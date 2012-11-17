@@ -246,6 +246,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         return _display_error(request, "Qualcosa e' andato storto..")
 
     select = None
+    data = ""
     if detail_type is None:
         select = models.Cliente.objects.get(pk=cliente_id)
         form = models.ClienteForm(instance=select)
@@ -266,6 +267,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
             return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+            data = scripts.VERIFICA_ADD_JS
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)
@@ -304,8 +306,8 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
                     return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                             detail_type=detail_type, sub_impianto_id=instance.id)
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data': form,
-        'post_url':post_url, 'return_url':return_url})
+    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
+        'data':data, 'post_url':post_url, 'return_url':return_url})
 
 def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
     return show_record(request, cliente_id, detail_type, impianto_id, sub_impianto_id)

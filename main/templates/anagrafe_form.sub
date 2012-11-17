@@ -22,7 +22,7 @@
 </tr>
 
 {% for form in data_forms %}
-<tr id="td_{{ form.name}}">
+<tr id="tr_{{ form.name}}">
     <td class="hdr"> {{ form.label }}</td>
     <td>{{form}}{{form.errors}}</td>
 </tr>

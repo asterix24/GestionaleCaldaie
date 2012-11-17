@@ -53,15 +53,15 @@ ANAGRAFE_IMPIANTI_STD_VIEW = [
 ANAGRAFE_VERIFICA_STD_VIEW = [
 'data_verifica',
 'tipo_verifica',
+'codice_id',
 'numero_rapporto',
+'analisi_combustione',
 'colore_bollino',
 'numero_bollino',
 'valore_bollino',
-'scadenza',
-'data_scadenza',
-'stato_pagamento',
 'costo_intervento',
-'note_verifica'
+'stato_pagamento',
+'note_verifica',
 ]
 
 ANAGRAFE_INTERVENTI_STD_VIEW = [
