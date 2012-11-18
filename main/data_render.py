@@ -3,6 +3,7 @@
 
 import datetime
 import logging
+import models
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,6 @@ class DataRender(object):
         self.url_type = []
         self.detail_type = None
         self.url_add = None
-        logger.info("Data Render Init...")
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -112,8 +112,24 @@ class DataRender(object):
                     elif i in ['codice_impianto', 'marca_caldaia']:
                         s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
 
+                    elif i in ['stato_pagamento']:
+                        if s:
+                            s = "Pagato!"
+                        else:
+                            s = "Da riscuotere."
+
+                    elif i in ['tipo_verifica']:
+                        if s == "altro":
+                           s = item_dict['altro_tipo_verifica']
+                        else:
+                            s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
+
+                    elif i in ['colore_bollino']:
+                        if s in models.BOLLINO_COLOR_CHOICES_DICT.keys():
+                            s = models.BOLLINO_COLOR_CHOICES_DICT[s]
+
                 except (KeyError, ValueError), m:
-                    print "Errore nel render di %s (%s) s=%s" % (i, m, s)
+                    print "Table Errore nel render di %s (%s) s=%s" % (i, m, s)
                     s = '<center>-</center>'
 
                 table += "<td>%s</td>" % s
@@ -147,14 +163,38 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
         try:
             table += "<tr>"
             table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+
             s  = item_dict[i]
             if s is None:
                 s = '-'
+
+            elif i in ['tipo_verifica']:
+                if s == "altro":
+                   s = item_dict['altro_tipo_verifica']
+                else:
+                    s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
+
+            elif i in ['colore_bollino']:
+                if s in models.BOLLINO_COLOR_CHOICES_DICT.keys():
+                    s = models.BOLLINO_COLOR_CHOICES_DICT[s]
+
+            elif i in ['analisi_combustione']:
+                if s:
+                    s = "Si"
+                else:
+                    s = "No"
+
+            elif i in ['stato_pagamento']:
+                if s:
+                    s = "Pagato!"
+                else:
+                    s = "Da riscuotere."
+
             elif type(s) == datetime.date:
                 s = s.strftime(DATA_FIELD_STR_FORMAT)
 
         except (KeyError, ValueError), m:
-            print "Errore nel render di %s (%s)" % (i, m)
+            print "List Errore nel render di %s (%s)" % (i, m)
             s = '-'
 
         table += "<td>%s</td>" % s

@@ -73,9 +73,16 @@ class ImpiantoForm(forms.ModelForm):
 VERIFICHE_TYPE_CHOICES = (
 	('programmata', 'Manutenzione Ordinaria'),
 	('straordinaria', 'Manutenzione Straordinaria'),
-	('accensione','Prima Accensione'),
+	('prima_accensione','Prima Accensione'),
 	('altro','Altro..'),
 	)
+
+VERIFICHE_TYPE_CHOISES_DICT = {
+    VERIFICHE_TYPE_CHOICES[0][0]:VERIFICHE_TYPE_CHOICES[0][1],
+    VERIFICHE_TYPE_CHOICES[1][0]:VERIFICHE_TYPE_CHOICES[1][1],
+    VERIFICHE_TYPE_CHOICES[2][0]:VERIFICHE_TYPE_CHOICES[2][1],
+    VERIFICHE_TYPE_CHOICES[3][0]:VERIFICHE_TYPE_CHOICES[3][1]
+    }
 
 BOLLINO_COLOR_CHOICES = (
 	('blu','Blu'),
@@ -86,11 +93,21 @@ BOLLINO_COLOR_CHOICES = (
 	('altro','Altro..'),
 	)
 
+BOLLINO_COLOR_CHOICES_DICT = {
+    BOLLINO_COLOR_CHOICES[0][0]:BOLLINO_COLOR_CHOICES[0][1],
+    BOLLINO_COLOR_CHOICES[1][0]:BOLLINO_COLOR_CHOICES[1][1],
+    BOLLINO_COLOR_CHOICES[2][0]:BOLLINO_COLOR_CHOICES[2][1],
+    BOLLINO_COLOR_CHOICES[3][0]:BOLLINO_COLOR_CHOICES[3][1],
+    BOLLINO_COLOR_CHOICES[4][0]:BOLLINO_COLOR_CHOICES[4][1],
+    BOLLINO_COLOR_CHOICES[5][0]:BOLLINO_COLOR_CHOICES[5][1]
+    }
+
 class Verifica(models.Model):
 	stato_verifica = models.BooleanField(default=False)
 	data_verifica = models.DateField(default=datetime.date.today())
 	verifica_impianto = models.ForeignKey(Impianto)
 	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
+	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
 	codice_id = models.CharField(max_length=15, null=True, blank=True)
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 
@@ -100,6 +117,7 @@ class Verifica(models.Model):
     # Sezione analisi combustione
 	analisi_combustione = models.BooleanField(default=False)
 	colore_bollino = models.CharField(max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
+	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
 	valore_bollino = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
 	prossima_analisi_combustione = models.DateField(null=True, blank=True)
@@ -117,29 +135,29 @@ class Verifica(models.Model):
 		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
-	tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
-	altro_tipo_manutenzione = forms.CharField(label='', max_length=100,
-            required=False, widget=forms.TextInput(attrs={'size':'30'}))
-	scadenza_tra = forms.IntegerField(label='Vefica fumi tra mesi', required=False)
+    tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
+    altro_tipo_verifica = forms.CharField(label='', max_length=100,
+                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    scadenza_tra = forms.IntegerField(label='Vefica fumi tra mesi', required=False)
 
-	def clean(self):
-		cleaned_data = super(forms.ModelForm, self).clean()
-		_tipo = cleaned_data.get("tipo_verifica")
-		_altro = cleaned_data.get("altro_tipo_manutenzione")
-		if _tipo == 'none':
-			if _altro == '':
-				self._errors["altro"] = self.error_class(["Specificare un altro tipo di manutenzione."])
-				del cleaned_data["altro_tipo_manutenzione"]
+    def clean(self):
+        cleaned_data = super(forms.ModelForm, self).clean()
+        _tipo = cleaned_data.get("tipo_verifica")
+        _altro = cleaned_data.get("altro_tipo_verifica")
+        if _tipo == 'altro':
+            if _altro == '':
+                # The table row is hide, so when we reply the error it is hide..
+                self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di manutenzione."])
 
-			cleaned_data["tipo_verifica"] = _altro
+        cleaned_data["altro_tipo_verifica"] = _altro
 
-		return cleaned_data
+        return cleaned_data
 
-	class Meta:
-		model = Verifica
-		exclude = ('stato_verifica')
-		fields = ('verifica_impianto', 'data_verifica', 'tipo_verifica',
-                  'altro_tipo_manutenzione', 'codice_id',
+    class Meta:
+        model = Verifica
+        exclude = ('stato_verifica')
+        fields = ('verifica_impianto', 'data_verifica', 'tipo_verifica',
+                  'altro_tipo_verifica', 'codice_id',
                   'numero_rapporto', 'analisi_combustione',
                   'scadenza_tra','colore_bollino',
                   'numero_bollino', 'valore_bollino',

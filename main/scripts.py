@@ -12,12 +12,12 @@ $(function() {
         $("#tr_scadenza_tra").hide();
     }
 
-    $("#tr_altro_tipo_manutenzione").hide();
+    $("#tr_altro_tipo_verifica").hide();
     $("#id_tipo_verifica option:selected").each(function () {
         if ($(this).text() == "Altro..") {
-            $("#id_tipo_verifica").parent().append($("#id_altro_tipo_manutenzione"));
+            $("#id_tipo_verifica").parent().append($("#id_altro_tipo_verifica"));
         } else {
-            $("#id_altro_tipo_manutenzione").hide();
+            $("#id_altro_tipo_verifica").hide();
         }
     });
 
@@ -38,10 +38,10 @@ $(function() {
         var str = "";
         $("#id_tipo_verifica option:selected").each(function () {
             if ($(this).text() == "Altro..") {
-                $("#id_tipo_verifica").parent().append($("#id_altro_tipo_manutenzione"));
-                $("#id_altro_tipo_manutenzione").show("slow");
+                $("#id_tipo_verifica").parent().append($("#id_altro_tipo_verifica"));
+                $("#id_altro_tipo_verifica").show("slow");
             } else {
-                $("#id_altro_tipo_manutenzione").hide();
+                $("#id_altro_tipo_verifica").hide();
             }
         });
     });

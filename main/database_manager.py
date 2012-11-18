@@ -86,12 +86,14 @@ main_verifica.id AS verifica_id, \
 main_verifica.stato_verifica, \
 main_verifica.data_verifica AS ultima_verifica, \
 main_verifica.tipo_verifica, \
+main_verifica.altro_tipo_verifica, \
 main_verifica.codice_id, \
 main_verifica.numero_rapporto, \
 main_verifica.prossima_verifica, \
 main_verifica.colore_bollino, \
 main_verifica.numero_bollino, \
 main_verifica.valore_bollino, \
+main_verifica.analisi_combustione, \
 main_verifica.prossima_analisi_combustione, \
 main_verifica.stato_pagamento, \
 main_verifica.costo_intervento, \
@@ -127,12 +129,14 @@ main_intervento.id AS intervento_id, \
 main_verifica.stato_verifica, \
 main_verifica.data_verifica, \
 main_verifica.tipo_verifica, \
+main_verifica.altro_tipo_verifica, \
 main_verifica.codice_id, \
 main_verifica.numero_rapporto, \
 main_verifica.prossima_verifica, \
 main_verifica.colore_bollino, \
 main_verifica.numero_bollino, \
 main_verifica.valore_bollino, \
+main_verifica.analisi_combustione, \
 main_verifica.prossima_analisi_combustione, \
 main_verifica.stato_pagamento, \
 main_verifica.costo_intervento, \
@@ -169,6 +173,7 @@ main_intervento.tipo_intervento ILIKE %s OR \
 main_verifica.colore_bollino ILIKE %s OR \
 CAST(main_verifica.numero_bollino AS TEXT) ILIKE %s OR \
 main_verifica.tipo_verifica ILIKE %s OR \
+main_verifica.altro_tipo_verifica ILIKE %s OR \
 main_verifica.note_verifica ILIKE %s OR \
 main_verifica.numero_rapporto ILIKE %s \
 )"
