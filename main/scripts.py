@@ -4,8 +4,9 @@
 VERIFICA_ADD_JS = """
 <script>
 $(function() {
-    if ($("#id_analisi_combustione").is(':checked')) {
-    } else {
+    $("input[type=submit]").button()
+
+    if (!$("#id_analisi_combustione").is(':checked')) {
         $("#tr_colore_bollino").hide();
         $("#tr_numero_bollino").hide();
         $("#tr_valore_bollino").hide();

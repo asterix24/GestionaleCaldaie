@@ -23,11 +23,11 @@
     <td>
         <div id="navigation_search">
         <ul>
-            <div class="navigation_buttons">{% now "d F Y H:i" %}</div>
-            <form class="navigation_buttons" action="/anagrafe/" method="get">{% csrf_token %}
+            <div class="navigation_buttons">{% now "d F Y H:i" %}
+            <form action="/anagrafe/" method="get">{% csrf_token %}
             <input id="id_s" maxlength="200" type="text" name="s" size="40" />
             <input type="submit" value="Cerca"/>
-            </form>
+            </form></div>
         </ul>
         </div>
     </td>
