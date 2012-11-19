@@ -40,13 +40,15 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
                            'impianto_id': impianto_id,
                            'sub_impianto_id': sub_impianto_id})
 
-def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
+def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_cliente=False):
 
     if cliente_id == "":
             return None
 
+    data = ""
     data_to_render = database_manager.search_clienteId(cliente_id)
-    data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente")
+    if not show_cliente:
+        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente")
 
     dr = data_render.DataRender(data_to_render)
 
@@ -81,15 +83,17 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         data_to_render = database_manager.search_impiantoId(impianto_id)
         data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
 
-        data_to_render = database_manager.search_verificaId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "Dettaglio Verifica e Manutenzioni", 'impianto')
+        if sub_impianto_id is not None:
+            data_to_render = database_manager.search_verificaId(sub_impianto_id)
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "Dettaglio Verifica e Manutenzioni", 'impianto')
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
         data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
 
-        data_to_render = database_manager.search_interventoId(sub_impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento", 'impianto')
+        if sub_impianto_id is not None:
+            data_to_render = database_manager.search_interventoId(sub_impianto_id)
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento", 'impianto')
 
     else:
         data = None
@@ -131,6 +135,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             if detail_type == 'verifica':
                 form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
                 data = scripts.VERIFICA_ADD_JS
+                data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
@@ -268,6 +273,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
             return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
             data = scripts.VERIFICA_ADD_JS
+            data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)
