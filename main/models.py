@@ -45,25 +45,25 @@ TIPO_CALDAIA = (
 )
 
 class Impianto(models.Model):
-	impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
-	cliente_impianto = models.ForeignKey(Cliente)
-	codice_impianto = models.CharField(max_length=15, null=True, blank=True)
-	marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
-	modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
-	matricola_caldaia = models.CharField(max_length=100, null=True, blank=True)
-	potenza_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=POTENZA_CALDAIA)
-	tipo_caldaia = models.CharField(max_length=1, null=True, blank=True, choices=TIPO_CALDAIA)
-	combustibile = models.CharField(max_length=100, null=True, blank=True)
+    impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
+    cliente_impianto = models.ForeignKey(Cliente)
+    codice_impianto = models.CharField(max_length=15, null=True, blank=True)
+    marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    matricola_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    potenza_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=POTENZA_CALDAIA)
+    tipo_caldaia = models.CharField(max_length=1, null=True, blank=True, choices=TIPO_CALDAIA)
+    combustibile = models.CharField(max_length=100, null=True, blank=True)
 
-	data_installazione = models.DateField(null=True, blank=True)
-	data_contratto = models.DateField(null=True, blank=True)
+    data_installazione = models.DateField(null=True, blank=True)
+    data_contratto = models.DateField(null=True, blank=True)
 
-	class Meta:
-		ordering = ['marca_caldaia']
-		#unique_together = ('codice_impianto', 'data_installazione')
+    class Meta:
+        ordering = ['marca_caldaia']
+        #unique_together = ('codice_impianto', 'data_installazione')
 
-	def __unicode__(self):
-		return self.marca_caldaia
+    def __unicode__(self):
+        return (u"[%s] %s: %s-%s" % (self.codice_impianto, self.cliente_impianto, self.marca_caldaia, self.modello_caldaia))
 
 class ImpiantoForm(forms.ModelForm):
 	class Meta:
@@ -135,9 +135,10 @@ class Verifica(models.Model):
 		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
+    stato_verifica = forms.BooleanField(label='Chiudi verifica')
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100,
-                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    required=False, widget=forms.TextInput(attrs={'size':'30'}))
     scadenza_tra = forms.IntegerField(label='Vefica fumi tra mesi', required=False)
 
     def clean(self):
@@ -149,14 +150,14 @@ class VerificaForm(forms.ModelForm):
                 # The table row is hide, so when we reply the error it is hide..
                 self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di manutenzione."])
 
-        cleaned_data["altro_tipo_verifica"] = _altro
+                cleaned_data["altro_tipo_verifica"] = _altro
 
         return cleaned_data
 
     class Meta:
         model = Verifica
-        exclude = ('stato_verifica')
-        fields = ('verifica_impianto', 'data_verifica', 'tipo_verifica',
+        fields = ('stato_verifica', 'verifica_impianto', 'tipo_verifica',
+                  'data_verifica', 'prossima_verifica',
                   'altro_tipo_verifica', 'codice_id',
                   'numero_rapporto', 'analisi_combustione',
                   'scadenza_tra','colore_bollino',

@@ -3,6 +3,16 @@
 
 VERIFICA_ADD_JS = """
 <script>
+function AddYearToDate(_date)
+{
+    alert(">>_date: " + _date);
+    var d = new Date(_date);
+    d.setDate(d.getDate() + 365);
+    var t = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
+    alert(t);
+    return t
+}
+
 $(function() {
     $("input[type=submit]").button()
 
@@ -31,7 +41,28 @@ $(function() {
         dayNames: [ "Domenica", "Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato" ],
         dayNamesShort: [ "Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab" ],
         monthNames: [ "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre" ],
-        monthNamesShort: [ "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Aug", "Set", "Ott", "Nov", "Dic" ]
+        monthNamesShort: [ "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Aug", "Set", "Ott", "Nov", "Dic" ],
+        onSelect: function(dateText) {
+            $('#id_prossima_verifica').val( function() {
+                var d = new Date(dateText);
+                d.setFullYear(d.getFullYear() + 1);
+                var dd = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                alert(dd);
+                return dd;
+            });
+        }
+    });
+
+
+    $('#id_prossima_verifica').datepicker({
+        showButtonPanel: true,
+        dateFormat: "dd/mm/yy",
+        currentText: "Oggi",
+        closeText: "Chiudi",
+        dayNames: [ "Domenica", "Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato" ],
+        dayNamesShort: [ "Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab" ],
+        monthNames: [ "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre" ],
+        monthNamesShort: [ "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Aug", "Set", "Ott", "Nov", "Dic" ],
     });
 
 
@@ -61,3 +92,5 @@ $(function() {
 });
 </script>
 """
+
+

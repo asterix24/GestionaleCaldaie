@@ -156,6 +156,8 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             if detail_type == 'verifica':
                 form = models.VerificaForm(request.POST)
                 if form.is_valid():
+                    form.cleaned_data['prossima_verifica'] += form.cleaned_data['prossima_verifica'] + timedelta(days=365)
+                    print form.cleaned_data['prossima_verifica']
                     instance = form.save()
                     return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                             detail_type=detail_type, sub_impianto_id=instance.id)
@@ -301,7 +303,9 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             if detail_type == 'verifica':
                 form = models.VerificaForm(request.POST, instance=select)
                 if form.is_valid():
+                    form.cleaned_data['prossima_verifica'] += form.cleaned_data['data_verifica'] + timedelta(days=365)
                     instance = form.save()
+                    print ">>",form
                     return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                             detail_type=detail_type, sub_impianto_id=instance.id)
 

@@ -62,6 +62,7 @@ ANAGRAFE_VERIFICA_STD_VIEW = [
 'costo_intervento',
 'stato_pagamento',
 'note_verifica',
+'prossima_verifica',
 ]
 
 ANAGRAFE_INTERVENTI_STD_VIEW = [
