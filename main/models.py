@@ -112,15 +112,15 @@ class Verifica(models.Model):
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 
     # Sezione manutenzione ordinaria/straordinaria
-	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365))
+	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365*2))
 
     # Sezione analisi combustione
 	analisi_combustione = models.BooleanField(default=False)
-	colore_bollino = models.CharField(max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
+	colore_bollino = models.CharField(default='blu', max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
 	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
 	valore_bollino = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
-	prossima_analisi_combustione = models.DateField(null=True, blank=True)
+	prossima_analisi_combustione = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365), null=True, blank=True)
 
     # Pagamenti
 	stato_pagamento = models.BooleanField(default=False)
@@ -138,8 +138,9 @@ class VerificaForm(forms.ModelForm):
     stato_verifica = forms.BooleanField(label='Chiudi verifica')
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100,
-    required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    scadenza_tra = forms.IntegerField(label='Vefica fumi tra mesi', required=False)
+                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
+    scadenza_fumi_tra = forms.IntegerField(label='Prossima analisi combustione tra mesi', initial="24", required=False)
 
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
@@ -157,12 +158,12 @@ class VerificaForm(forms.ModelForm):
     class Meta:
         model = Verifica
         fields = ('stato_verifica', 'verifica_impianto', 'tipo_verifica',
-                  'data_verifica', 'prossima_verifica',
+                  'data_verifica', 'scadenza_verifica_tra','prossima_verifica',
                   'altro_tipo_verifica', 'codice_id',
                   'numero_rapporto', 'analisi_combustione',
-                  'scadenza_tra','colore_bollino',
-                  'numero_bollino', 'valore_bollino',
-                  'costo_intervento', 'stato_pagamento',
+                  'colore_bollino','altro_colore_bollino',
+                  'numero_bollino', 'valore_bollino', 'scadenza_fumi_tra',
+                  'prossima_analisi_combustione','costo_intervento', 'stato_pagamento',
                   'note_verifica')
 
 class Intervento(models.Model):
