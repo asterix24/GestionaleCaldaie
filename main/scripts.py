@@ -53,11 +53,12 @@ $(function() {
     });
 
     $("#id_scadenza_verifica_tra").keyup(function () {
+        this.value = this.value.replace(/[^0-9\.]/g,'');
         var sd = $("#id_data_verifica").val().split("/");
         var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
         if ($(this).val()) {
             d.setMonth(d.getMonth() + parseInt($(this).val()));
-            $('#id_prossima_verifica').val(d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear());
+            $('#id_prossima_verifica').val(d.getDate() + "/" + (parseInt(d.getMonth()) + 1) + "/" + d.getFullYear());
         } else {
             $('#id_prossima_verifica').val($('#id_data_verifica').val());
         }
@@ -81,7 +82,7 @@ $(function() {
             if ($(this).text() == "Altro..") {
                 $("#id_tipo_verifica").parent().append($("#id_altro_tipo_verifica"));
                 $("#id_altro_tipo_verifica").show("slow");
-            } if else ($(this).text() == "Verde") {
+            } else if ($(this).text() == "Verde") {
                 $("#id_scadenza_fumi_tra").val("12");
             } else {
                 $("#id_altro_tipo_verifica").hide();
@@ -130,6 +131,7 @@ $(function() {
     });
 
     $("#id_scadenza_fumi_tra").keyup(function () {
+        this.value = this.value.replace(/[^0-9\.]/g,'');
         var sd = $("#id_data_verifica").val().split("/");
         var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
         if ($(this).val()) {
