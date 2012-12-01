@@ -14,7 +14,8 @@ from main import database_manager
 from main import scripts
 
 def home(request):
-    return render(request, 'home.sub', {})
+    data = scripts.HOME_ADD_JS
+    return render(request, 'home.sub', {"data":data})
 
 def _display_error(request, msg):
     return render(request, 'messages.sub',

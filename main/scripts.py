@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+HOME_ADD_JS = """
+<script>
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+});
+</script>
+"""
 SHOW_ADD_JS = """
 <script>
 $(function() {
