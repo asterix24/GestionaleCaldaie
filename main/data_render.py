@@ -26,10 +26,14 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
         url += path % (cliente_id)
     else:
         return "errore!"
-    url += "\">"
 
     if type == 'icon':
+        url += "\">"
         data += "<img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/> " % (ACTION_DICT[action], action, action)
+    elif type == 'button':
+        url += "\" name=\"href_button\">"
+    else:
+        url += "\">"
 
     data += "%s"  % message
     return url + data + "</a>"
@@ -150,9 +154,9 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
     return_link = ''
     if detail_type is not None:
         if detail_type == 'cliente':
-            return_link += make_url('', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/', cliente_id=item_dict['cliente_id'])
+            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/', cliente_id=item_dict['cliente_id'])
         elif detail_type == 'impianto':
-            return_link += make_url('', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/',
+            return_link += make_url('button', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/',
                     cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
         else:
             return_link = ''

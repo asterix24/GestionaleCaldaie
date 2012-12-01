@@ -1,6 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+SHOW_ADD_JS = """
+<script>
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+});
+</script>
+"""
+
+RECORDADD_ADD_JS = """
+<script>
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+});
+</script>
+"""
+
+DELETE_ADD_JS = """
+<script>
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+});
+</script>
+"""
+
 VERIFICA_ADD_JS = """
 <script>
 function addMonth(dateText, months) {
@@ -18,7 +42,7 @@ function deltaYear(dateText) {
 }
 
 $(function() {
-    $("input[type=submit]").button()
+    $("input[type=submit], a[name=href_button]").button();
 
     if (!$("#id_analisi_combustione").is(':checked')) {
         $("#tr_colore_bollino").hide();

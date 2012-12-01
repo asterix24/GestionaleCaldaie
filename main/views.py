@@ -28,7 +28,8 @@ def _display_ok(request, msg):
 
 
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message=None):
-    data = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+    data = scripts.SHOW_ADD_JS
+    data += view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
 
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
@@ -57,7 +58,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.urlBar('impianto', ['edit','delete'])
             data += dr.toTable()
-        data += data_render.make_url('icon', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
+        data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -73,10 +74,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.urlBar('intervento', ['edit','delete'])
             data += dr.toTable()
 
-        data += data_render.make_url('icon', 'add', 'Aggiungi una verifica a questo impianto..',
+        data += data_render.make_url('button', 'add', 'Aggiungi una verifica a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/verifica/add', cliente_id, impianto_id, sub_impianto_id)
 
-        data += data_render.make_url('icon', 'add', 'Aggiungi un\'intervento a questo impianto..',
+        data += data_render.make_url('button', 'add', 'Aggiungi un\'intervento a questo impianto..',
                                 '/anagrafe/%s/impianto/%s/intervento/add', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifica":
@@ -106,7 +107,7 @@ def _verifica_cfg(cliente_id, detail_type, impianto_id):
     return data
 
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
-    data = ""
+    data = scripts.RECORDADD_ADD_JS
     if cliente_id is None:
         header_msg = "Aggiungi Nuovo Cliente"
         post_url = "add/"
@@ -177,6 +178,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
 
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
+    data = scripts.DELETE_ADD_JS
     try:
         if detail_type is None:
             header_msg = '<h1>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h1>'
