@@ -328,7 +328,7 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
     search_string = ""
-    data = ""
+    data = scripts.HOME_ADD_JS
 
     if request.method == 'GET' and request.GET != {}:
             form = myforms.FullTextSearchForm(request.GET)
