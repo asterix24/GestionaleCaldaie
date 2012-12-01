@@ -74,7 +74,9 @@ main_impianto.combustibile, \
 main_impianto.data_installazione, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
+main_impianto.altro_tipo_caldaia, \
 main_impianto.potenza_caldaia, \
+main_impianto.altra_potenza_caldaia, \
 main_impianto.marca_caldaia, \
 main_impianto.codice_impianto, \
 main_impianto.id AS impianto_id, \
@@ -118,7 +120,9 @@ main_impianto.combustibile, \
 main_impianto.data_installazione, \
 main_impianto.data_contratto, \
 main_impianto.tipo_caldaia, \
+main_impianto.altro_tipo_caldaia, \
 main_impianto.potenza_caldaia, \
+main_impianto.altra_potenza_caldaia, \
 main_impianto.marca_caldaia, \
 main_impianto.codice_impianto, \
 main_impianto.id AS impianto_id, \
@@ -166,6 +170,8 @@ main_impianto.matricola_caldaia ILIKE %s OR \
 main_impianto.combustibile ILIKE %s OR \
 main_impianto.tipo_caldaia ILIKE %s OR \
 main_impianto.potenza_caldaia ILIKE %s OR \
+main_impianto.altro_tipo_caldaia ILIKE %s OR \
+main_impianto.altra_potenza_caldaia ILIKE %s OR \
 main_impianto.marca_caldaia ILIKE %s OR \
 main_impianto.codice_impianto ILIKE %s OR \
 main_intervento.note_intervento ILIKE %s OR \

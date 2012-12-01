@@ -7,25 +7,24 @@ from django import forms
 import datetime
 
 class Cliente(models.Model):
-	"""
-	Anagrafica del cliente
-	"""
-	cliente_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
-	cognome = models.CharField(max_length=100)
-	nome = models.CharField(max_length=100, null=True, blank=True)
-	codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
-	via = models.CharField(max_length=300, null=True, blank=True)
-	citta = models.CharField(max_length=100, null=True, blank=True)
-	numero_telefono = models.CharField(max_length=20, null=True, blank=True)
-	numero_cellulare = models.CharField(max_length=20, null=True, blank=True)
-	mail = models.EmailField(default="", null=True, blank=True)
+    """
+    Anagrafica del cliente
+    """
+    cliente_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
+    cognome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100, null=True, blank=True)
+    codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
+    via = models.CharField(max_length=300, null=True, blank=True)
+    citta = models.CharField(max_length=100, null=True, blank=True)
+    numero_telefono = models.CharField(max_length=20, null=True, blank=True)
+    numero_cellulare = models.CharField(max_length=20, null=True, blank=True)
+    mail = models.EmailField(default="", null=True, blank=True)
 
-	class Meta:
-		ordering = ['cognome', 'nome']
-		#unique_together = ('cognome', 'nome')
+    class Meta:
+        ordering = ['cognome', 'nome']
 
-	def __unicode__(self):
-		return self.cognome
+    def __unicode__(self):
+        return (u"%s, %s: %s - %s" % (self.cognome, self.nome, self.via, self.citta))
 
 class ClienteForm(forms.ModelForm):
 	class Meta:
@@ -35,6 +34,7 @@ POTENZA_CALDAIA = (
 ('C1', 'C1: Inferiore a 35 kW'),
 ('C2', 'C2: Compresa tra 35 kW e 350 kW'),
 ('C3', 'C3: Uguale o superiore a 350 kW'),
+('altro', 'Altro..'),
 )
 
 TIPO_CALDAIA = (
@@ -47,12 +47,14 @@ TIPO_CALDAIA = (
 class Impianto(models.Model):
     impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
     cliente_impianto = models.ForeignKey(Cliente)
-    codice_impianto = models.CharField(max_length=15, null=True, blank=True)
+    codice_impianto = models.CharField(max_length=100, null=True, blank=True)
     marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
     modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
     matricola_caldaia = models.CharField(max_length=100, null=True, blank=True)
     potenza_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=POTENZA_CALDAIA)
-    tipo_caldaia = models.CharField(max_length=1, null=True, blank=True, choices=TIPO_CALDAIA)
+    altra_potenza_caldaia = models.CharField(max_length=100, null=True, blank=True)
+    tipo_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=TIPO_CALDAIA)
+    altro_tipo_caldaia = models.CharField(max_length=100, null=True, blank=True)
     combustibile = models.CharField(max_length=100, null=True, blank=True)
 
     data_installazione = models.DateField(null=True, blank=True)
@@ -66,8 +68,37 @@ class Impianto(models.Model):
         return (u"[%s] %s: %s-%s" % (self.codice_impianto, self.cliente_impianto, self.marca_caldaia, self.modello_caldaia))
 
 class ImpiantoForm(forms.ModelForm):
+    altra_potenza_caldaia = forms.CharField(label='', max_length=100,
+                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altro_tipo_caldaia = forms.CharField(label='', max_length=100,
+                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+
+    def clean(self):
+        cleaned_data = super(forms.ModelForm, self).clean()
+        _tipo_caldaia = cleaned_data.get("tipo_caldaia")
+        _potenza_caldaia = cleaned_data.get("potenza_caldaia")
+        _altro_tipo_caldaia = cleaned_data.get("altro_tipo_caldaia")
+        _altra_potenza_caldaia = cleaned_data.get("altra_potenza_caldaia")
+
+        if _tipo_caldaia == 'altro':
+            if _altro_tipo_caldaia == '':
+                self._errors["tipo_caldaia"] = self.error_class(["Specificare un altro tipo di caldaia."])
+                cleaned_data["altro_tipo_caldaia"] = _altro
+
+        if _potenza_caldaia == 'altro':
+            if _altra_potenza_caldaia == '':
+                self._errors["potenza_caldaia"] = self.error_class(["Specificare un altra potenza caldaia."])
+                cleaned_data["altra_potenza_caldaia"] = _altro
+
+        return cleaned_data
+
 	class Meta:
 		model = Impianto
+        fields = ('cliente_impianto', 'codice_impianto',
+                'marca_caldaia', 'modello_caldaia', 'matricola_caldaia',
+                'potenza_caldaia', 'altra_potenza_caldaia', 'tipo_caldaia',
+                'altro_tipo_caldaia', 'combustibile', 'data_installazione',
+                'data_contratto')
 
 
 VERIFICHE_TYPE_CHOICES = (
