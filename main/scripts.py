@@ -24,6 +24,23 @@ $(function() {
         }
     });
 
+    var potenza_caldaia = $("#td_potenza_caldaia").text();
+    var colore_bollino = "Blu";
+
+    if (potenza_caldaia == "C1") {
+        colore_bollino = "Blu";
+    } else if (potenza_caldaia == "C2") {
+        colore_bollino = "Giallo";
+    } else {
+        colore_bollino = "Arancio";
+    }
+
+    $("#id_colore_bollino option").each(function() {
+        if($(this).text() == colore_bollino) {
+            $(this).attr('selected', 'selected');
+        }
+    });
+
     $("#tr_altro_colore_bollino").hide();
     $("#id_colore_bollino option:selected").each(function () {
         if ($(this).text() == "Altro..") {
@@ -90,12 +107,31 @@ $(function() {
         });
     });
 
+
     $("#id_colore_bollino").change(function () {
         var str = "";
         $("#id_colore_bollino option:selected").each(function () {
+            $("#id_scadenza_fumi_tra").val("24");
             if ($(this).text() == "Altro..") {
                 $("#id_colore_bollino").parent().append($("#id_altro_colore_bollino"));
                 $("#id_altro_colore_bollino").show("slow");
+            } else if ($(this).text() == "Blu") {
+                $("#id_scadenza_fumi_tra").val("24");
+            } else if ($(this).text() == "Verde") {
+                var now_day = new Date();
+                sd = $("#td_data_installazione").text().split("/");
+                var install_day = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
+                if ((now_day.getFullYear() - install_day.getFullYear()) > 8) {
+                    $("#id_scadenza_fumi_tra").val("24");
+                } else {
+                    if ($("#td_tipo_caldaia").text() = "C") {
+                        $("#id_scadenza_fumi_tra").val("48");
+                    }
+                }
+            } else if ($(this).text() == "Arancione") {
+                $("#id_scadenza_fumi_tra").val("12");
+            } else if ($(this).text() == "Giallo") {
+                $("#id_scadenza_fumi_tra").val("12");
             } else {
                 $("#id_altro_colore_bollino").hide();
             }

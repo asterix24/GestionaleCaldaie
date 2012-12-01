@@ -112,7 +112,7 @@ class Verifica(models.Model):
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 
     # Sezione manutenzione ordinaria/straordinaria
-	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365*2))
+	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365))
 
     # Sezione analisi combustione
 	analisi_combustione = models.BooleanField(default=False)
@@ -120,7 +120,7 @@ class Verifica(models.Model):
 	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
 	valore_bollino = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
-	prossima_analisi_combustione = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365), null=True, blank=True)
+	prossima_analisi_combustione = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365*2), null=True, blank=True)
 
     # Pagamenti
 	stato_pagamento = models.BooleanField(default=False)
@@ -135,7 +135,7 @@ class Verifica(models.Model):
 		return self.tipo_verifica
 
 class VerificaForm(forms.ModelForm):
-    stato_verifica = forms.BooleanField(label='Chiudi verifica')
+    stato_verifica = forms.BooleanField(label='Chiudi verifica', required=False)
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100,
                 required=False, widget=forms.TextInput(attrs={'size':'30'}))

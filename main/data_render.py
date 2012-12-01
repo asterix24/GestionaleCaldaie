@@ -197,7 +197,7 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
             print "List Errore nel render di %s (%s)" % (i, m)
             s = '-'
 
-        table += "<td>%s</td>" % s
+        table += "<td id=\"td_%s\">%s</td>" % (i, s)
         table += "</tr>"
 
     table += "</table><br>"
