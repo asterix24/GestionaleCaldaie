@@ -100,6 +100,11 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     return data
 
+def _verifica_cfg(cliente_id, detail_type, impianto_id):
+    data = scripts.VERIFICA_ADD_JS
+    data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
+    return data
+
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     if cliente_id is None:
@@ -134,8 +139,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
 
             if detail_type == 'verifica':
                 form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
-                data = scripts.VERIFICA_ADD_JS
-                data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
+                data = _verifica_cfg(cliente_id, detail_type, impianto_id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
@@ -272,8 +276,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
             return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
-            data = scripts.VERIFICA_ADD_JS
-            data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
+            data = _verifica_cfg(cliente_id, detail_type, impianto_id)
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)

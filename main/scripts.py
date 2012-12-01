@@ -3,6 +3,19 @@
 
 VERIFICA_ADD_JS = """
 <script>
+function addMonth(dateText, months) {
+    var sd = dateText.split("/");
+    var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
+    d.setMonth(d.getMonth() + months);
+    return d.getDate() + "/" + (parseInt(d.getMonth()) + 1) + "/" + d.getFullYear();
+}
+
+function deltaYear(dateText) {
+    var sd = dateText.split("/");
+    var  install_date = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
+    var  now_date = new Date();
+    return (now_day.getFullYear() - install_date.getFullYear());
+}
 
 $(function() {
     $("input[type=submit]").button()
@@ -60,22 +73,14 @@ $(function() {
         monthNames: [ "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre" ],
         monthNamesShort: [ "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Aug", "Set", "Ott", "Nov", "Dic" ],
         onSelect: function(dateText) {
-            $('#id_prossima_verifica').val( function() {
-                var sd = dateText.split("/");
-                var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
-                d.setDate(d.getDate() + 365);
-                return d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
-            });
+            $('#id_prossima_verifica').val(addMonth(dateText, 12));
         }
     });
 
     $("#id_scadenza_verifica_tra").keyup(function () {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        var sd = $("#id_data_verifica").val().split("/");
-        var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
         if ($(this).val()) {
-            d.setMonth(d.getMonth() + parseInt($(this).val()));
-            $('#id_prossima_verifica').val(d.getDate() + "/" + (parseInt(d.getMonth()) + 1) + "/" + d.getFullYear());
+            $('#id_prossima_verifica').val(addMonth($("#id_data_verifica").val(), parseInt($(this).val())));
         } else {
             $('#id_prossima_verifica').val($('#id_data_verifica').val());
         }
@@ -110,32 +115,31 @@ $(function() {
 
     $("#id_colore_bollino").change(function () {
         var str = "";
+        var scadenza_mesi = 24;
         $("#id_colore_bollino option:selected").each(function () {
-            $("#id_scadenza_fumi_tra").val("24");
             if ($(this).text() == "Altro..") {
                 $("#id_colore_bollino").parent().append($("#id_altro_colore_bollino"));
                 $("#id_altro_colore_bollino").show("slow");
             } else if ($(this).text() == "Blu") {
-                $("#id_scadenza_fumi_tra").val("24");
+                scadenza_mesi = 24;
             } else if ($(this).text() == "Verde") {
-                var now_day = new Date();
-                sd = $("#td_data_installazione").text().split("/");
-                var install_day = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
-                if ((now_day.getFullYear() - install_day.getFullYear()) > 8) {
-                    $("#id_scadenza_fumi_tra").val("24");
+                if (deltaYear($("#td_data_installazione").text()) > 8) {
+                    scadenza_mesi = 24;
                 } else {
                     if ($("#td_tipo_caldaia").text() = "C") {
-                        $("#id_scadenza_fumi_tra").val("48");
+                        scadenza_mesi = 48;
                     }
                 }
             } else if ($(this).text() == "Arancione") {
-                $("#id_scadenza_fumi_tra").val("12");
+                scadenza_mesi = 12;
             } else if ($(this).text() == "Giallo") {
-                $("#id_scadenza_fumi_tra").val("12");
+                scadenza_mesi = 12;
             } else {
                 $("#id_altro_colore_bollino").hide();
             }
         });
+        $("#id_scadenza_fumi_tra").val(scadenza_mesi);
+        $('#id_prossima_analisi_combustione').val(addMonth($("#id_data_verifica").val(), scadenza_mesi));
     });
 
 
@@ -168,16 +172,12 @@ $(function() {
 
     $("#id_scadenza_fumi_tra").keyup(function () {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        var sd = $("#id_data_verifica").val().split("/");
-        var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
         if ($(this).val()) {
-            d.setMonth(d.getMonth() + parseInt($(this).val()));
-            $('#id_prossima_analisi_combustione').val(d.getDate() + "/" + (parseInt(d.getMonth()) + 1) + "/" + d.getFullYear());
+            $('#id_prossima_analisi_combustione').val(addMonth($("#id_data_verifica").val(), parseInt($(this).val())));
         } else {
             $('#id_prossima_analisi_combustione').val($('#id_data_verifica').val());
         }
     }).keyup();
-
 });
 </script>
 """
