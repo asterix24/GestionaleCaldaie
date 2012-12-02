@@ -41,6 +41,7 @@ $(function() {
 });
 </script>
 """
+
 __IMPIANTO_ADD_JS = """
 <script>
 %s

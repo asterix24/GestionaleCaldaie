@@ -176,6 +176,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                     instance.altra_potenza_caldaia = instance.altra_potenza_caldaia.upper()
                     instance.tipo_caldaia = instance.tipo_caldaia.upper()
                     instance.altro_tipo_caldaia = instance.altro_tipo_caldaia.upper()
+                    instance.combustibile = instance.combustibile.capitalize()
                     instance.save()
                     return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 

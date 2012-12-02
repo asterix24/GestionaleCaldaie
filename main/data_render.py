@@ -38,6 +38,96 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
     data += "%s"  % message
     return url + data + "</a>"
 
+
+def __cliente_url(items, key, s=None):
+    return make_url('','', items[key], '/anagrafe/%s/', items['cliente_id'])
+
+def __impianto_url(items, key, s=None):
+    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/',
+            items['cliente_id'], items['impianto_id'])
+
+def __verifica_url(items, key, s=None):
+    str = items[key]
+    if str is None:
+        return "Nessuna verifica"
+
+    if type(str) == datetime.date:
+        str = str.strftime(DATA_FIELD_STR_FORMAT)
+    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+            items['cliente_id'], items['impianto_id'], items['verifica_id'])
+
+def __tipo_caldaia(items, key, s=None):
+    str = items[key]
+    if str is None:
+        return s
+
+    if str.lower() == 'altro':
+        s = items['altro_tipo_caldaia']
+    else:
+        s = items[key]
+
+    return s
+
+def __tipo_verifica(items, key, s=None):
+    str = items[key]
+    if str is None:
+        return s
+
+    if str.lower() == 'altro':
+        s = items['altro_tipo_verifica']
+    else:
+        s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
+
+    return s
+
+def __colore_bollino(items, key, s=None):
+    str = items[key]
+    if str is None:
+        return s
+
+    if str.lower() == 'altro':
+        s = items['altro_colore_bollino']
+    else:
+        if str in models.BOLLINO_COLOR_CHOICES_DICT:
+            s = models.BOLLINO_COLOR_CHOICES_DICT[str]
+    return s
+
+def __analisi_combustione(items, key, s=None):
+    s = 'No.'
+    if items[key]:
+        s = 'Eseguito'
+
+    return s
+
+
+def __stato_pagamento(items, key, s=None):
+    s = "Da riscuotere."
+    if items[key]:
+        s = "Pagato!"
+
+    return s
+
+
+RENDER_TABLE_URL = {
+    'nome': __cliente_url,
+    'cognome': __cliente_url,
+    'codice_impianto': __impianto_url,
+    'matricola_caldaia': __impianto_url,
+    'modello_caldaia': __impianto_url,
+    'data_verifica': __verifica_url,
+    'ultima_verifica': __verifica_url,
+}
+
+RENDER_TABLE = {
+    'tipo_caldaia': __tipo_caldaia,
+    'tipo_verifica': __tipo_verifica,
+    'colore_bollino': __colore_bollino,
+    'analisi_combustione': __analisi_combustione,
+    'stato_pagamento': __stato_pagamento,
+}
+
+
+
 class DataRender(object):
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
         self.items = items
@@ -100,38 +190,17 @@ class DataRender(object):
 
             for i in self.colums:
                 try:
-                    s  = item_dict[i]
+                    if i in RENDER_TABLE:
+                        s = RENDER_TABLE[i](item_dict, i)
+                    elif i in RENDER_TABLE_URL:
+                        s = RENDER_TABLE_URL[i](item_dict, i)
+                    else:
+                        s  = item_dict[i]
+                        if type(s) == datetime.date:
+                            s = s.strftime(DATA_FIELD_STR_FORMAT)
+
                     if s is None or s == "":
                         s = '<center>-</center>'
-
-                    elif type(s) == datetime.date:
-                        s = s.strftime(DATA_FIELD_STR_FORMAT)
-                        if i in ['data_verifica', 'ultima_verifica']:
-                            s = make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
-                                    item_dict['cliente_id'], item_dict['impianto_id'], item_dict['verifica_id'])
-
-                    elif i in ['nome', 'cognome']:
-                        s = make_url('','', s, '/anagrafe/%s/', item_dict['cliente_id'])
-
-                    elif i in ['codice_impianto', 'marca_caldaia']:
-                        s = make_url('','', s, '/anagrafe/%s/impianto/%s/', item_dict['cliente_id'], item_dict['impianto_id'])
-
-                    elif i in ['stato_pagamento']:
-                        if s:
-                            s = "Pagato!"
-                        else:
-                            s = "Da riscuotere."
-
-                    elif i in ['tipo_verifica']:
-                        if s == "altro":
-                           s = item_dict['altro_tipo_verifica']
-                        else:
-                            s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
-
-                    elif i in ['colore_bollino']:
-                        if s in models.BOLLINO_COLOR_CHOICES_DICT.keys():
-                            s = models.BOLLINO_COLOR_CHOICES_DICT[s]
-
                 except (KeyError, ValueError), m:
                     print "Table Errore nel render di %s (%s) s=%s" % (i, m, s)
                     s = '<center>-</center>'
@@ -168,34 +237,14 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
             table += "<tr>"
             table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
 
-            s  = item_dict[i]
+            if i in RENDER_TABLE:
+                s = RENDER_TABLE[i](item_dict, i)
+            else:
+                s  = item_dict[i]
+                if type(s) == datetime.date:
+                    s = s.strftime(DATA_FIELD_STR_FORMAT)
             if s is None:
                 s = '-'
-
-            elif i in ['tipo_verifica']:
-                if s == "altro":
-                   s = item_dict['altro_tipo_verifica']
-                else:
-                    s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
-
-            elif i in ['colore_bollino']:
-                if s in models.BOLLINO_COLOR_CHOICES_DICT.keys():
-                    s = models.BOLLINO_COLOR_CHOICES_DICT[s]
-
-            elif i in ['analisi_combustione']:
-                if s:
-                    s = "Si"
-                else:
-                    s = "No"
-
-            elif i in ['stato_pagamento']:
-                if s:
-                    s = "Pagato!"
-                else:
-                    s = "Da riscuotere."
-
-            elif type(s) == datetime.date:
-                s = s.strftime(DATA_FIELD_STR_FORMAT)
 
         except (KeyError, ValueError), m:
             print "List Errore nel render di %s (%s)" % (i, m)

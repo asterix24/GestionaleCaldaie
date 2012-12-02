@@ -149,12 +149,12 @@ class Verifica(models.Model):
 	colore_bollino = models.CharField(default='blu', max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
 	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
-	valore_bollino = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
+	valore_bollino = models.DecimalField(max_digits = 10, decimal_places = 2, null=True, blank=True)
 	prossima_analisi_combustione = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365*2), null=True, blank=True)
 
     # Pagamenti
 	stato_pagamento = models.BooleanField(default=False)
-	costo_intervento = models.DecimalField(max_digits = 4, decimal_places = 2, null=True, blank=True)
+	costo_intervento = models.DecimalField(max_digits = 10, decimal_places = 2, null=True, blank=True)
 
 	note_verifica = models.TextField(null=True, blank=True)
 
