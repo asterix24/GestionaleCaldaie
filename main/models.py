@@ -68,37 +68,36 @@ class Impianto(models.Model):
         return (u"[%s] %s: %s-%s" % (self.codice_impianto, self.cliente_impianto, self.marca_caldaia, self.modello_caldaia))
 
 class ImpiantoForm(forms.ModelForm):
-    altra_potenza_caldaia = forms.CharField(label='', max_length=100,
-                required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    altro_tipo_caldaia = forms.CharField(label='', max_length=100,
-                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altra_potenza_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altro_tipo_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
 
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
         _tipo_caldaia = cleaned_data.get("tipo_caldaia")
-        _potenza_caldaia = cleaned_data.get("potenza_caldaia")
         _altro_tipo_caldaia = cleaned_data.get("altro_tipo_caldaia")
+
+        _potenza_caldaia = cleaned_data.get("potenza_caldaia")
         _altra_potenza_caldaia = cleaned_data.get("altra_potenza_caldaia")
 
         if _tipo_caldaia == 'altro':
             if _altro_tipo_caldaia == '':
                 self._errors["tipo_caldaia"] = self.error_class(["Specificare un altro tipo di caldaia."])
-                cleaned_data["altro_tipo_caldaia"] = _altro
+                cleaned_data["altro_tipo_caldaia"] = _altro_tipo_caldaia
 
         if _potenza_caldaia == 'altro':
             if _altra_potenza_caldaia == '':
                 self._errors["potenza_caldaia"] = self.error_class(["Specificare un altra potenza caldaia."])
-                cleaned_data["altra_potenza_caldaia"] = _altro
+                cleaned_data["altra_potenza_caldaia"] = _altro_potenza_caldaia
 
         return cleaned_data
 
-	class Meta:
-		model = Impianto
+    class Meta:
+        model = Impianto
         fields = ('cliente_impianto', 'codice_impianto',
-                'marca_caldaia', 'modello_caldaia', 'matricola_caldaia',
-                'potenza_caldaia', 'altra_potenza_caldaia', 'tipo_caldaia',
-                'altro_tipo_caldaia', 'combustibile', 'data_installazione',
-                'data_contratto')
+        'marca_caldaia', 'modello_caldaia', 'matricola_caldaia',
+        'potenza_caldaia', 'altra_potenza_caldaia', 'tipo_caldaia',
+        'altro_tipo_caldaia', 'combustibile', 'data_installazione',
+        'data_contratto')
 
 
 VERIFICHE_TYPE_CHOICES = (
@@ -168,21 +167,29 @@ class Verifica(models.Model):
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.BooleanField(label='Chiudi verifica', required=False)
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
-    altro_tipo_verifica = forms.CharField(label='', max_length=100,
-                required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
     scadenza_fumi_tra = forms.IntegerField(label='Prossima analisi combustione tra mesi', initial="24", required=False)
 
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
-        _tipo = cleaned_data.get("tipo_verifica")
-        _altro = cleaned_data.get("altro_tipo_verifica")
-        if _tipo == 'altro':
-            if _altro == '':
-                # The table row is hide, so when we reply the error it is hide..
-                self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di manutenzione."])
+        _tipo_verifica = cleaned_data.get("tipo_verifica")
+        _altro_tipo_verifica = cleaned_data.get("altro_tipo_verifica")
 
-                cleaned_data["altro_tipo_verifica"] = _altro
+        _colore_bollino = cleaned_data.get("colore_bollino")
+        _altro_colore_bollino = cleaned_data.get("altro_colore_bollino")
+
+        if _tipo_verifica == 'altro':
+            if _altro_tipo_verifica == '':
+                # The table row is hide, so when we reply the error it is hide..
+                self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di Manutenzione."])
+                cleaned_data["altro_tipo_verifica"] = _altro_tipo_verifica
+
+        if _colore_bollino == 'altro':
+            if _altro_colore_bollino == '':
+                # The table row is hide, so when we reply the error it is hide..
+                self._errors["colore_bollino"] = self.error_class(["Specificare un altro tipo di Bollino."])
+                cleaned_data["altro_colore_bollino"] = _altro_colore_bollino
 
         return cleaned_data
 
