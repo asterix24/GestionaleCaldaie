@@ -111,6 +111,51 @@ def _impianto_cfg(cliente_id, detail_type, impianto_id):
     data = scripts.IMPIANTO_ADD_JS
     return data
 
+def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
+    if cliente_id is None:
+        form = models.ClienteForm(request.POST, instance=select)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.nome = instance.nome.capitalize()
+            instance.cognome = instance.cognome.capitalize()
+            instance.codice_fiscale = instance.codice_fiscale.upper()
+            instance.via = instance.via.capitalize()
+            instance.citta = instance.citta.capitalize()
+            instance.save()
+            return show_record(request, cliente_id=instance.id)
+    else:
+        if detail_type == 'impianto':
+            form = models.ImpiantoForm(request.POST, instance=select)
+            if form.is_valid():
+                instance = form.save(commit = False)
+                instance.codice_impianto = instance.codice_impianto.upper()
+                instance.marca_caldaia = instance.marca_caldaia.upper()
+                instance.modello_caldaia = instance.modello_caldaia.upper()
+                instance.matricola_caldaia = instance.matricola_caldaia.upper()
+                instance.potenza_caldaia = instance.potenza_caldaia.upper()
+                instance.altra_potenza_caldaia = instance.altra_potenza_caldaia.upper()
+                instance.tipo_caldaia = instance.tipo_caldaia.upper()
+                instance.altro_tipo_caldaia = instance.altro_tipo_caldaia.upper()
+                instance.combustibile = instance.combustibile.capitalize()
+                instance.save()
+                return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
+
+        if detail_type == 'verifica':
+            form = models.VerificaForm(request.POST, instance=select)
+            if form.is_valid():
+                instance = form.save()
+                return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                        detail_type=detail_type, sub_impianto_id=instance.id)
+
+        if detail_type == 'intervento':
+            form = models.InterventoForm(request.POST, instance=select)
+            if form.is_valid():
+                instance = form.save(commit = False)
+                instance.tipo_intervento = instance.tipo_intervento.capitalize()
+                instance.save()
+                return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
+                        detail_type=detail_type, sub_impianto_id=instance.id)
+
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = scripts.RECORDADD_ADD_JS
     if cliente_id is None:
@@ -152,52 +197,55 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
 
     if request.method == 'POST':
-        if cliente_id is None:
-            form = models.ClienteForm(request.POST)
-            if form.is_valid():
-                instance = form.save(commit=False)
-                instance.nome = instance.nome.capitalize()
-                instance.cognome = instance.cognome.capitalize()
-                instance.codice_fiscale = instance.codice_fiscale.upper()
-                instance.via = instance.via.capitalize()
-                instance.citta = instance.citta.capitalize()
-                instance.save()
-                return show_record(request, cliente_id=instance.id)
-        else:
-            if detail_type == 'impianto':
-                form = models.ImpiantoForm(request.POST)
-                if form.is_valid():
-                    instance = form.save(commit = False)
-                    instance.codice_impianto = instance.codice_impianto.upper()
-                    instance.marca_caldaia = instance.marca_caldaia.upper()
-                    instance.modello_caldaia = instance.modello_caldaia.upper()
-                    instance.matricola_caldaia = instance.matricola_caldaia.upper()
-                    instance.potenza_caldaia = instance.potenza_caldaia.upper()
-                    instance.altra_potenza_caldaia = instance.altra_potenza_caldaia.upper()
-                    instance.tipo_caldaia = instance.tipo_caldaia.upper()
-                    instance.altro_tipo_caldaia = instance.altro_tipo_caldaia.upper()
-                    instance.combustibile = instance.combustibile.capitalize()
-                    instance.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
-
-            if detail_type == 'verifica':
-                form = models.VerificaForm(request.POST)
-                if form.is_valid():
-                    instance = form.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                            detail_type=detail_type, sub_impianto_id=instance.id)
-
-            if detail_type == 'intervento':
-                form = models.InterventoForm(request.POST)
-                if form.is_valid():
-                    instance = form.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                            detail_type=detail_type, sub_impianto_id=instance.id)
-
+        return __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request)
 
     return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
         'data':data, 'post_url':post_url, 'return_url':return_url})
 
+
+def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
+    if cliente_id is None:
+        return _display_error(request, "Qualcosa e' andato storto..")
+
+    select = None
+    data = scripts.EDIT_ADD_JS
+    if detail_type is None:
+        select = models.Cliente.objects.get(pk=cliente_id)
+        form = models.ClienteForm(instance=select)
+        header_msg = "Modifica Cliente"
+        post_url = "%s/edit/" % cliente_id
+        return_url = "%s/" % cliente_id
+    else:
+        if detail_type == 'impianto':
+            select = models.Impianto.objects.get(pk=impianto_id)
+            form = models.ImpiantoForm(instance=select)
+            header_msg = "Modifica Impianto"
+            post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
+            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+
+        if detail_type == 'verifica':
+            select = models.Verifica.objects.get(pk=sub_impianto_id)
+            form = models.VerificaForm(instance=select)
+            header_msg = "Modifica Verifica e Manutenzione"
+            post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+            data = _verifica_cfg(cliente_id, detail_type, impianto_id)
+
+        if detail_type == 'intervento':
+            select = models.Intervento.objects.get(pk=sub_impianto_id)
+            form = models.InterventoForm(instance=select)
+            header_msg = "Modifica Intervento"
+            post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "%s/impianto/%s/intervento/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+
+        if detail_type is None:
+            return _display_error(request, "Qualcosa e' andato storto..")
+
+    if request.method == 'POST':
+        return __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=select)
+
+    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
+        'data':data, 'post_url':post_url, 'return_url':return_url})
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = scripts.DELETE_ADD_JS
@@ -227,7 +275,7 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
                 post_url = "%s/impianto/%s/intervento/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
                 return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
 
-        data = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+        data += view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
 
         if request.method == 'GET':
             return render(request, 'anagrafe_manager.sub', {'header_msg': header_msg,
@@ -274,79 +322,6 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
     return _display_error(request, "Qualcosa e' andato storto..")
 
 
-def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
-    if cliente_id is None:
-        return _display_error(request, "Qualcosa e' andato storto..")
-
-    select = None
-    data = scripts.EDIT_ADD_JS
-    if detail_type is None:
-        select = models.Cliente.objects.get(pk=cliente_id)
-        form = models.ClienteForm(instance=select)
-        header_msg = "Modifica Cliente"
-        post_url = "%s/edit/" % cliente_id
-        return_url = "%s/" % cliente_id
-    else:
-        if detail_type == 'impianto':
-            select = models.Impianto.objects.get(pk=impianto_id)
-            form = models.ImpiantoForm(instance=select)
-            header_msg = "Modifica Impianto"
-            post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
-            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
-
-        if detail_type == 'verifica':
-            select = models.Verifica.objects.get(pk=sub_impianto_id)
-            form = models.VerificaForm(instance=select)
-            header_msg = "Modifica Verifica e Manutenzione"
-            post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
-            data = _verifica_cfg(cliente_id, detail_type, impianto_id)
-
-        if detail_type == 'intervento':
-            select = models.Intervento.objects.get(pk=sub_impianto_id)
-            form = models.InterventoForm(instance=select)
-            header_msg = "Modifica Intervento"
-            post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            return_url = "%s/impianto/%s/intervento/%s/" % (cliente_id, impianto_id, sub_impianto_id)
-
-        if detail_type is None:
-            return _display_error(request, "Qualcosa e' andato storto..")
-
-    if request.method == 'POST':
-        if detail_type is None:
-            form = models.ClienteForm(request.POST, instance=select)
-            if form.is_valid():
-                instance = form.save(commit=False)
-                instance.nome = instance.nome.capitalize()
-                instance.cognome = instance.cognome.capitalize()
-                instance.codice_fiscale = instance.codice_fiscale.upper()
-                instance.via = instance.via.capitalize()
-                instance.citta = instance.citta.capitalize()
-                instance.save()
-                return show_record(request, cliente_id=instance.id)
-        else:
-            if detail_type == 'impianto':
-                form = models.ImpiantoForm(request.POST, instance=select)
-                if form.is_valid():
-                    instance = form.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
-
-            if detail_type == 'verifica':
-                form = models.VerificaForm(request.POST, instance=select)
-                if form.is_valid():
-                    instance = form.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                            detail_type=detail_type, sub_impianto_id=instance.id)
-
-            if detail_type == 'intervento':
-                form = models.InterventoForm(request.POST, instance=select)
-                if form.is_valid():
-                    instance = form.save()
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                            detail_type=detail_type, sub_impianto_id=instance.id)
-
-    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
-        'data':data, 'post_url':post_url, 'return_url':return_url})
 
 def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None):
     return show_record(request, cliente_id, detail_type, impianto_id, sub_impianto_id)

@@ -82,12 +82,12 @@ class ImpiantoForm(forms.ModelForm):
         if _tipo_caldaia == 'altro':
             if _altro_tipo_caldaia == '':
                 self._errors["tipo_caldaia"] = self.error_class(["Specificare un altro tipo di caldaia."])
-                cleaned_data["altro_tipo_caldaia"] = _altro_tipo_caldaia
+                cleaned_data["altro_tipo_caldaia"] = _altro_tipo_caldaia.upper()
 
         if _potenza_caldaia == 'altro':
             if _altra_potenza_caldaia == '':
                 self._errors["potenza_caldaia"] = self.error_class(["Specificare un altra potenza caldaia."])
-                cleaned_data["altra_potenza_caldaia"] = _altro_potenza_caldaia
+                cleaned_data["altra_potenza_caldaia"] = _altro_potenza_caldaia.upper()
 
         return cleaned_data
 
@@ -183,13 +183,13 @@ class VerificaForm(forms.ModelForm):
             if _altro_tipo_verifica == '':
                 # The table row is hide, so when we reply the error it is hide..
                 self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di Manutenzione."])
-                cleaned_data["altro_tipo_verifica"] = _altro_tipo_verifica
+                cleaned_data["altro_tipo_verifica"] = _altro_tipo_verifica.capitalize()
 
         if _colore_bollino == 'altro':
             if _altro_colore_bollino == '':
                 # The table row is hide, so when we reply the error it is hide..
                 self._errors["colore_bollino"] = self.error_class(["Specificare un altro tipo di Bollino."])
-                cleaned_data["altro_colore_bollino"] = _altro_colore_bollino
+                cleaned_data["altro_colore_bollino"] = _altro_colore_bollino.capitalize()
 
         return cleaned_data
 
