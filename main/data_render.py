@@ -201,8 +201,10 @@ class DataRender(object):
 
                     if s is None or s == "":
                         s = '<center>-</center>'
+
                 except (KeyError, ValueError), m:
-                    print "Table Errore nel render di %s (%s) s=%s" % (i, m, s)
+                    logger.error("Table Errore nel render di %s (%s) s=%s" %
+                            (i, m, s))
                     s = '<center>-</center>'
 
                 table += "<td>%s</td>" % s
@@ -247,7 +249,7 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
                 s = '-'
 
         except (KeyError, ValueError), m:
-            print "List Errore nel render di %s (%s)" % (i, m)
+            logger.error("List Errore nel render di %s (%s)" % (i, m))
             s = '-'
 
         table += "<td id=\"td_%s\">%s</td>" % (i, s)
