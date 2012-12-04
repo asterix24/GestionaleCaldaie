@@ -13,7 +13,7 @@ def data_fmt(s):
             print raw, m
             return None
 
-        return datetime.date(int(y) + 2000, int(m), int(d))
+        return datetime.date(int(y), int(m), int(d))
 
     return None
 
@@ -84,7 +84,10 @@ def impianto_csv(row):
     table_dict['tipo_caldaia'] = row[ID_TIPO].strip().upper()
     table_dict['modello_caldaia'] = row[ID_MODELLO_CALDAIA].strip().upper()
     table_dict['matricola_caldaia'] = row[ID_MATRICOLA].strip().upper()
-    table_dict['combustibile'] = row[ID_COMBUSTIBILE].strip().capitalize()
+    combustibile = row[ID_COMBUSTIBILE].strip().capitalize()
+    if combustibile.lower() == 'met':
+        table_dict['combustibile'] = 'Metano'
+
     table_dict['potenza_caldaia'] = row[ID_POTENZA].strip().capitalize()
 
     table_dict['data_installazione'] = data_fmt(row[ID_DATA_INSTALLAZIONE])
@@ -98,6 +101,7 @@ ID_NUMERO_BOLLINO=30
 ID_NOTE=36
 ID_DATA_FUMI=20
 ID_DATA_VERIFICA=23
+ID_TIPO_CONTROLLO=26
 
 def verifiche_csv(row):
     table_dict = {}
@@ -105,43 +109,44 @@ def verifiche_csv(row):
     data_verifica = data_fmt(row[ID_DATA_FUMI])
     if data_verifica != None:
         table_dict['data_verifica'] = data_verifica
-        table_dict['prossima_verifica'] =data_verifica   + datetime.timedelta(days=365)
-
-        color = row[ID_COLORE_BOLLINO].capitalize().strip()
-        if color == 'BLU':
-            color = 'blu'
-        if color == 'VER':
-            color = 'verde'
-        elif color == 'ARA':
-            color = 'arancione'
-        elif color == 'Gia':
-            color = 'giallo'
-        elif color == 'Si':
-            color = 'blu'
-        else:
-            color = 'no'
-
-        table_dict['colore_bollino'] = color
-
-        if table_dict['colore_bollino'] == 'blu':
-            table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365) * 2
-        elif table_dict['colore_bollino'] == 'arancione':
-            table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365)
-
-        table_dict['stato_verifica'] = True
-
         table_dict['tipo_verifica'] = 'programmata'
-        #table_dict['codice_id']
         table_dict['numero_rapporto'] = row[ID_NUMERO_RAPPORTO].strip()
 
+        #table_dict['codice_id']
+        table_dict['prossima_verifica'] = data_verifica   + datetime.timedelta(days=365)
 
-        n = row[ID_NUMERO_BOLLINO].strip()
-        if n != "":
-            n = int(n)
-        else:
-            n = None
+        if row[ID_TIPO_CONTROLLO].lower() == 'fumi':
+            table_dict['analisi_combustione'] = True
 
-        table_dict['numero_bollino'] = n
+            color = row[ID_COLORE_BOLLINO].capitalize().strip()
+            if color == 'BLU':
+                color = 'blu'
+            if color == 'VER':
+                color = 'verde'
+            elif color == 'ARA':
+                color = 'arancione'
+            elif color == 'Gia':
+                color = 'giallo'
+            elif color == 'Si':
+                color = 'blu'
+            else:
+                color = 'no'
+
+            table_dict['colore_bollino'] = color
+
+            if table_dict['colore_bollino'] == 'blu':
+                table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365) * 2
+            elif table_dict['colore_bollino'] == 'arancione':
+                table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365)
+
+            n = row[ID_NUMERO_BOLLINO].strip()
+            if n != "":
+                n = int(n)
+            else:
+                n = None
+
+            table_dict['numero_bollino'] = n
+
         #table_dict['valore_bollino']
         #table_dict['stato_pagamento']
         #table_dict['costo_intervento']

@@ -162,7 +162,7 @@ class Verifica(models.Model):
 		ordering = ['-data_verifica'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
-		return self.tipo_verifica
+		return u"%s" % self.data_verifica
 
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.BooleanField(label='Chiudi verifica', required=False)
