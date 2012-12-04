@@ -76,7 +76,8 @@ def __tipo_verifica(items, key, s=None):
     if str.lower() == 'altro':
         s = items['altro_tipo_verifica']
     else:
-        s = models.VERIFICHE_TYPE_CHOISES_DICT[s]
+        if str in models.VERIFICHE_TYPE_CHOISES_DICT:
+            s = models.VERIFICHE_TYPE_CHOISES_DICT[str]
 
     return s
 
