@@ -19,6 +19,7 @@ ANAGRAFE_STD_VIEW = [
  'data_contratto',
  'tipo_verifica',
  'ultima_verifica',
+ 'prossima_analisi_combustione',
  'tipo_intervento',
  'data_intervento',
  'stato_pagamento',
@@ -52,6 +53,8 @@ ANAGRAFE_IMPIANTI_STD_VIEW = [
 
 ANAGRAFE_VERIFICA_STD_VIEW = [
 'data_verifica',
+'prossima_verifica',
+'prossima_analisi_combustione',
 'tipo_verifica',
 'codice_id',
 'numero_rapporto',
@@ -62,7 +65,6 @@ ANAGRAFE_VERIFICA_STD_VIEW = [
 'costo_intervento',
 'stato_pagamento',
 'note_verifica',
-'prossima_verifica',
 ]
 
 ANAGRAFE_INTERVENTI_STD_VIEW = [

@@ -96,7 +96,7 @@ def __colore_bollino(items, key, s=None):
 def __analisi_combustione(items, key, s=None):
     s = 'No.'
     if items[key]:
-        s = 'Eseguito'
+        s = 'Eseguita.'
 
     return s
 
