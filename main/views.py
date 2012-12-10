@@ -13,10 +13,6 @@ from main import data_render
 from main import database_manager
 from main import scripts
 
-def home(request):
-    data = scripts.HOME_ADD_JS
-    return render(request, 'home.sub', {"data":data})
-
 def _display_error(request, msg):
     return render(request, 'messages.sub',
             { 'msg_hdr':'Error!',
@@ -143,6 +139,9 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
         if detail_type == 'verifica':
             form = models.VerificaForm(request.POST, instance=select)
             if form.is_valid():
+                instance = form.save(commit = False)
+                if not instance.analisi_combustione:
+                    instance.prossima_analisi_combustione = None
                 instance = form.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                         detail_type=detail_type, sub_impianto_id=instance.id)
@@ -346,6 +345,18 @@ def anagrafe(request):
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
 
+
+def home(request):
+    data = scripts.HOME_ADD_JS
+    if request.method == 'GET':
+        data_to_render = database_manager.search_dataRange("", 0, 0)
+        dr = data_render.DataRender(data_to_render)
+        dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
+        dr.urlBar('cliente', ['edit', 'delete'])
+        dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+        data += dr.toTable()
+
+    return render(request, 'home.sub', {"data":data})
 
 
 
