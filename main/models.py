@@ -134,7 +134,7 @@ BOLLINO_COLOR_CHOICES_DICT = {
 
 class Verifica(models.Model):
 	stato_verifica = models.BooleanField(default=False)
-	data_verifica = models.DateField(default=datetime.date.today())
+	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)
 	verifica_impianto = models.ForeignKey(Impianto)
 	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
 	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
@@ -145,7 +145,7 @@ class Verifica(models.Model):
 	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365))
 
     # Sezione analisi combustione
-	analisi_combustione = models.BooleanField(default=False)
+	analisi_combustione = models.NullBooleanField(null=True, blank=True)
 	colore_bollino = models.CharField(default='blu', max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
 	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
@@ -153,7 +153,7 @@ class Verifica(models.Model):
 	prossima_analisi_combustione = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365*2), null=True, blank=True)
 
     # Pagamenti
-	stato_pagamento = models.BooleanField(default=False)
+	stato_pagamento = models.NullBooleanField(null=True, blank=True)
 	costo_intervento = models.DecimalField(max_digits = 10, decimal_places = 2, null=True, blank=True)
 
 	note_verifica = models.TextField(null=True, blank=True)

@@ -94,6 +94,9 @@ def __colore_bollino(items, key, s=None):
     return s
 
 def __analisi_combustione(items, key, s=None):
+    if items[key] is None:
+        return None
+
     s = 'No.'
     if items[key]:
         s = 'Eseguita.'
@@ -102,6 +105,9 @@ def __analisi_combustione(items, key, s=None):
 
 
 def __stato_pagamento(items, key, s=None):
+    if items[key] is None:
+        return None
+
     s = "Da riscuotere."
     if items[key]:
         s = "Pagato!"
@@ -204,8 +210,8 @@ class DataRender(object):
                         s = '<center>-</center>'
 
                 except (KeyError, ValueError), m:
-                    logger.error("Table Errore nel render di %s (%s) s=%s" %
-                            (i, m, s))
+                    logger.error("Table Errore nel render di %s (%s) s=%s {%s}" %
+                            (i, m, s, item_dict))
                     s = '<center>-</center>'
 
                 table += "<td>%s</td>" % s

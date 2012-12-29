@@ -148,11 +148,14 @@ def verifiche_csv(row):
             table_dict['numero_bollino'] = n
 
         #table_dict['valore_bollino']
-        #table_dict['stato_pagamento']
+        table_dict['stato_pagamento'] = None
         #table_dict['costo_intervento']
         table_dict['note_verifica'] = row[ID_NOTE]
     else:
-        print "Conversione errata: ", row[ID_DATA_FUMI]
+        print "Conversione errata dataFumi(%s)>%d<: " % (row[ID_DATA_FUMI], ID_DATA_FUMI), row
+        table_dict['colore_bollino'] = None
+        table_dict['data_verifica'] = None
+        table_dict['prossima_analisi_combustione'] = None
 
     return table_dict
 
