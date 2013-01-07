@@ -86,7 +86,7 @@ main_intervento.data_intervento,
 main_intervento.id AS intervento_id,
 main_verifica.id AS verifica_id,
 main_verifica.stato_verifica,
-main_verifica.data_verifica AS ultima_verifica,
+main_verifica.data_verifica,
 main_verifica.tipo_verifica,
 main_verifica.altro_tipo_verifica,
 main_verifica.codice_id,
@@ -156,6 +156,10 @@ LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
 LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
 LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 """
+DB_FROM_JOIN_IMPIANTO = """
+main_cliente
+LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
+"""
 
 #WHERE
 
@@ -189,6 +193,127 @@ main_verifica.numero_rapporto ILIKE %s
 )
 """
 
+"""
+ DISTINCT
+
+"""
+
+QUERY = """
+SELECT
+    main_cliente.numero_cellulare,
+    main_cliente.via,
+    main_cliente.nome,
+    main_cliente.cognome,
+    main_cliente.codice_fiscale,
+    main_cliente.cliente_data_inserimento,
+    main_cliente.numero_telefono,
+    main_cliente.mail,
+    main_cliente.citta,
+    main_cliente.id AS cliente_id,
+    main_impianto.modello_caldaia,
+    main_impianto.impianto_data_inserimento,
+    main_impianto.matricola_caldaia,
+    main_impianto.combustibile,
+    main_impianto.data_installazione,
+    main_impianto.data_contratto,
+    main_impianto.tipo_caldaia,
+    main_impianto.altro_tipo_caldaia,
+    main_impianto.potenza_caldaia,
+    main_impianto.altra_potenza_caldaia,
+    main_impianto.marca_caldaia,
+    main_impianto.codice_impianto,
+    main_impianto.id AS impianto_id,
+    main_intervento.note_intervento,
+    main_intervento.tipo_intervento,
+    main_intervento.data_intervento,
+    main_intervento.id AS intervento_id,
+    tabella_verifica.stato_verifica,
+    tabella_verifica.tipo_verifica,
+    tabella_verifica.altro_tipo_verifica,
+    tabella_verifica.codice_id,
+    tabella_verifica.numero_rapporto,
+    tabella_verifica.prossima_verifica,
+    tabella_verifica.colore_bollino,
+    tabella_verifica.numero_bollino,
+    tabella_verifica.valore_bollino,
+    tabella_verifica.analisi_combustione,
+    tabella_verifica.prossima_analisi_combustione,
+    tabella_verifica.stato_pagamento,
+    tabella_verifica.costo_intervento,
+    tabella_verifica.note_verifica,
+    tabella_verifica.id AS verifica_id,
+    tabella_verifica.data_verifica AS data_ultima_verifica,
+    ultima_analisi_fumi.data_verifica AS ultima_analisi_combustione,
+    ultima_analisi_fumi.id AS ultima_analisi_combustione_id
+FROM
+    main_cliente
+    LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
+    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id,
+    (
+        SELECT
+        main_verifica.stato_verifica,
+        main_verifica.data_verifica,
+        main_verifica.tipo_verifica,
+        main_verifica.altro_tipo_verifica,
+        main_verifica.codice_id,
+        main_verifica.numero_rapporto,
+        main_verifica.prossima_verifica,
+        main_verifica.colore_bollino,
+        main_verifica.numero_bollino,
+        main_verifica.valore_bollino,
+        main_verifica.analisi_combustione,
+        main_verifica.prossima_analisi_combustione,
+        main_verifica.stato_pagamento,
+        main_verifica.costo_intervento,
+        main_verifica.note_verifica,
+        main_verifica.id
+        FROM main_verifica, main_impianto
+        WHERE verifica_impianto_id = main_impianto.id
+        ORDER BY main_verifica.data_verifica DESC
+        LIMIT 1
+    ) tabella_verifica,
+    (
+        SELECT main_verifica.analisi_combustione, main_verifica.data_verifica, main_verifica.id
+        FROM main_verifica, main_impianto
+        WHERE main_verifica.analisi_combustione = true AND verifica_impianto_id = main_impianto.id
+        ORDER BY main_verifica.data_verifica DESC
+        LIMIT 1
+    ) ultima_analisi_fumi
+WHERE
+(
+    (
+        UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.numero_cellulare::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.via::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.cognome::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.codice_fiscale::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.numero_telefono::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.mail::text) LIKE UPPER(%s) OR
+        UPPER(main_cliente.citta::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.modello_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.matricola_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.combustibile::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.tipo_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.potenza_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.altro_tipo_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.altra_potenza_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.marca_caldaia::text) LIKE UPPER(%s) OR
+        UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s) OR
+        UPPER(main_intervento.note_intervento::text) LIKE UPPER(%s) OR
+        UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s) OR
+        UPPER(tabella_verifica.colore_bollino::text) LIKE UPPER(%s) OR
+        UPPER(CAST(tabella_verifica.numero_bollino AS TEXT)) LIKE UPPER(%s) OR
+        UPPER(tabella_verifica.tipo_verifica::text) LIKE UPPER(%s) OR
+        UPPER(tabella_verifica.altro_tipo_verifica::text) LIKE UPPER(%s) OR
+        UPPER(tabella_verifica.note_verifica::text) LIKE UPPER(%s) OR
+        UPPER(tabella_verifica.numero_rapporto::text) LIKE UPPER(%s)
+    )
+)
+ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC
+"""
+
+
 # AND
 DB_WHERE_SUBQUERY = """
 (
@@ -210,13 +335,28 @@ DB_WHERE_SUBQUERY_NULL = """
 DB_WHERE_SUBQUERY_FUMI = """
 (
     main_verifica.data_verifica =
-    (
-        SELECT CASE WHEN main_verifica.analisi_combustione THEN main_verifica.data_verifica END AS data_ultima_analisi FROM  main_verifica
-    ) data_ultima_analisi
+    max((
+        SELECT CASE WHEN main_verifica.analisi_combustione THEN main_verifica.data_verifica END AS data_ultima_analisi
+            FROM  main_verifica GROUP BY main_verifica.data_verifica, main_verifica.analisi_combustione
+    ))
 )
 """
 
 DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
+
+def filter_query(data):
+    max_date = None
+    for i in data:
+        d = i['data_verifica']
+        print d
+        if d is not None:
+            if max_date is None:
+                max_date = d
+            if d > max_date:
+                max_date = d
+
+    print "il max e': %s" % max_date
+
 
 
 def search_runQuery(query_str, param):
@@ -273,7 +413,7 @@ def search_fullText(s):
     else:
         search_key.append(s.strip())
 
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN + " WHERE "
+    #query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN + " WHERE "
 
     param = []
     for i, key in enumerate(search_key):
@@ -282,14 +422,15 @@ def search_fullText(s):
         else:
             key = key + "%"
 
-        query_str += DB_WHERE_LIKE
-        param += [key] * DB_WHERE_LIKE.count("%s")
+        #query_str += DB_WHERE_LIKE
+        param += [key] * QUERY.count("%s")
 
         if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
             query_str += " AND "
 
-    #query_str += " AND " + DB_WHERE_SUBQUERY # + " OR " + DB_WHERE_SUBQUERY_FUMI
-    query_str += DB_ORDER
+    #query_str += " AND " + DB_WHERE_SUBQUERY  + " AND " + DB_WHERE_SUBQUERY_FUMI
+    #query_str += " AND " + DB_WHERE_SUBQUERY_FUMI
+    #query_str += DB_ORDER
 
-    return search_runQuery(query_str, param)
+    return search_runQuery(QUERY, param)
 

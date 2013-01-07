@@ -18,14 +18,13 @@ ANAGRAFE_STD_VIEW = [
  'data_installazione',
  'data_contratto',
  'tipo_verifica',
- 'ultima_verifica',
- 'prossima_analisi_combustione',
- 'tipo_intervento',
- 'data_intervento',
- 'stato_pagamento',
+ 'data_ultima_verifica',
+ 'ultima_analisi_combustione',
  'colore_bollino',
  'valore_bollino',
  'note_verifica',
+ 'tipo_intervento',
+ 'data_intervento',
 ]
 
 ANAGRAFE_CLIENTE_STD_VIEW = [

@@ -159,7 +159,7 @@ class Verifica(models.Model):
 	note_verifica = models.TextField(null=True, blank=True)
 
 	class Meta:
-		ordering = ['-data_verifica'] # Ordina per data in modo decrescente
+		ordering = ['data_verifica'] # Ordina per data in modo decrescente
 
 	def __unicode__(self):
 		return u"%s" % self.data_verifica
@@ -168,6 +168,8 @@ class VerificaForm(forms.ModelForm):
     stato_verifica = forms.BooleanField(label='Chiudi verifica', required=False)
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    analisi_combustione = forms.BooleanField(initial=False, required=False)
+    stato_pagamento = forms.BooleanField(label="Verifica riscossa", initial=False, required=False)
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
     scadenza_fumi_tra = forms.IntegerField(label='Prossima analisi combustione tra mesi', initial="24", required=False)
 
