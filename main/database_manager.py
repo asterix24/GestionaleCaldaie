@@ -267,15 +267,15 @@ FROM
         main_verifica.costo_intervento,
         main_verifica.note_verifica,
         main_verifica.id
-        FROM main_verifica, main_impianto
-        WHERE verifica_impianto_id = main_impianto.id
+        FROM main_verifica
+        WHERE main_verifica.verifica_impianto_id = main_impianto.id
         ORDER BY main_verifica.data_verifica DESC
         LIMIT 1
     ) tabella_verifica,
     (
         SELECT main_verifica.analisi_combustione, main_verifica.data_verifica, main_verifica.id
-        FROM main_verifica, main_impianto
-        WHERE main_verifica.analisi_combustione = true AND verifica_impianto_id = main_impianto.id
+        FROM main_verifica
+        WHERE main_verifica.analisi_combustione = true AND main_verifica.verifica_impianto_id = main_impianto.id
         ORDER BY main_verifica.data_verifica DESC
         LIMIT 1
     ) ultima_analisi_fumi
