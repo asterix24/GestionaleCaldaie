@@ -149,54 +149,6 @@ main_verifica.note_verifica,
 main_verifica.id AS verifica_id
 """
 
-#FROM
-DB_FROM_JOIN = """
-main_cliente
-LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
-LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
-"""
-DB_FROM_JOIN_IMPIANTO = """
-main_cliente
-LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-"""
-
-#WHERE
-
-DB_WHERE_LIKE = """
-(
-main_cliente.numero_cellulare ILIKE %s OR
-main_cliente.via ILIKE %s OR
-main_cliente.nome ILIKE %s OR
-main_cliente.cognome ILIKE %s OR
-main_cliente.codice_fiscale ILIKE %s OR
-main_cliente.numero_telefono ILIKE %s OR
-main_cliente.mail ILIKE %s OR
-main_cliente.citta ILIKE %s OR
-main_impianto.modello_caldaia ILIKE %s OR
-main_impianto.matricola_caldaia ILIKE %s OR
-main_impianto.combustibile ILIKE %s OR
-main_impianto.tipo_caldaia ILIKE %s OR
-main_impianto.potenza_caldaia ILIKE %s OR
-main_impianto.altro_tipo_caldaia ILIKE %s OR
-main_impianto.altra_potenza_caldaia ILIKE %s OR
-main_impianto.marca_caldaia ILIKE %s OR
-main_impianto.codice_impianto ILIKE %s OR
-main_intervento.note_intervento ILIKE %s OR
-main_intervento.tipo_intervento ILIKE %s OR
-main_verifica.colore_bollino ILIKE %s OR
-CAST(main_verifica.numero_bollino AS TEXT) ILIKE %s OR
-main_verifica.tipo_verifica ILIKE %s OR
-main_verifica.altro_tipo_verifica ILIKE %s OR
-main_verifica.note_verifica ILIKE %s OR
-main_verifica.numero_rapporto ILIKE %s
-)
-"""
-
-"""
- DISTINCT
-
-"""
 
 QUERY = """
 SELECT
@@ -226,62 +178,13 @@ SELECT
     main_intervento.note_intervento,
     main_intervento.tipo_intervento,
     main_intervento.data_intervento,
-    main_intervento.id AS intervento_id,
-    tabella_verifica.stato_verifica,
-    tabella_verifica.tipo_verifica,
-    tabella_verifica.altro_tipo_verifica,
-    tabella_verifica.codice_id,
-    tabella_verifica.numero_rapporto,
-    tabella_verifica.prossima_verifica,
-    tabella_verifica.colore_bollino,
-    tabella_verifica.numero_bollino,
-    tabella_verifica.valore_bollino,
-    tabella_verifica.analisi_combustione,
-    tabella_verifica.prossima_analisi_combustione,
-    tabella_verifica.stato_pagamento,
-    tabella_verifica.costo_intervento,
-    tabella_verifica.note_verifica,
-    tabella_verifica.id AS verifica_id,
-    tabella_verifica.data_verifica AS data_ultima_verifica,
-    ultima_analisi_fumi.data_verifica AS ultima_analisi_combustione,
-    ultima_analisi_fumi.id AS ultima_analisi_combustione_id
+    main_intervento.id AS intervento_id
 FROM
     main_cliente
     LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id,
-    (
-        SELECT
-        main_verifica.stato_verifica,
-        main_verifica.data_verifica,
-        main_verifica.tipo_verifica,
-        main_verifica.altro_tipo_verifica,
-        main_verifica.codice_id,
-        main_verifica.numero_rapporto,
-        main_verifica.prossima_verifica,
-        main_verifica.colore_bollino,
-        main_verifica.numero_bollino,
-        main_verifica.valore_bollino,
-        main_verifica.analisi_combustione,
-        main_verifica.prossima_analisi_combustione,
-        main_verifica.stato_pagamento,
-        main_verifica.costo_intervento,
-        main_verifica.note_verifica,
-        main_verifica.id
-        FROM main_verifica
-        WHERE main_verifica.verifica_impianto_id = main_impianto.id
-        ORDER BY main_verifica.data_verifica DESC
-        LIMIT 1
-    ) tabella_verifica,
-    (
-        SELECT main_verifica.analisi_combustione, main_verifica.data_verifica, main_verifica.id
-        FROM main_verifica
-        WHERE main_verifica.analisi_combustione = true AND main_verifica.verifica_impianto_id = main_impianto.id
-        ORDER BY main_verifica.data_verifica DESC
-        LIMIT 1
-    ) ultima_analisi_fumi
+    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 WHERE
 (
-    (
         UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
         UPPER(main_cliente.numero_cellulare::text) LIKE UPPER(%s) OR
         UPPER(main_cliente.via::text) LIKE UPPER(%s) OR
@@ -301,45 +204,45 @@ WHERE
         UPPER(main_impianto.marca_caldaia::text) LIKE UPPER(%s) OR
         UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s) OR
         UPPER(main_intervento.note_intervento::text) LIKE UPPER(%s) OR
-        UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s) OR
-        UPPER(tabella_verifica.colore_bollino::text) LIKE UPPER(%s) OR
-        UPPER(CAST(tabella_verifica.numero_bollino AS TEXT)) LIKE UPPER(%s) OR
-        UPPER(tabella_verifica.tipo_verifica::text) LIKE UPPER(%s) OR
-        UPPER(tabella_verifica.altro_tipo_verifica::text) LIKE UPPER(%s) OR
-        UPPER(tabella_verifica.note_verifica::text) LIKE UPPER(%s) OR
-        UPPER(tabella_verifica.numero_rapporto::text) LIKE UPPER(%s)
-    )
+        UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s)
 )
 ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC
 """
 
 
-# AND
-DB_WHERE_SUBQUERY = """
-(
-    main_verifica.data_verifica =
+
+QUERY2 = """
+SELECT
+    main_verifica.data_verifica,
+    main_verifica.stato_verifica,
+    main_verifica.tipo_verifica,
+    main_verifica.altro_tipo_verifica,
+    main_verifica.codice_id,
+    main_verifica.numero_rapporto,
+    main_verifica.prossima_verifica,
+    main_verifica.colore_bollino,
+    main_verifica.numero_bollino,
+    main_verifica.valore_bollino,
+    main_verifica.analisi_combustione,
+    main_verifica.prossima_analisi_combustione,
+    main_verifica.stato_pagamento,
+    main_verifica.costo_intervento,
+    main_verifica.note_verifica,
+    main_verifica.id AS verifica_id
+FROM main_verifica
+WHERE
     (
-        SELECT MAX(main_verifica.data_verifica)
-        FROM main_verifica
-        WHERE verifica_impianto_id = main_impianto.id
+    main_verifica.verifica_impianto_id IN (%s)
     )
-    OR
-        main_verifica.verifica_impianto_id IS NULL
-)
+ORDER BY main_verifica.data_verifica DESC;
 """
 
-DB_WHERE_SUBQUERY_NULL = """
-        main_verifica.verifica_impianto_id IS NULL
 """
-
-DB_WHERE_SUBQUERY_FUMI = """
-(
-    main_verifica.data_verifica =
-    max((
-        SELECT CASE WHEN main_verifica.analisi_combustione THEN main_verifica.data_verifica END AS data_ultima_analisi
-            FROM  main_verifica GROUP BY main_verifica.data_verifica, main_verifica.analisi_combustione
-    ))
-)
+    UPPER(CAST(main_verifica.numero_bollino AS TEXT)) LIKE UPPER(%s) OR
+    UPPER(main_verifica.tipo_verifica::text) LIKE UPPER(%s) OR
+    UPPER(main_verifica.altro_tipo_verifica::text) LIKE UPPER(%s) OR
+    UPPER(main_verifica.note_verifica::text) LIKE UPPER(%s) OR
+    UPPER(main_verifica.numero_rapporto::text) LIKE UPPER(%s)
 """
 
 DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
@@ -395,9 +298,25 @@ def search_interventoId(id):
     return search_runQuery(query_str, [id])
 
 def query_test(test_str):
-    query_str = QUERY
-    test_str = [test_str] * query_str.count("%s")
-    return search_runQuery(query_str, test_str)
+    print test_str
+    l1 = search_runQuery(QUERY, [test_str] * QUERY.count("%s"))
+    s = ""
+    for i in l1:
+        s += '%s,' % i['impianto_id']
+    s = s[:-1]
+    #t = [test_str] * (QUERY2.count("%s") - 1)
+    #print [s] + t
+    l2 = search_runQuery(QUERY2, [s])
+    row = l2[0]
+    row['ultima_verifica'] = row['data_verifica']
+    for i in l2:
+        if i['analisi_combustione']:
+            row['ultima_analisi_combustione'] = i['data_verifica']
+            row['ultima_analisi_combustione_id'] = i['verifica_id']
+            break
+
+    print ">> ", row
+    return row
 
 def search_dataRange(key, start, end):
     query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN

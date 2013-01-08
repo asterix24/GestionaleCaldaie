@@ -44,4 +44,5 @@ urlpatterns = patterns('',
 	#url(r'^admin/', include(admin.site.urls)),
 
 	url(r'^dev/populatedb/$', 'main.views.populatedb', name='populat_db'),
+	url(r'^test/(?P<search_string>\w+)/$', 'main.views.test', name='test'),
 )

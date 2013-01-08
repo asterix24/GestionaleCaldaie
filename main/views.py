@@ -347,6 +347,8 @@ def anagrafe(request):
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
 
 
+
+
 def home(request):
     data = scripts.HOME_ADD_JS
     if request.method == 'GET':
@@ -368,5 +370,15 @@ def populatedb(request):
     data = tools.load_csv('main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
 
-def test(request):
-    return render(request, 'test', {'data':""})
+def test(request, search_string):
+    form = myforms.FullTextSearchForm()
+    data = scripts.HOME_ADD_JS
+    data_to_render = database_manager.query_test(search_string)
+    print len(data_to_render)
+    for i,j in data_to_render.items():
+        print i, " : ", j
+
+
+    return render(request, 'anagrafe.sub', {'data': data,'form': form })
+
+
