@@ -228,11 +228,12 @@ SELECT
     main_verifica.stato_pagamento,
     main_verifica.costo_intervento,
     main_verifica.note_verifica,
-    main_verifica.id AS verifica_id
+    main_verifica.id AS verifica_id,
+    main_verifica.verifica_impianto_id
 FROM main_verifica
 WHERE
     (
-    main_verifica.verifica_impianto_id IN (%s)
+    main_verifica.verifica_impianto_id = ANY (%s)
     )
 ORDER BY main_verifica.data_verifica DESC;
 """
@@ -266,6 +267,7 @@ def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
     cursor = connection.cursor()
     cursor.execute(query_str, param)
+    print cursor.query
 
     desc = cursor.description
     l = []
@@ -298,25 +300,32 @@ def search_interventoId(id):
     return search_runQuery(query_str, [id])
 
 def query_test(test_str):
-    print test_str
+    #print test_str
     l1 = search_runQuery(QUERY, [test_str] * QUERY.count("%s"))
-    s = ""
+    s = []
     for i in l1:
-        s += '%s,' % i['impianto_id']
-    s = s[:-1]
+        #print i['impianto_id']
+        s.append(i['impianto_id'])
+
     #t = [test_str] * (QUERY2.count("%s") - 1)
     #print [s] + t
+    #ss = "CAST(%s AS INT)," * len(s)
+    #s = s[:-1]
+    print ":: ", s
     l2 = search_runQuery(QUERY2, [s])
-    row = l2[0]
-    row['ultima_verifica'] = row['data_verifica']
-    for i in l2:
-        if i['analisi_combustione']:
-            row['ultima_analisi_combustione'] = i['data_verifica']
-            row['ultima_analisi_combustione_id'] = i['verifica_id']
-            break
+    index = 0
+    for j in l2:
+        row = j
+        row['ultima_verifica'] = row['data_verifica']
+        for i in j.values():
+            if i['analisi_combustione']:
+                row['ultima_analisi_combustione'] = i['data_verifica']
+                row['ultima_analisi_combustione_id'] = i['verifica_id']
+                break
+        l2[index] = row
+        index += 1
 
-    print ">> ", row
-    return row
+    return l2
 
 def search_dataRange(key, start, end):
     query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
