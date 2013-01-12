@@ -148,7 +148,12 @@ main_verifica.costo_intervento,
 main_verifica.note_verifica,
 main_verifica.id AS verifica_id
 """
-
+DB_FROM_JOIN = """
+main_cliente
+LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
+LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
+LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
+"""
 
 QUERY = """
 SELECT
@@ -248,21 +253,6 @@ ORDER BY main_verifica.data_verifica DESC;
 
 DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
-def filter_query(data):
-    max_date = None
-    for i in data:
-        d = i['data_verifica']
-        print d
-        if d is not None:
-            if max_date is None:
-                max_date = d
-            if d > max_date:
-                max_date = d
-
-    print "il max e': %s" % max_date
-
-
-
 def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
     cursor = connection.cursor()
@@ -300,32 +290,7 @@ def search_interventoId(id):
     return search_runQuery(query_str, [id])
 
 def query_test(test_str):
-    #print test_str
-    l1 = search_runQuery(QUERY, [test_str] * QUERY.count("%s"))
-    s = []
-    for i in l1:
-        #print i['impianto_id']
-        s.append(i['impianto_id'])
-
-    #t = [test_str] * (QUERY2.count("%s") - 1)
-    #print [s] + t
-    #ss = "CAST(%s AS INT)," * len(s)
-    #s = s[:-1]
-    print ":: ", s
-    l2 = search_runQuery(QUERY2, [s])
-    index = 0
-    for j in l2:
-        row = j
-        row['ultima_verifica'] = row['data_verifica']
-        for i in j.values():
-            if i['analisi_combustione']:
-                row['ultima_analisi_combustione'] = i['data_verifica']
-                row['ultima_analisi_combustione_id'] = i['verifica_id']
-                break
-        l2[index] = row
-        index += 1
-
-    return l2
+    return []
 
 def search_dataRange(key, start, end):
     query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
@@ -341,8 +306,6 @@ def search_fullText(s):
     else:
         search_key.append(s.strip())
 
-    #query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN + " WHERE "
-
     param = []
     for i, key in enumerate(search_key):
         if len(key) >= 3:
@@ -350,15 +313,40 @@ def search_fullText(s):
         else:
             key = key + "%"
 
-        #query_str += DB_WHERE_LIKE
         param += [key] * QUERY.count("%s")
 
-        if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
-            query_str += " AND "
+        #if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
+        #    query_str += " AND "
 
-    #query_str += " AND " + DB_WHERE_SUBQUERY  + " AND " + DB_WHERE_SUBQUERY_FUMI
-    #query_str += " AND " + DB_WHERE_SUBQUERY_FUMI
-    #query_str += DB_ORDER
+    l1 = search_runQuery(QUERY, param)
 
-    return search_runQuery(QUERY, param)
+    cursor = connection.cursor()
+    cursor.execute(QUERY2, [[i['impianto_id'] for i in l1]])
+    desc = cursor.description
+    l = [col[0] for col in desc]
+
+    l2 = {}
+    for row in cursor.fetchall():
+        d = dict(zip(l, row))
+        key = d['verifica_impianto_id']
+        if l2.has_key(key):
+            l2[key].append(d)
+        else:
+            l2[key] = [d]
+
+    n = []
+    for j in l1:
+        verifiche_list = l2[j['impianto_id']]
+        if verifiche_list:
+            row = verifiche_list[0]
+            row['data_ultima_verifica'] = row['data_verifica']
+            for i in verifiche_list:
+                if i['analisi_combustione']:
+                    row['ultima_analisi_combustione'] = i['data_verifica']
+                    row['ultima_analisi_combustione_id'] = i['verifica_id']
+                    break
+            n.append(dict(j.items() + row.items()))
+
+    print n
+    return n
 

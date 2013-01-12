@@ -375,9 +375,11 @@ def test(request, search_string):
     data = scripts.HOME_ADD_JS
     data_to_render = database_manager.query_test(search_string)
     print len(data_to_render)
-    for i,j in data_to_render.items():
-        print i, " : ", j
-
+    """
+    for i in data_to_render:
+        for v,k in i.items():
+            print v, " : ", k
+    """
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
 
