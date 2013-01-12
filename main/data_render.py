@@ -56,6 +56,16 @@ def __verifica_url(items, key, s=None):
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
+def __ultima_analisi_url(items, key, s=None):
+    if not items.has_key(key) or items[key] is None:
+        return "No Fumi"
+
+    str = items[key]
+    if type(str) == datetime.date:
+        str = str.strftime(DATA_FIELD_STR_FORMAT)
+    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+            items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
+
 def __tipo_caldaia(items, key, s=None):
     str = items[key]
     if str is None:
@@ -122,7 +132,8 @@ RENDER_TABLE_URL = {
     'matricola_caldaia': __impianto_url,
     'modello_caldaia': __impianto_url,
     'data_verifica': __verifica_url,
-    'ultima_verifica': __verifica_url,
+    'data_ultima_verifica': __verifica_url,
+    'ultima_analisi_combustione': __ultima_analisi_url,
 }
 
 RENDER_TABLE = {

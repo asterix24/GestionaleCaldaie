@@ -20,7 +20,6 @@ ANAGRAFE_STD_VIEW = [
  'tipo_verifica',
  'data_ultima_verifica',
  'ultima_analisi_combustione',
- 'ultima_analisi_combustione_id',
  'colore_bollino',
  'valore_bollino',
  'note_verifica',

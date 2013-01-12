@@ -337,16 +337,17 @@ def search_fullText(s):
 
     n = []
     for j in l1:
-        verifiche_list = l2[j['impianto_id']]
-        if verifiche_list:
-            row = verifiche_list[0]
-            row['data_ultima_verifica'] = row['data_verifica']
-            for i in verifiche_list:
-                if i['analisi_combustione']:
-                    row['ultima_analisi_combustione'] = i['data_verifica']
-                    row['ultima_analisi_combustione_id'] = i['verifica_id']
-                    break
-            n.append(dict(j.items() + row.items()))
+        if j['impianto_id'] is not None:
+            verifiche_list = l2[j['impianto_id']]
+            if verifiche_list:
+                row = verifiche_list[0]
+                row['data_ultima_verifica'] = row['data_verifica']
+                for i in verifiche_list:
+                    if i['analisi_combustione']:
+                        row['ultima_analisi_combustione'] = i['data_verifica']
+                        row['ultima_analisi_combustione_id'] = i['verifica_id']
+                        break
+                n.append(dict(j.items() + row.items()))
 
     return n
 
