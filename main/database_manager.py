@@ -154,6 +154,11 @@ LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
 LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
 LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 """
+DB_FROM_JOIN_IMPIANTO = """
+main_cliente
+LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
+"""
+DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 QUERY = """
 SELECT
@@ -189,32 +194,33 @@ FROM
     LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
     LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 WHERE
-(
-        UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.numero_cellulare::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.via::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.cognome::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.codice_fiscale::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.numero_telefono::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.mail::text) LIKE UPPER(%s) OR
-        UPPER(main_cliente.citta::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.modello_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.matricola_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.combustibile::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.tipo_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.potenza_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.altro_tipo_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.altra_potenza_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.marca_caldaia::text) LIKE UPPER(%s) OR
-        UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s) OR
-        UPPER(main_intervento.note_intervento::text) LIKE UPPER(%s) OR
-        UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s)
-)
-ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC
 """
+QUERY_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
-
+WHERE_QUERY = """
+(
+    UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.numero_cellulare::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.via::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.cognome::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.codice_fiscale::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.numero_telefono::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.mail::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.citta::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.modello_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.matricola_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.combustibile::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.tipo_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.potenza_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.altro_tipo_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.altra_potenza_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.marca_caldaia::text) LIKE UPPER(%s) OR
+    UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s) OR
+    UPPER(main_intervento.note_intervento::text) LIKE UPPER(%s) OR
+    UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s)
+)
+"""
 
 QUERY2 = """
 SELECT
@@ -243,25 +249,14 @@ WHERE
 ORDER BY main_verifica.data_verifica DESC;
 """
 
-"""
-    UPPER(CAST(main_verifica.numero_bollino AS TEXT)) LIKE UPPER(%s) OR
-    UPPER(main_verifica.tipo_verifica::text) LIKE UPPER(%s) OR
-    UPPER(main_verifica.altro_tipo_verifica::text) LIKE UPPER(%s) OR
-    UPPER(main_verifica.note_verifica::text) LIKE UPPER(%s) OR
-    UPPER(main_verifica.numero_rapporto::text) LIKE UPPER(%s)
-"""
-
-DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
     cursor = connection.cursor()
     cursor.execute(query_str, param)
-    print cursor.query
-
     desc = cursor.description
+
     l = []
-    i = 0
     for col in desc:
         c = col[0]
         l.append(c)
@@ -307,18 +302,24 @@ def search_fullText(s):
         search_key.append(s.strip())
 
     param = []
+    search_query_str = ""
     for i, key in enumerate(search_key):
+        # If the search string is less than 3 char, we search key on
+        # start string, otherwise we search as contain
         if len(key) >= 3:
             key = "%" + key + "%"
         else:
             key = key + "%"
 
-        param += [key] * QUERY.count("%s")
+        # count number of param to build the list
+        param += [key] * WHERE_QUERY.count("%s")
+        search_query_str += WHERE_QUERY
 
-        #if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
-        #    query_str += " AND "
+        if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
+            search_query_str += " AND "
 
-    l1 = search_runQuery(QUERY, param)
+    query_str = QUERY + " ( " + search_query_str + " ) " + QUERY_ORDER
+    l1 = search_runQuery(query_str, param)
 
     cursor = connection.cursor()
     cursor.execute(QUERY2, [[i['impianto_id'] for i in l1]])
@@ -347,6 +348,5 @@ def search_fullText(s):
                     break
             n.append(dict(j.items() + row.items()))
 
-    print n
     return n
 

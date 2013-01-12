@@ -336,8 +336,6 @@ def anagrafe(request):
                     search_string = form.cleaned_data['s']
 
             data_to_render = database_manager.search_fullText(search_string)
-            for i,j in data_to_render[0].items():
-                print i, " : ", j
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
             dr.urlBar('cliente', ['edit', 'delete'])
