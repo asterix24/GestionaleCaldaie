@@ -52,12 +52,12 @@ ANAGRAFE_IMPIANTI_STD_VIEW = [
 
 ANAGRAFE_VERIFICA_STD_VIEW = [
 'data_verifica',
-'prossima_verifica',
-'prossima_analisi_combustione',
 'tipo_verifica',
-'codice_id',
 'numero_rapporto',
 'analisi_combustione',
+'prossima_verifica',
+'prossima_analisi_combustione',
+'codice_id',
 'colore_bollino',
 'numero_bollino',
 'valore_bollino',

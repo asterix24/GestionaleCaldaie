@@ -81,7 +81,7 @@ def __tipo_caldaia(items, key, s=None):
 def __tipo_verifica(items, key, s=None):
     str = items[key]
     if str is None:
-        return s
+        return "No Manutezioni"
 
     if str.lower() == 'altro':
         s = items['altro_tipo_verifica']
@@ -101,11 +101,12 @@ def __colore_bollino(items, key, s=None):
     else:
         if str in models.BOLLINO_COLOR_CHOICES_DICT:
             s = models.BOLLINO_COLOR_CHOICES_DICT[str]
+
     return s
 
 def __analisi_combustione(items, key, s=None):
     if items[key] is None:
-        return None
+        return "No Fumi"
 
     s = 'No.'
     if items[key]:

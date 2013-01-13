@@ -107,6 +107,10 @@ def verifiche_csv(row):
     table_dict = {}
 
     data_verifica = data_fmt(row[ID_DATA_FUMI])
+    table_dict['colore_bollino'] = None
+    table_dict['data_verifica'] = None
+    table_dict['prossima_analisi_combustione'] = None
+
     if data_verifica != None:
         table_dict['data_verifica'] = data_verifica
         table_dict['tipo_verifica'] = 'programmata'
@@ -153,9 +157,6 @@ def verifiche_csv(row):
         table_dict['note_verifica'] = row[ID_NOTE]
     else:
         print "Conversione errata dataFumi(%s)>%d<: " % (row[ID_DATA_FUMI], ID_DATA_FUMI), row
-        table_dict['colore_bollino'] = None
-        table_dict['data_verifica'] = None
-        table_dict['prossima_analisi_combustione'] = None
 
     return table_dict
 
