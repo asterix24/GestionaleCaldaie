@@ -193,11 +193,10 @@ FROM
     main_cliente
     LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
     LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
-WHERE
 """
 QUERY_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
-WHERE_QUERY = """
+QUERY_WHERE = """
 (
     UPPER(main_cliente.nome::text) LIKE UPPER(%s) OR
     UPPER(main_cliente.numero_cellulare::text) LIKE UPPER(%s) OR
@@ -243,12 +242,14 @@ SELECT
     main_verifica.verifica_impianto_id
 FROM main_verifica
 WHERE
-    (
-    main_verifica.verifica_impianto_id = ANY (%s)
-    )
-ORDER BY main_verifica.data_verifica DESC;
 """
 
+QUERY2_WHERE ="""
+    (
+        main_verifica.verifica_impianto_id = ANY (%s)
+    )
+"""
+QUERY2_ORDER ="ORDER BY main_verifica.data_verifica DESC"
 
 def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
@@ -287,12 +288,56 @@ def search_interventoId(id):
 def query_test(test_str):
     return []
 
-def search_dataRange(key, start, end):
-    query_str = "SELECT " + DB_COLUM + " FROM " + DB_FROM_JOIN
-    query_str += " WHERE (main_verifica.prossima_analisi_combustione BETWEEN \'2010-01-01 00:00:00\' and \'2010-12-31 23:59:59.999999\' AND EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = 9) "
-    query_str += DB_ORDER
+def query_table(query_str, param, query_str2=None, param2=None):
+    l1 = search_runQuery(query_str, param)
 
-    return search_runQuery(query_str, [key])
+    param = [[i['impianto_id'] for i in l1]]
+    if query_str2 is None:
+        query_str = QUERY2 + " ( " + QUERY2_WHERE + " ) " +  QUERY2_ORDER
+    else:
+        query_str = QUERY2 + " ( " + QUERY2_WHERE + " AND " + query_str2 + " ) " +  QUERY2_ORDER
+        param = param + param2
+
+    cursor = connection.cursor()
+    cursor.execute(query_str, param)
+    desc = cursor.description
+    l = [col[0] for col in desc]
+
+    l2 = {}
+    for row in cursor.fetchall():
+        d = dict(zip(l, row))
+        key = d['verifica_impianto_id']
+        if l2.has_key(key):
+            l2[key].append(d)
+        else:
+            l2[key] = [d]
+
+    n = []
+    for j in l1:
+        if j['impianto_id'] is not None and l2.has_key(j['impianto_id']):
+            print j['impianto_id']
+            verifiche_list = l2[j['impianto_id']]
+            if verifiche_list:
+                row = verifiche_list[0]
+                row['data_ultima_verifica'] = row['data_verifica']
+                for i in verifiche_list:
+                    if i['analisi_combustione']:
+                        row['ultima_analisi_combustione'] = i['data_verifica']
+                        row['ultima_analisi_combustione_id'] = i['verifica_id']
+                        break
+                n.append(dict(j.items() + row.items()))
+    return n
+
+def search_dataRange(key, start, end):
+    query_str = QUERY + QUERY_ORDER
+    query_str2 = """
+        (
+            main_verifica.prossima_analisi_combustione BETWEEN \'2010-01-01 00:00:00\' and \'2010-12-31 23:59:59.999999\'
+            AND
+            EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = 9
+        )
+    """
+    return query_table(query_str, [], query_str2, [])
 
 def search_fullText(s):
     search_key = []
@@ -312,42 +357,12 @@ def search_fullText(s):
             key = key + "%"
 
         # count number of param to build the list
-        param += [key] * WHERE_QUERY.count("%s")
-        search_query_str += WHERE_QUERY
+        param += [key] * QUERY_WHERE.count("%s")
+        search_query_str += QUERY_WHERE
 
         if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
             search_query_str += " AND "
 
-    query_str = QUERY + " ( " + search_query_str + " ) " + QUERY_ORDER
-    l1 = search_runQuery(query_str, param)
-
-    cursor = connection.cursor()
-    cursor.execute(QUERY2, [[i['impianto_id'] for i in l1]])
-    desc = cursor.description
-    l = [col[0] for col in desc]
-
-    l2 = {}
-    for row in cursor.fetchall():
-        d = dict(zip(l, row))
-        key = d['verifica_impianto_id']
-        if l2.has_key(key):
-            l2[key].append(d)
-        else:
-            l2[key] = [d]
-
-    n = []
-    for j in l1:
-        if j['impianto_id'] is not None:
-            verifiche_list = l2[j['impianto_id']]
-            if verifiche_list:
-                row = verifiche_list[0]
-                row['data_ultima_verifica'] = row['data_verifica']
-                for i in verifiche_list:
-                    if i['analisi_combustione']:
-                        row['ultima_analisi_combustione'] = i['data_verifica']
-                        row['ultima_analisi_combustione_id'] = i['verifica_id']
-                        break
-                n.append(dict(j.items() + row.items()))
-
-    return n
+    query_str = QUERY + " WHERE ( " + search_query_str + " ) " + QUERY_ORDER
+    return query_table(query_str, param)
 

@@ -1,3 +1,25 @@
+HOME_STD_VIEW = [
+ 'codice_impianto',
+ 'cognome',
+ 'nome',
+ 'via',
+ 'citta',
+ 'numero_cellulare',
+ 'numero_telefono',
+ 'mail',
+ 'marca_caldaia',
+ 'modello_caldaia',
+ 'combustibile',
+ 'tipo_caldaia',
+ 'data_installazione',
+ 'data_ultima_verifica',
+ 'prossima_verifica',
+ 'ultima_analisi_combustione',
+ 'prossima_analisi_combustione',
+ 'colore_bollino',
+ 'note_verifica',
+]
+
 ANAGRAFE_STD_VIEW = [
  'codice_impianto',
  'numero_rapporto',

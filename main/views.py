@@ -352,7 +352,7 @@ def home(request):
     if request.method == 'GET':
         data_to_render = database_manager.search_dataRange("", 0, 0)
         dr = data_render.DataRender(data_to_render)
-        dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
+        dr.selectColums(cfg.HOME_STD_VIEW)
         dr.urlBar('cliente', ['edit', 'delete'])
         dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
         data += dr.toTable()
