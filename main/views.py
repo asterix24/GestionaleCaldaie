@@ -344,10 +344,8 @@ def anagrafe(request):
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
 
-
-
-
 def home(request):
+    form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
     if request.method == 'GET':
         data_to_render = database_manager.search_dataRange("", 0, 0)
@@ -357,9 +355,7 @@ def home(request):
         dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
         data += dr.toTable()
 
-    return render(request, 'home.sub', {"data":data})
-
-
+    return render(request, 'home.sub',{'data': data,'data_form': form })
 
 from main import tools
 
@@ -379,6 +375,6 @@ def test(request, search_string):
             print v, " : ", k
     """
 
-    return render(request, 'anagrafe.sub', {'data': data,'form': form })
+    return render(request, 'anagrafe.sub', {'data': data,'forms': form })
 
 

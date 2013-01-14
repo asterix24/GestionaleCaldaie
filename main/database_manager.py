@@ -289,9 +289,15 @@ def query_test(test_str):
     return []
 
 def query_table(query_str, param, query_str2=None, param2=None):
+    """
+    We split the query in two, one select clienti and impiato, and
+    with the ids, we selct the verifiche table.
+    """
     l1 = search_runQuery(query_str, param)
 
+    # Get the ids of all impiati select
     param = [[i['impianto_id'] for i in l1]]
+    # if we want to specify a different second query we pass explict sql string
     if query_str2 is None:
         query_str = QUERY2 + " ( " + QUERY2_WHERE + " ) " +  QUERY2_ORDER
     else:
@@ -303,6 +309,8 @@ def query_table(query_str, param, query_str2=None, param2=None):
     desc = cursor.description
     l = [col[0] for col in desc]
 
+    # Get all verifiche data structed as: dict of list
+    # { impianto_id : [ verifiche list] }
     l2 = {}
     for row in cursor.fetchall():
         d = dict(zip(l, row))
@@ -312,10 +320,11 @@ def query_table(query_str, param, query_str2=None, param2=None):
         else:
             l2[key] = [d]
 
+    # Compute the last verifica and the most recent
+    # analisi combustione, with its id.
     n = []
     for j in l1:
         if j['impianto_id'] is not None and l2.has_key(j['impianto_id']):
-            print j['impianto_id']
             verifiche_list = l2[j['impianto_id']]
             if verifiche_list:
                 row = verifiche_list[0]
