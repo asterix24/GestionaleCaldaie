@@ -344,6 +344,8 @@ def anagrafe(request):
 
     return render(request, 'anagrafe.sub', {'data': data,'form': form })
 
+import datetime
+
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
@@ -351,20 +353,20 @@ def home(request):
     filter_type = None
     ref_month = None
     ref_year = None
-    if request.method == 'GET':
-        form = myforms.RangeDataSelect(request.GET)
+    if request.method == 'POST':
+        form = myforms.RangeDataSelect(request.POST)
         if form.is_valid():
             search_in_range = form.cleaned_data['search_in_range']
             filter_type = form.cleaned_data['filter_type']
             ref_month = form.cleaned_data['ref_month']
             ref_year = form.cleaned_data['ref_year']
 
-        data_to_render = database_manager.search_inMonth(month=ref_month, year=ref_year, filter=filter_type)
-        dr = data_render.DataRender(data_to_render)
-        dr.selectColums(cfg.HOME_STD_VIEW)
-        dr.urlBar('cliente', ['edit', 'delete'])
-        dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-        data += dr.toTable()
+    data_to_render = database_manager.search_inMonth(month=ref_month, year=ref_year, filter=filter_type)
+    dr = data_render.DataRender(data_to_render)
+    dr.selectColums(cfg.HOME_STD_VIEW)
+    dr.urlBar('cliente', ['edit', 'delete'])
+    dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+    data += dr.toTable()
 
     return render(request, 'home.sub',{'data': data,'data_form': form })
 

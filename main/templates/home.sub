@@ -4,7 +4,7 @@
 <h1>Eventi del giorno</h1>
 <h2>{% now "d F Y H:i" %}</h2>
 
-<form action="{% url home %}" method="get">{% csrf_token %}
+<form action="{% url home %}" method="POST">{% csrf_token %}
 <table>
 <tr></tr>
 <tr><td></td>
@@ -23,5 +23,4 @@
     {{ data }}
 {% endautoescape %}
 
-Per ora nessun evento.
 {% endblock %}
