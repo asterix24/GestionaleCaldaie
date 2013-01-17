@@ -340,19 +340,7 @@ def query_table(query_str, param, query_str2=None, param2=None):
                 n.append(dict(j.items() + row.items()))
     return n
 
-
-
-QUERY2_RANGE_WHERE = """
-(
-    main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\'
-    AND
-    (
-        EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s OR
-        EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s
-    )
-)
-"""
-def search_inMonth(key=None, month=None, year=None):
+def search_inMonth(key=None, month=None, year=None, filter=None):
     if month is None:
         month = datetime.date.today().month
     if year is None:
@@ -366,7 +354,25 @@ def search_inMonth(key=None, month=None, year=None):
     if key is not None:
         query_str = QUERY + " WHERE ( " + " " + " ) " + QUERY_ORDER
 
-    return query_table(query_str, [], QUERY2_RANGE_WHERE % (year, year, month, month), [])
+    query_year = """(
+        main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\' OR
+        main_verifica.prossima_verifica BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\'
+        )""" % (year, year, year, year)
+
+    query_month = """(
+        EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s OR
+        EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s
+        )""" % (month, month)
+
+    if filter == 'fumi':
+        query_year = "( main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\')" % (year, year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % month
+    if filter == 'verifiche':
+        query_year = "( main_verifica.prossima_verifica BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\')" % (year, year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % month
+
+    query_str2 = " ( " + query_year + " AND " + query_month + " )"
+    return query_table(query_str, [], query_str2, [])
 
 def search_fullText(s):
     search_key = []

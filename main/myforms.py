@@ -8,6 +8,7 @@ FILTER_TYPES = (
         ('fumi', 'Analisi combustioni'),
         ('verifiche', 'Verifiche'),
         )
+
 MONTH_CHOISE = (
 	('1','Gennaio'),
     ('2','Febbraio'),
