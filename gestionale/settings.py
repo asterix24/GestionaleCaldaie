@@ -116,6 +116,7 @@ if DEBUG:
     logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%d/%b/%Y %H:%M:%S',
                             filename=SITE_ROOT + "/gestionale.log")
     logging.getLogger('main.data_render').setLevel(logging.INFO)
+    logging.getLogger('main.database_manager').setLevel(logging.INFO)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

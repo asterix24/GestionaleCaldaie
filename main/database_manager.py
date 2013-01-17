@@ -13,6 +13,8 @@ from django.db import connection, transaction
 from models import Cliente
 from tools import *
 
+import logging
+logger = logging.getLogger(__name__)
 
 FILTER_MODE_START =    '__istartswith'
 FILTER_MODE_EXACT =    '__iexact'
@@ -333,20 +335,38 @@ def query_table(query_str, param, query_str2=None, param2=None):
                     if i['analisi_combustione']:
                         row['ultima_analisi_combustione'] = i['data_verifica']
                         row['ultima_analisi_combustione_id'] = i['verifica_id']
+                        row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
                         break
                 n.append(dict(j.items() + row.items()))
     return n
 
-def search_dataRange(key, start, end):
+
+
+QUERY2_RANGE_WHERE = """
+(
+    main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\'
+    AND
+    (
+        EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s OR
+        EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s
+    )
+)
+"""
+def search_inMonth(key=None, month=None, year=None):
+    if month is None:
+        month = datetime.date.today().month
+    if year is None:
+        year = datetime.date.today().year
+
+    if month > 12 and month < 1:
+        logger.error("Invalid month[%s]" % month)
+        return []
+
     query_str = QUERY + QUERY_ORDER
-    query_str2 = """
-        (
-            main_verifica.prossima_analisi_combustione BETWEEN \'2010-01-01 00:00:00\' and \'2010-12-31 23:59:59.999999\'
-            AND
-            EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = 9
-        )
-    """
-    return query_table(query_str, [], query_str2, [])
+    if key is not None:
+        query_str = QUERY + " WHERE ( " + " " + " ) " + QUERY_ORDER
+
+    return query_table(query_str, [], QUERY2_RANGE_WHERE % (year, year, month, month), [])
 
 def search_fullText(s):
     search_key = []

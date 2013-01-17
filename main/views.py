@@ -347,8 +347,19 @@ def anagrafe(request):
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
+    seach_string = None
+    filter_type = None
+    ref_month = None
+    ref_year = None
     if request.method == 'GET':
-        data_to_render = database_manager.search_dataRange("", 0, 0)
+        form = myforms.RangeDataSelect(request.GET)
+        if form.is_valid():
+            search_in_range = form.cleaned_data['search_in_range']
+            filter_type = form.cleaned_data['filter_type']
+            ref_month = form.cleaned_data['ref_month']
+            ref_year = form.cleaned_data['ref_year']
+
+        data_to_render = database_manager.search_inMonth(month=ref_month, year=ref_year)
         dr = data_render.DataRender(data_to_render)
         dr.selectColums(cfg.HOME_STD_VIEW)
         dr.urlBar('cliente', ['edit', 'delete'])

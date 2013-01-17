@@ -3,7 +3,11 @@ from django import forms
 class FullTextSearchForm(forms.Form):
     s = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'size':'40'}))
 
-
+FILTER_TYPES = (
+        ('all', 'Tutti..'),
+        ('fumi', 'Analisi combustioni'),
+        ('verifiche', 'Verifiche'),
+        )
 MONTH_CHOISE = (
 	('1','Gennaio'),
     ('2','Febbraio'),
@@ -32,20 +36,9 @@ DAY_NAME = {
 import datetime
 import calendar
 
-def MonthDayList(d=None):
-    c = calendar.Calendar()
-    if d is None:
-        d = datetime.date.today()
-
-    l = []
-    for i in c.itermonthdates(d.year, d.month):
-        l.append(("%s:%s" % (i.weekday(), i.day), "%.2d, %s" % (i.day, DAY_NAME[i.weekday()])))
-
-    return l
-
 class RangeDataSelect(forms.Form):
-    search_in_range = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'size':'40'}))
-    start_month = forms.CharField(widget=forms.Select(choices=MONTH_CHOISE))
-    start_day = forms.CharField(widget=forms.Select(choices=MonthDayList()))
-    start_year = forms.CharField(max_length=4, initial="", widget=forms.TextInput(attrs={'size':'4'}))
+    search_in_range = forms.CharField(label="Cerca", required=False, max_length=200, widget=forms.TextInput(attrs={'size':'40'}))
+    filter_type = forms.CharField(label="Intervento", required=False, widget=forms.Select(choices=FILTER_TYPES))
+    ref_month = forms.CharField(label="Mese di riferimento", required=False, widget=forms.Select(choices=MONTH_CHOISE))
+    ref_year = forms.CharField(label="Anno di riferimento", required=False, max_length=4, initial=datetime.date.today().year, widget=forms.TextInput(attrs={'size':'4'}))
 
