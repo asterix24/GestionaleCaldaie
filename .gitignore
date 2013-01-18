@@ -2,6 +2,8 @@
 *.pyc
 *.db
 *.csv
+*.swp
 /log
 local_settings.py
 *.komodoproject
+tags

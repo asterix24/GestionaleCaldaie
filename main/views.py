@@ -348,7 +348,7 @@ import datetime
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
-    seach_string = None
+    search_in_range = None
     filter_type = None
     ref_month = None
     ref_year = None

@@ -41,7 +41,7 @@ def monthStr(ref_month):
     if ref_month is None:
         ref_month = datetime.date.today().month
 
-    return "%s" % dict(MONTH_CHOISE)[ref_month]
+    return "%s" % dict(MONTH_CHOISE)[str(ref_month)]
 
 class RangeDataSelect(forms.Form):
     search_in_range = forms.CharField(label="Cerca", required=False, max_length=200, widget=forms.TextInput(attrs={'size':'40'}))

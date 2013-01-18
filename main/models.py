@@ -22,6 +22,7 @@ class Cliente(models.Model):
 
     class Meta:
         ordering = ['cognome', 'nome']
+        unique_together = ('cognome', 'nome', 'codice_fiscale', 'citta','via')
 
     def __unicode__(self):
         return (u"%s, %s: %s - %s" % (self.cognome, self.nome, self.via, self.citta))

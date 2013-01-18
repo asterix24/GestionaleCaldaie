@@ -110,6 +110,7 @@ def verifiche_csv(row):
     table_dict['colore_bollino'] = None
     table_dict['data_verifica'] = None
     table_dict['prossima_analisi_combustione'] = None
+    table_dict['prossima_verifica'] = None
 
     if data_verifica != None:
         table_dict['data_verifica'] = data_verifica
