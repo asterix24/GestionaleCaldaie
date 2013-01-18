@@ -361,7 +361,7 @@ def home(request):
             ref_month = form.cleaned_data['ref_month']
             ref_year = form.cleaned_data['ref_year']
 
-    data_to_render = database_manager.search_inMonth(month=ref_month, year=ref_year, filter=filter_type)
+    data_to_render = database_manager.search_inMonth(key=search_in_range, month=ref_month, year=ref_year, filter=filter_type)
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
