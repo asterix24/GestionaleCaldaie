@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block center_block %}
-<h1>Eventi del giorno</h1>
-<h2>{% now "d F Y H:i" %}</h2>
+<h3>Eventi in scadenza:</h3>
 
 <form action="{% url home %}" method="POST">{% csrf_token %}
 <table>

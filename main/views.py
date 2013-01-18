@@ -91,7 +91,6 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
             data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento", 'impianto')
-
     else:
         data = None
 
@@ -366,9 +365,11 @@ def home(request):
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+    #TODO remove this..
+    data += "<h2>%s, clienti: %s</h2>" % (myforms.monthStr(ref_month), len(data_to_render))
     data += dr.toTable()
 
-    return render(request, 'home.sub',{'data': data,'data_form': form })
+    return render(request, 'home.sub',{'data': data,'data_form': form})
 
 from main import tools
 

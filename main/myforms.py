@@ -37,6 +37,12 @@ DAY_NAME = {
 import datetime
 import calendar
 
+def monthStr(ref_month):
+    if ref_month is None:
+        ref_month = datetime.date.today().month
+
+    return "%s" % dict(MONTH_CHOISE)[ref_month]
+
 class RangeDataSelect(forms.Form):
     search_in_range = forms.CharField(label="Cerca", required=False, max_length=200, widget=forms.TextInput(attrs={'size':'40'}))
     filter_type = forms.CharField(label="Intervento", initial='all', required=False, widget=forms.Select(choices=FILTER_TYPES))
