@@ -257,7 +257,16 @@ def query_table(query_str, param, query_str2=None, param2=None):
     l1 = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select
-    param = [[i['impianto_id'] for i in l1]]
+    param = []
+    for i in l1:
+        if i['impianto_id'] is None:
+            continue
+
+        param.append(i['impianto_id'])
+
+    if not param:
+        return l1
+
     # if we want to specify a different second query we pass explict sql string
     if query_str2 is None:
         query_str = QUERY2 + " ( " + QUERY2_WHERE + " ) " +  QUERY2_ORDER
