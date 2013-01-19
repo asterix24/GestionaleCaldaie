@@ -107,8 +107,13 @@ def _impianto_cfg(cliente_id, detail_type, impianto_id):
 
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
     if cliente_id is None:
+        msg=None
         form = models.ClienteForm(request.POST, instance=select)
         if form.is_valid():
+            cli = form.cleaned_data['cliente_id_inserito']
+            if cli is not None:
+                return show_record(request, cliente_id=cli, message="<h1>Cliente gia\' inserito nel gestionale</h1>")
+
             instance = form.save(commit=False)
             instance.nome = instance.nome.capitalize()
             instance.cognome = instance.cognome.capitalize()
@@ -116,7 +121,8 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
             instance.via = instance.via.capitalize()
             instance.citta = instance.citta.capitalize()
             instance.save()
-            return show_record(request, cliente_id=instance.id)
+            return show_record(request, cliente_id=instance.id, message=msg)
+
     else:
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)

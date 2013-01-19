@@ -28,7 +28,30 @@ class Cliente(models.Model):
         return (u"%s, %s: %s - %s" % (self.cognome, self.nome, self.via, self.citta))
 
 class ClienteForm(forms.ModelForm):
-	class Meta:
+    def clean(self):
+        cleaned_data = super(forms.ModelForm, self).clean()
+        _cognome = cleaned_data.get("cognome")
+        _nome = cleaned_data.get("nome")
+        _codice_fiscale = cleaned_data.get("codice_fiscale")
+        _citta = cleaned_data.get("citta")
+        _via = cleaned_data.get("via")
+        cleaned_data['cliente_id_inserito'] = None
+
+        cli = Cliente.objects.filter(models.Q(nome__iexact=_nome) &
+                               models.Q(cognome__iexact=_cognome) &
+                               models.Q(codice_fiscale__iexact=_codice_fiscale) &
+                               models.Q(via__iexact=_via) &
+                               models.Q(citta__iexact=_citta))
+
+
+        if len(cli) > 0:
+            cleaned_data['cliente_id_inserito'] = cli[0].id
+
+
+        # Always return the full collection of cleaned data.
+        return cleaned_data
+
+    class Meta:
 		model = Cliente
 
 POTENZA_CALDAIA = (
