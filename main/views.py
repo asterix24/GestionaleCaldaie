@@ -114,12 +114,6 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
             if cli is not None:
                 return show_record(request, cliente_id=cli, message="<h1>Cliente gia\' inserito nel gestionale</h1>")
 
-            instance = form.save(commit=False)
-            instance.nome = instance.nome.capitalize()
-            instance.cognome = instance.cognome.capitalize()
-            instance.codice_fiscale = instance.codice_fiscale.upper()
-            instance.via = instance.via.capitalize()
-            instance.citta = instance.citta.capitalize()
             instance.save()
             return show_record(request, cliente_id=instance.id, message=msg)
 
@@ -127,25 +121,12 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)
             if form.is_valid():
-                instance = form.save(commit = False)
-                instance.codice_impianto = instance.codice_impianto.upper()
-                instance.marca_caldaia = instance.marca_caldaia.upper()
-                instance.modello_caldaia = instance.modello_caldaia.upper()
-                instance.matricola_caldaia = instance.matricola_caldaia.upper()
-                instance.potenza_caldaia = instance.potenza_caldaia.upper()
-                instance.altra_potenza_caldaia = instance.altra_potenza_caldaia.upper()
-                instance.tipo_caldaia = instance.tipo_caldaia.upper()
-                instance.altro_tipo_caldaia = instance.altro_tipo_caldaia.upper()
-                instance.combustibile = instance.combustibile.capitalize()
                 instance.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
         if detail_type == 'verifica':
             form = models.VerificaForm(request.POST, instance=select)
             if form.is_valid():
-                instance = form.save(commit = False)
-                if not instance.analisi_combustione:
-                    instance.prossima_analisi_combustione = None
                 instance = form.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                         detail_type=detail_type, sub_impianto_id=instance.id)

@@ -11,8 +11,8 @@ class Cliente(models.Model):
     Anagrafica del cliente
     """
     cliente_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
-    cognome = models.CharField(max_length=100)
     nome = models.CharField(max_length=100, null=True, blank=True)
+    cognome = models.CharField(max_length=100)
     codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
     via = models.CharField(max_length=300, null=True, blank=True)
     citta = models.CharField(max_length=100, null=True, blank=True)
@@ -30,12 +30,14 @@ class Cliente(models.Model):
 class ClienteForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
-        _cognome = cleaned_data.get("cognome")
-        _nome = cleaned_data.get("nome")
-        _codice_fiscale = cleaned_data.get("codice_fiscale")
-        _citta = cleaned_data.get("citta")
-        _via = cleaned_data.get("via")
+
         cleaned_data['cliente_id_inserito'] = None
+
+        _nome = cleaned_data.get("nome")
+        _cognome = cleaned_data.get("cognome")
+        _codice_fiscale = cleaned_data.get("codice_fiscale")
+        _via = cleaned_data.get("via")
+        _citta = cleaned_data.get("citta")
 
         cli = Cliente.objects.filter(models.Q(nome__iexact=_nome) &
                                models.Q(cognome__iexact=_cognome) &
@@ -43,10 +45,20 @@ class ClienteForm(forms.ModelForm):
                                models.Q(via__iexact=_via) &
                                models.Q(citta__iexact=_citta))
 
-
         if len(cli) > 0:
             cleaned_data['cliente_id_inserito'] = cli[0].id
+            return cleaned_data
 
+        if _nome is not None:
+            cleaned_data['nome'] = _nome.capitalize()
+        if _cognome is not None:
+            cleaned_data['cognome'] = _cognome.capitalize()
+        if _codice_fiscale is not None:
+            cleaned_data['codice_fiscale'] = _codice_fiscale.upper()
+        if _via is not None:
+            cleaned_data['via'] = _via.capitalize()
+        if _citta is not None:
+            cleaned_data['citta'] = _citta.capitalize()
 
         # Always return the full collection of cleaned data.
         return cleaned_data
@@ -113,6 +125,30 @@ class ImpiantoForm(forms.ModelForm):
                 self._errors["potenza_caldaia"] = self.error_class(["Specificare un altra potenza caldaia."])
                 cleaned_data["altra_potenza_caldaia"] = _altro_potenza_caldaia.upper()
 
+        _codice_impianto = cleaned_data.get("codice_impianto")
+        if _codice_impianto is not None:
+            cleaned_data['codice_impianto'] = _codice_impianto.upper()
+
+        _marca_caldaia = cleaned_data.get("marca_caldaia")
+        if _marca_caldaia is not None:
+            cleaned_data['marca_caldaia'] = _marca_caldaia.upper()
+
+        _modello_caldaia = cleaned_data.get("modello_caldaia")
+        if _modello_caldaia is not None:
+            cleaned_data['modello_caldaia'] = _modello_caldaia.upper()
+
+        _potenza_caladaia = cleaned_data.get("potenza_caladaia")
+        if _potenza_caladaia is not None:
+            cleaned_data['potenza_caladaia'] = _potenza_caladaia.upper()
+
+        _tipo_caldaia = cleaned_data.get("tipo_caldaia")
+        if _tipo_caldaia is not None:
+            cleaned_data['tipo_caldaia'] = _tipo_caldaia.upper()
+
+        _combustibile = cleaned_data.get("combustibile")
+        if _tipo_caldaia is not None:
+            cleaned_data['combustibile'] = _combustibile.capitalize()
+
         return cleaned_data
 
     class Meta:
@@ -157,9 +193,10 @@ BOLLINO_COLOR_CHOICES_DICT = {
     }
 
 class Verifica(models.Model):
+	verifica_impianto = models.ForeignKey(Impianto)
+
 	stato_verifica = models.BooleanField(default=False)
 	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)
-	verifica_impianto = models.ForeignKey(Impianto)
 	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
 	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
 	codice_id = models.CharField(max_length=15, null=True, blank=True)
@@ -216,6 +253,9 @@ class VerificaForm(forms.ModelForm):
                 # The table row is hide, so when we reply the error it is hide..
                 self._errors["colore_bollino"] = self.error_class(["Specificare un altro tipo di Bollino."])
                 cleaned_data["altro_colore_bollino"] = _altro_colore_bollino.capitalize()
+
+        if cleaned_data.get("analisi_combustione"):
+            cleaned_data['prossima_analisi_combustione'] = None
 
         return cleaned_data
 
