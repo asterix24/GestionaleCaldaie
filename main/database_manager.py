@@ -207,7 +207,7 @@ WHERE
 
 QUERY2_WHERE ="""
     (
-        main_verifica.verifica_impianto_id = ANY (%s)
+        main_verifica.verifica_impianto_id IN (%s)
     )
 """
 QUERY2_ORDER ="ORDER BY main_verifica.data_verifica DESC"
@@ -254,24 +254,28 @@ def query_table(query_str, param, query_str2=None, param2=None):
     We split the query in two, one select clienti and impiato, and
     with the ids, we selct the verifiche table.
     """
-    l1 = search_runQuery(query_str, param)
+    query_data = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select
-    param = []
-    for i in l1:
+    s = ""
+    count = 0
+    for i in query_data:
         if i['impianto_id'] is None:
             continue
 
-        param.append(i['impianto_id'])
+        s += "%d," % i['impianto_id']
+        count += 1
 
-    if not param:
-        return l1
+    if count == 0:
+        return query_data
+
+    query_where = QUERY2_WHERE % s[:-1]
 
     # if we want to specify a different second query we pass explict sql string
     if query_str2 is None:
-        query_str = QUERY2 + " ( " + QUERY2_WHERE + " ) " +  QUERY2_ORDER
+        query_str = QUERY2 + " ( " + query_where + " ) " +  QUERY2_ORDER
     else:
-        query_str = QUERY2 + " ( " + QUERY2_WHERE + " AND " + query_str2 + " ) " +  QUERY2_ORDER
+        query_str = QUERY2 + " ( " + query_where + " AND " + query_str2 + " ) " +  QUERY2_ORDER
         param = param + param2
 
     cursor = connection.cursor()
@@ -281,21 +285,21 @@ def query_table(query_str, param, query_str2=None, param2=None):
 
     # Get all verifiche data structed as: dict of list
     # { impianto_id : [ verifiche list] }
-    l2 = {}
+    query_data2 = {}
     for row in cursor.fetchall():
         d = dict(zip(l, row))
         key = d['verifica_impianto_id']
-        if l2.has_key(key):
-            l2[key].append(d)
+        if query_data2.has_key(key):
+            query_data2[key].append(d)
         else:
-            l2[key] = [d]
+            query_data2[key] = [d]
 
     # Compute the last verifica and the most recent
     # analisi combustione, with its id.
     n = []
-    for j in l1:
-        if j['impianto_id'] is not None and l2.has_key(j['impianto_id']):
-            verifiche_list = l2[j['impianto_id']]
+    for j in query_data:
+        if j['impianto_id'] is not None and query_data2.has_key(j['impianto_id']):
+            verifiche_list = query_data2[j['impianto_id']]
             if verifiche_list:
                 row = verifiche_list[0]
                 row['data_ultima_verifica'] = row['data_verifica']
@@ -306,6 +310,8 @@ def query_table(query_str, param, query_str2=None, param2=None):
                         row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
                         break
                 n.append(dict(j.items() + row.items()))
+        else:
+            n.append(j)
     return n
 
 def generate_query(s):
