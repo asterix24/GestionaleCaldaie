@@ -249,7 +249,7 @@ def search_interventoId(id):
 def query_test(test_str):
     return []
 
-def query_table(query_str, param, query_str2=None, param2=None):
+def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=False):
     """
     We split the query in two, one select clienti and impiato, and
     with the ids, we selct the verifiche table.
@@ -310,7 +310,7 @@ def query_table(query_str, param, query_str2=None, param2=None):
                         row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
                         break
                 n.append(dict(j.items() + row.items()))
-        else:
+        elif not verifiche_only:
             n.append(j)
     return n
 
@@ -355,7 +355,6 @@ def search_inMonth(key=None, month=None, year=None, filter=None):
     if key is not None:
         query_str, param = generate_query(key)
 
-
     query_year = """(
         main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\' OR
         main_verifica.prossima_verifica BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\'
@@ -374,7 +373,7 @@ def search_inMonth(key=None, month=None, year=None, filter=None):
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % month
 
     query_str2 = " ( " + query_year + " AND " + query_month + " )"
-    return query_table(query_str, param, query_str2, [])
+    return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
 
 def search_fullText(s):
