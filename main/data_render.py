@@ -156,9 +156,13 @@ class DataRender(object):
         self.url_type = []
         self.detail_type = None
         self.url_add = None
+        self.unique_row = False
 
     def showHeader(self, display_header):
         self.display_header = display_header
+
+    def uniqueRow(self, unique_row):
+        self.unique_row = unique_row
 
     def msgItemsEmpty(self, msg):
         self.msg_items_empty = msg
@@ -174,6 +178,7 @@ class DataRender(object):
         if self.items == []:
             return self.msg_items_empty
 
+        duplicate_row = {}
         cycle = False
         table = "<table id=\"customers\">"
         for item_dict in self.items:
@@ -185,48 +190,61 @@ class DataRender(object):
                 table += "</tr>"
                 self.display_header = False
 
-            cycle_str = ''
-            if cycle:
-                cycle_str = " class=\"alt\""
-            cycle = not cycle
+            skip_row = False
+            if self.unique_row:
+                key = ""
+                for i in self.colums:
+                    key += "%s" % item_dict[i]
+                if duplicate_row.has_key(key):
+                    skip_row = True
+                else:
+                    duplicate_row[key] = ""
 
-            table += "<tr%s>" % cycle_str
-            if self.detail_type is not None:
-                p = ''
-                for j in self.url_type:
-                    if self.detail_type == 'cliente':
-                        p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
-                    elif self.detail_type == 'impianto':
-                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
-                                cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
-                    else:
-                        p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
-                                cliente_id=item_dict['cliente_id'],
-                                impianto_id=item_dict['impianto_id'],
-                                sub_impianto_id=item_dict[self.detail_type + '_id'])
+            if not skip_row:
+                skip_row = False
 
-                table += "<td>%s</td>" % p
+                cycle_str = ''
+                if cycle:
+                    cycle_str = " class=\"alt\""
+                cycle = not cycle
 
-            for i in self.colums:
-                try:
-                    if i in RENDER_TABLE:
-                        s = RENDER_TABLE[i](item_dict, i)
-                    elif i in RENDER_TABLE_URL:
-                        s = RENDER_TABLE_URL[i](item_dict, i)
-                    else:
-                        s  = item_dict[i]
-                        if type(s) == datetime.date:
-                            s = s.strftime(DATA_FIELD_STR_FORMAT)
+                table += "<tr%s>" % cycle_str
+                if self.detail_type is not None:
+                    p = ''
+                    for j in self.url_type:
+                        if self.detail_type == 'cliente':
+                            p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
+                        elif self.detail_type == 'impianto':
+                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
+                                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+                        else:
+                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
+                                    cliente_id=item_dict['cliente_id'],
+                                    impianto_id=item_dict['impianto_id'],
+                                    sub_impianto_id=item_dict[self.detail_type + '_id'])
 
-                    if s is None or s == "":
+                    table += "<td>%s</td>" % p
+
+                for i in self.colums:
+                    try:
+                        if i in RENDER_TABLE:
+                            s = RENDER_TABLE[i](item_dict, i)
+                        elif i in RENDER_TABLE_URL:
+                            s = RENDER_TABLE_URL[i](item_dict, i)
+                        else:
+                            s  = item_dict[i]
+                            if type(s) == datetime.date:
+                                s = s.strftime(DATA_FIELD_STR_FORMAT)
+
+                        if s is None or s == "":
+                            s = '<center>-</center>'
+
+                    except (KeyError, ValueError), m:
+                        logger.error("Table Errore nel render di %s (%s) s=%s {%s}" %
+                                (i, m, s, item_dict))
                         s = '<center>-</center>'
 
-                except (KeyError, ValueError), m:
-                    logger.error("Table Errore nel render di %s (%s) s=%s {%s}" %
-                            (i, m, s, item_dict))
-                    s = '<center>-</center>'
-
-                table += "<td>%s</td>" % s
+                    table += "<td>%s</td>" % s
 
             table += "</tr>"
         table += "</table><br>"
@@ -235,6 +253,7 @@ class DataRender(object):
         self.detail_type = None
         self.colums = None
         self.display_header = True
+        self.unique_row = False
 
         return table
 

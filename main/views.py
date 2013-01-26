@@ -53,6 +53,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if len(data_to_render) >= 1 and data_to_render[0]['impianto_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.urlBar('impianto', ['edit','delete'])
+            dr.uniqueRow(True)
             data += dr.toTable()
         data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
