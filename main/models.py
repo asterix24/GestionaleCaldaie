@@ -203,7 +203,7 @@ class Verifica(models.Model):
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
 
     # Sezione manutenzione ordinaria/straordinaria
-	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365))
+	prossima_verifica = models.DateField(default=datetime.date.today() + datetime.timedelta(days=365), null=True, blank=True)
 
     # Sezione analisi combustione
 	analisi_combustione = models.NullBooleanField(null=True, blank=True)
