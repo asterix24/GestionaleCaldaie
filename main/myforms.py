@@ -36,9 +36,11 @@ DAY_NAME = {
 
 import datetime
 import calendar
+import logging
+logger = logging.getLogger(__name__)
 
 def monthStr(ref_month):
-    if ref_month is None:
+    if ref_month is None or ref_month == "":
         ref_month = datetime.date.today().month
 
     return "%s" % dict(MONTH_CHOISE)[str(ref_month)]

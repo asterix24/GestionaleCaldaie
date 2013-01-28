@@ -117,6 +117,7 @@ if DEBUG:
                             filename=SITE_ROOT + "/gestionale.log")
     logging.getLogger('main.data_render').setLevel(logging.INFO)
     logging.getLogger('main.database_manager').setLevel(logging.INFO)
+    logging.getLogger('main.myfomrs').setLevel(logging.INFO)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
