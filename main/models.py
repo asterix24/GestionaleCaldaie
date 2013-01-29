@@ -260,7 +260,7 @@ class VerificaForm(forms.ModelForm):
                 self._errors["colore_bollino"] = self.error_class(["Specificare un altro tipo di Bollino."])
                 cleaned_data["altro_colore_bollino"] = _altro_colore_bollino.capitalize()
 
-        if cleaned_data.get("analisi_combustione"):
+        if not cleaned_data.get("analisi_combustione"):
             cleaned_data['prossima_analisi_combustione'] = None
 
         return cleaned_data
