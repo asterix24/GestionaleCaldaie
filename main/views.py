@@ -13,12 +13,17 @@ from main import data_render
 from main import database_manager
 from main import scripts
 
+import logging
+logger = logging.getLogger(__name__)
+
 def _display_error(request, msg):
+    logger.error("%s" % msg)
     return render(request, 'messages.sub',
             { 'msg_hdr':'Error!',
               'msg_body': msg })
 
 def _display_ok(request, msg):
+    logger.info("%s" % msg)
     return render(request, 'messages.sub',
             { 'msg_hdr':'Ok!',
               'msg_body': msg})
@@ -107,7 +112,7 @@ def _impianto_cfg(cliente_id, detail_type, impianto_id):
     return data
 
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
-    if cliente_id is None:
+    if cliente_id is None or detail_type is None:
         msg=None
         form = models.ClienteForm(request.POST, instance=select)
         if form.is_valid():
@@ -115,14 +120,14 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
             if cli is not None:
                 return show_record(request, cliente_id=cli, message="<h1>Cliente gia\' inserito nel gestionale</h1>")
 
-            instance.save()
+            instance = form.save()
             return show_record(request, cliente_id=instance.id, message=msg)
 
     else:
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)
             if form.is_valid():
-                instance.save()
+                instance = form.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
 
         if detail_type == 'verifica':
@@ -140,6 +145,8 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 instance.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                         detail_type=detail_type, sub_impianto_id=instance.id)
+
+    return _display_error(request, "Qualcosa e' andato storto..")
 
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = scripts.RECORDADD_ADD_JS

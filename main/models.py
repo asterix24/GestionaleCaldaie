@@ -38,12 +38,18 @@ class ClienteForm(forms.ModelForm):
         _codice_fiscale = cleaned_data.get("codice_fiscale")
         _via = cleaned_data.get("via")
         _citta = cleaned_data.get("citta")
+        _numero_telefono = cleaned_data.get("numero_telefono")
+        _numero_cellulare = cleaned_data.get("numero_cellulare")
+        _mail =cleaned_data.get("mail")
 
         cli = Cliente.objects.filter(models.Q(nome__iexact=_nome) &
                                models.Q(cognome__iexact=_cognome) &
                                models.Q(codice_fiscale__iexact=_codice_fiscale) &
                                models.Q(via__iexact=_via) &
-                               models.Q(citta__iexact=_citta))
+                               models.Q(citta__iexact=_citta) &
+                               models.Q(numero_telefono__iexact=_numero_telefono) &
+                               models.Q(numero_cellulare__iexact=_numero_cellulare) &
+                               models.Q(mail__iexact=_mail))
 
         if len(cli) > 0:
             cleaned_data['cliente_id_inserito'] = cli[0].id
