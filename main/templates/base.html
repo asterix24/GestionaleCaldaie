@@ -24,7 +24,7 @@
         <div id="navigation_search">
         <ul>
             <div class="navigation_buttons">{% now "d F Y H:i" %}
-            <form action="/anagrafe/" method="get">{% csrf_token %}
+            <form action="/anagrafe/" method="get">
             <input id="id_s" maxlength="200" type="text" name="s" size="40" />
             <input type="submit" id="id_cerca" value="Cerca"/>
             </form></div>

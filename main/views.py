@@ -322,6 +322,7 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
     search_string = ""
+    data_to_render = []
     data = scripts.HOME_ADD_JS
 
     if request.method == 'GET' and request.GET != {}:
@@ -343,12 +344,15 @@ import datetime
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
+
+    # Use default at first time when the home page is never loaded
     search_in_range = None
     filter_type = None
     ref_month = None
     ref_year = None
-    if request.method == 'POST':
-        form = myforms.RangeDataSelect(request.POST)
+
+    if request.method == 'GET' and request.GET != {}:
+        form = myforms.RangeDataSelect(request.GET)
         if form.is_valid():
             search_in_range = form.cleaned_data['search_in_range']
             filter_type = form.cleaned_data['filter_type']
@@ -360,8 +364,10 @@ def home(request):
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+
     #TODO remove this..
     data += "<h2>%s, clienti: %s</h2>" % (myforms.monthStr(ref_month), len(data_to_render))
+
     data += dr.toTable()
 
     return render(request, 'home.sub',{'data': data,'data_form': form})
