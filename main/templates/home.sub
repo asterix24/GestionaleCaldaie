@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block navigation_menu_block_top %}
+<li><a href="/export{{query_path}}">Esporta CSV</a></li>
+{% endblock %}
+
+{% block navigation_menu_block_bot %}
+<li><a href="/export{{query_path}}">Esporta CSV</a></li>
+{% endblock %}
+
 {% block center_block %}
 <h3>Eventi in scadenza:</h3>
 

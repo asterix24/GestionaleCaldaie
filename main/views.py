@@ -337,9 +337,62 @@ def anagrafe(request):
             dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
             data += dr.toTable()
 
-    return render(request, 'anagrafe.sub', {'data': data,'form': form })
+    return render(request, 'anagrafe.sub', {'query_path':request.get_full_path(), 'data': data,'data_form': form})
 
+import csv
 import datetime
+
+def exportCSV(request, detail_type=None):
+
+    data_table = []
+    filename='Elenco'
+    if detail_type is None or detail_type == "home":
+
+        search_in_range = request.GET.get('search_in_range', None)
+        filter_type = request.GET.get('filter_type', None)
+        ref_month = request.GET.get('ref_month', None)
+        ref_year = request.GET.get('ref_year', None)
+
+        filename = myforms.monthStr(ref_month)
+
+        data_table = database_manager.search_inMonth(key=search_in_range, month=ref_month, year=ref_year, filter=filter_type)
+
+    elif detail_type == "anagrafe":
+        filename='Anagrafe'
+
+        search_string = request.GET.get('s','')
+        data_table = database_manager.search_fullText(search_string)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = http.HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y_%X"))
+
+    writer = tools.UnicodeWriter(response)
+    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
+
+    for items_dict in data_table:
+        l = []
+        s = u'-'
+        for j in cfg.ANAGRAFE_STD_VIEW:
+            try:
+                if j in data_render.RENDER_TABLE:
+                    s = data_render.RENDER_TABLE[j](items_dict, j)
+                elif items_dict.has_key(j):
+                    s = items_dict[j]
+                    if type(s) == datetime.date:
+                        s = s.strftime(data_render.DATA_FIELD_STR_FORMAT)
+            except (KeyError, ValueError), m:
+                logger.error("Errore csv campo %s (%s) s=%s {%s}" % (j, m, s, items_dict))
+                s = u'-'
+
+            if s is None:
+                s = u'-'
+            l.append(s)
+
+        writer.writerow(l)
+
+    return response
+
 
 def home(request):
     form = myforms.RangeDataSelect()
@@ -369,8 +422,8 @@ def home(request):
     data += "<h2>%s, clienti: %s</h2>" % (myforms.monthStr(ref_month), len(data_to_render))
 
     data += dr.toTable()
-
-    return render(request, 'home.sub',{'data': data,'data_form': form})
+    print request.get_full_path()
+    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
 
 from main import tools
 
