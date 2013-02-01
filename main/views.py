@@ -367,7 +367,8 @@ def exportCSV(request, detail_type=None):
     response = http.HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y_%X"))
 
-    writer = tools.UnicodeWriter(response)
+    response.write("\xEF\xBB\xBF")
+    writer = tools.UnicodeWriter(response, delimiter=';', quotechar='\"')
     writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
 
     for items_dict in data_table:
