@@ -254,7 +254,6 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
     We split the query in two, one select clienti and impiato, and
     with the ids, we selct the verifiche table.
     """
-    print query_str
     query_data = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select

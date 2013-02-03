@@ -324,13 +324,17 @@ def anagrafe(request):
     search_string = ""
     data_to_render = []
     data = scripts.HOME_ADD_JS
+    group_field = None
+    field_order = None
 
     if request.method == 'GET' and request.GET != {}:
             form = myforms.FullTextSearchForm(request.GET)
             if form.is_valid():
                     search_string = form.cleaned_data['s']
+                    group_field = form.cleaned_data['group_field']
+                    field_order = form.cleaned_data['field_order']
 
-            data_to_render = database_manager.search_fullText(search_string)
+            data_to_render = database_manager.search_fullText(search_string, group_field, field_order)
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
             dr.urlBar('cliente', ['edit', 'delete'])
@@ -345,48 +349,8 @@ def anagrafe(request):
 import csv
 import datetime
 
-def exportCSV(request, detail_type=None):
-
-    data_table = []
-    filename='Elenco'
-    if detail_type is None or detail_type == "home":
-
-        search_in_range = request.GET.get('search_in_range', None)
-        filter_type = request.GET.get('filter_type', None)
-        ref_month = request.GET.get('ref_month', None)
-        ref_year = request.GET.get('ref_year', None)
-
-        filename = myforms.monthStr(ref_month)
-
-        data_table = database_manager.search_inMonth(key=search_in_range, month=ref_month, year=ref_year, filter=filter_type)
-
-    elif detail_type == "anagrafe":
-        filename='Anagrafe'
-
-        search_string = request.GET.get('s','')
-        data_table = database_manager.search_fullText(search_string)
-
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = http.HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y_%X"))
-
-    response.write("\xEF\xBB\xBF")
-    writer = tools.UnicodeWriter(response, delimiter=';', quotechar='\"')
-    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
-
-    for item_dict in data_table:
-        l = []
-        for i in cfg.ANAGRAFE_STD_VIEW:
-            l.append(data_render.formatFields(item_dict, i, default_text=u"-"))
-
-        writer.writerow(l)
-
-    return response
-
-
 def home(request):
     form = myforms.RangeDataSelect()
-    form_filter = myforms.GroupData()
     data = scripts.HOME_ADD_JS
 
     # Use default at first time when the home page is never loaded
@@ -419,8 +383,53 @@ def home(request):
 
     data += dr.toTable()
     print request.get_full_path()
-    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form,
-            'data_form_filter':form_filter })
+    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
+
+
+def exportCSV(request, detail_type=None):
+
+    data_table = []
+    filename='Elenco'
+    if detail_type is None or detail_type == "home":
+
+        search_in_range = request.GET.get('search_in_range', None)
+        filter_type = request.GET.get('filter_type', None)
+        ref_month = request.GET.get('ref_month', None)
+        ref_year = request.GET.get('ref_year', None)
+        group_field = request.GET.get('group_field', None)
+        field_order = request.GET.get('field_order', None)
+
+        filename = myforms.monthStr(ref_month)
+
+        data_table = database_manager.search_inMonth(key=search_in_range,
+                                month=ref_month, year=ref_year, filter=filter_type,
+                                group_field=group_field, field_order=field_order)
+
+    elif detail_type == "anagrafe":
+        filename='Anagrafe'
+
+        search_string = request.GET.get('s','')
+        group_field = request.GET.get('group_field', None)
+        field_order = request.GET.get('field_order', None)
+        data_table = database_manager.search_fullText(search_string, group_field, field_order)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = http.HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y_%X"))
+
+    response.write("\xEF\xBB\xBF")
+    writer = tools.UnicodeWriter(response, delimiter=';', quotechar='\"')
+    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
+
+    for item_dict in data_table:
+        l = []
+        for i in cfg.ANAGRAFE_STD_VIEW:
+            l.append(data_render.formatFields(item_dict, i, default_text=u"-"))
+
+        writer.writerow(l)
+
+    return response
+
 
 from main import tools
 

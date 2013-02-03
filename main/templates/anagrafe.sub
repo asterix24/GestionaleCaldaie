@@ -10,6 +10,17 @@
 
 
 {% block center_block %}
+<form action="{% url anagrafe %}" method="GET">
+<table>
+<tr>
+    <td>{{data_form.group_field.label}}</td>
+    <td>{{data_form.group_field}}</td>
+    <td>{{data_form.field_order.label}}</td>
+    <td>{{data_form.field_order}}</td>
+    <td><input type="submit" value="Aggiorna"/></td>
+</tr>
+</table>
+</form>
 
 {% autoescape off %}
     {{ data }}
