@@ -407,7 +407,7 @@ def home(request):
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-    dr.msgStatistics(("<br><h2>Per in mese di %s eventi in scadenza:" % myforms.monthStr(ref_month)) + " %s</h2><br>")
+    dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(ref_month)) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()
 
     data += dr.toTable()
