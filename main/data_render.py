@@ -40,23 +40,26 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
     return url + data + "</a>"
 
 
-def __isValidKey(items, key):
+def isValidKey(items, key):
     if items[key] is None or items[key] == "":
         return False
     return True
 
-def __cliente_url(items, key, s=None):
+def __cliente_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
     return make_url('','', items[key], '/anagrafe/%s/', items['cliente_id'])
 
-def __impianto_url(items, key, s=None):
-    if not __isValidKey(items, key):
-        return EMPTY_CELL
+def __impianto_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
 
     return make_url('','', items[key], '/anagrafe/%s/impianto/%s/',
             items['cliente_id'], items['impianto_id'])
 
-def __verifica_url(items, key, s=None):
-    if not __isValidKey(items, key):
+def __verifica_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
         return "Nessuna verifica"
 
     str = items[key]
@@ -65,8 +68,8 @@ def __verifica_url(items, key, s=None):
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
-def __ultima_analisi_url(items, key, s=None):
-    if not __isValidKey(items, key):
+def __ultima_analisi_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
         return "No Fumi"
 
     str = items[key]
@@ -75,9 +78,9 @@ def __ultima_analisi_url(items, key, s=None):
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
-def __tipo_caldaia(items, key, s=None):
-    if not __isValidKey(items, key):
-        return EMPTY_CELL
+def __tipo_caldaia(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
 
     str = items[key]
     if str.lower() == 'altro':
@@ -87,8 +90,8 @@ def __tipo_caldaia(items, key, s=None):
 
     return s
 
-def __tipo_verifica(items, key, s=None):
-    if not __isValidKey(items, key):
+def __tipo_verifica(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
         return "No Manutezioni"
 
     str = items[key]
@@ -100,9 +103,9 @@ def __tipo_verifica(items, key, s=None):
 
     return s
 
-def __colore_bollino(items, key, s=None):
-    if not __isValidKey(items, key):
-        return EMPTY_CELL
+def __colore_bollino(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
 
     str = items[key]
     if str.lower() == 'altro':
@@ -113,8 +116,8 @@ def __colore_bollino(items, key, s=None):
 
     return s
 
-def __analisi_combustione(items, key, s=None):
-    if not __isValidKey(items, key):
+def __analisi_combustione(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
         return "No Fumi"
 
     s = 'No.'
@@ -124,9 +127,9 @@ def __analisi_combustione(items, key, s=None):
     return s
 
 
-def __stato_pagamento(items, key, s=None):
-    if not __isValidKey(items, key):
-        return EMPTY_CELL
+def __stato_pagamento(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
 
     s = "Da riscuotere."
     if items[key]:
@@ -155,7 +158,26 @@ RENDER_TABLE = {
     'stato_pagamento': __stato_pagamento,
 }
 
+def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
+    try:
+        s = default_text
+        if item_dict.has_key(field_name):
+            if field_name in RENDER_TABLE:
+                s = RENDER_TABLE[field_name](item_dict, field_name, default_text)
+            elif with_url and field_name in RENDER_TABLE_URL:
+                s = RENDER_TABLE_URL[field_name](item_dict, field_name, default_text)
+            else:
+                s  = item_dict[field_name]
+                if not isValidKey(item_dict, field_name):
+                    s = default_text
+                elif type(s) == datetime.date:
+                    s = s.strftime(DATA_FIELD_STR_FORMAT)
 
+    except (KeyError, ValueError), m:
+        logger.error("%s Errore nel render di %s (%s) s=%s {%s}" % (__name__, i, m, s, item_dict))
+        s = default_text
+
+    return s
 
 class DataRender(object):
     def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
@@ -236,26 +258,7 @@ class DataRender(object):
                     table += "<td>%s</td>" % p
 
                 for i in self.colums:
-                    try:
-                        s = EMPTY_CELL
-                        if item_dict.has_key(i):
-                            if i in RENDER_TABLE:
-                                s = RENDER_TABLE[i](item_dict, i)
-                            elif i in RENDER_TABLE_URL:
-                                s = RENDER_TABLE_URL[i](item_dict, i)
-                            else:
-                                s  = item_dict[i]
-                                if s is None or s == "":
-                                    s = EMPTY_CELL
-                                elif type(s) == datetime.date:
-                                    s = s.strftime(DATA_FIELD_STR_FORMAT)
-
-                    except (KeyError, ValueError), m:
-                        logger.error("Table Errore nel render di %s (%s) s=%s {%s}" %
-                                (i, m, s, item_dict))
-                        s = EMPTY_CELL
-
-                    table += "<td>%s</td>" % s
+                    table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
 
             table += "</tr>"
         table += "</table><br>"
@@ -284,24 +287,9 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
 
     table += "<tr><th>%s</th><th>%s</th></tr>" % (return_link, header_msg)
     for i in show_colum:
-        try:
-            table += "<tr>"
-            table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
-
-            if i in RENDER_TABLE:
-                s = RENDER_TABLE[i](item_dict, i)
-            else:
-                s  = item_dict[i]
-                if type(s) == datetime.date:
-                    s = s.strftime(DATA_FIELD_STR_FORMAT)
-            if s is None:
-                s = '-'
-
-        except (KeyError, ValueError), m:
-            logger.error("List Errore nel render di %s (%s)" % (i, m))
-            s = '-'
-
-        table += "<td id=\"td_%s\">%s</td>" % (i, s)
+        table += "<tr>"
+        table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+        table += "<td id=\"td_%s\">%s</td>" % (i, formatFields(item_dict, i, default_text="-"))
         table += "</tr>"
 
     table += "</table><br>"

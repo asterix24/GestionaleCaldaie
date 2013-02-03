@@ -371,24 +371,10 @@ def exportCSV(request, detail_type=None):
     writer = tools.UnicodeWriter(response, delimiter=';', quotechar='\"')
     writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
 
-    for items_dict in data_table:
+    for item_dict in data_table:
         l = []
-        s = u'-'
-        for j in cfg.ANAGRAFE_STD_VIEW:
-            try:
-                if j in data_render.RENDER_TABLE:
-                    s = data_render.RENDER_TABLE[j](items_dict, j)
-                elif items_dict.has_key(j):
-                    s = items_dict[j]
-                    if type(s) == datetime.date:
-                        s = s.strftime(data_render.DATA_FIELD_STR_FORMAT)
-            except (KeyError, ValueError), m:
-                logger.error("Errore csv campo %s (%s) s=%s {%s}" % (j, m, s, items_dict))
-                s = u'-'
-
-            if s is None:
-                s = u'-'
-            l.append(s)
+        for i in cfg.ANAGRAFE_STD_VIEW:
+            l.append(data_render.formatFields(item_dict, i, default_text=u"-"))
 
         writer.writerow(l)
 
