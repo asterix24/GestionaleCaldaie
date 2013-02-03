@@ -254,6 +254,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
     We split the query in two, one select clienti and impiato, and
     with the ids, we selct the verifiche table.
     """
+    print query_str
     query_data = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select
@@ -314,7 +315,17 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
             n.append(j)
     return n
 
-def generate_query(s):
+def generate_query(s, group, order):
+    query_order = QUERY_ORDER
+    if group is not None:
+        if order is None:
+            order = "ASC"
+
+        query_order = "ORDER BY " + group + " " + order + ", main_cliente.cognome ASC, main_cliente.nome ASC"
+
+    if s is None:
+        return QUERY + query_order, []
+
     search_key = []
     if " " in s:
         search_key = s.strip().split(" ")
@@ -338,9 +349,9 @@ def generate_query(s):
         if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
             search_query_str += " AND "
 
-    return QUERY + " WHERE ( " + search_query_str + " ) " + QUERY_ORDER, param
+    return QUERY + " WHERE ( " + search_query_str + " ) " + query_order, param
 
-def search_inMonth(key=None, month=None, year=None, filter=None):
+def search_inMonth(key=None, month=None, year=None, filter=None, group_field=None, field_order=None):
     if month is None:
         month = datetime.date.today().month
     if year is None:
@@ -350,10 +361,8 @@ def search_inMonth(key=None, month=None, year=None, filter=None):
         logger.error("Invalid month[%s]" % month)
         return []
 
-    query_str = QUERY + QUERY_ORDER
-    param = []
-    if key is not None:
-        query_str, param = generate_query(key)
+    #if group_field is not None:
+    query_str, param = generate_query(key, group_field, field_order)
 
     query_year = """(
         main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\' OR
@@ -376,8 +385,8 @@ def search_inMonth(key=None, month=None, year=None, filter=None):
     return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
 
-def search_fullText(s):
-    query_str, param = generate_query(s)
+def search_fullText(s, group_field=None, field_order=None):
+    query_str, param = generate_query(s, group_field, field_order)
     return query_table(query_str, param)
 
 

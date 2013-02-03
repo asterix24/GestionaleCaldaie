@@ -386,6 +386,7 @@ def exportCSV(request, detail_type=None):
 
 def home(request):
     form = myforms.RangeDataSelect()
+    form_filter = myforms.GroupData()
     data = scripts.HOME_ADD_JS
 
     # Use default at first time when the home page is never loaded
@@ -393,6 +394,8 @@ def home(request):
     filter_type = None
     ref_month = None
     ref_year = None
+    group_field = None
+    field_order = None
 
     if request.method == 'GET' and request.GET != {}:
         form = myforms.RangeDataSelect(request.GET)
@@ -401,8 +404,12 @@ def home(request):
             filter_type = form.cleaned_data['filter_type']
             ref_month = form.cleaned_data['ref_month']
             ref_year = form.cleaned_data['ref_year']
+            group_field = form.cleaned_data['group_field']
+            field_order = form.cleaned_data['field_order']
 
-    data_to_render = database_manager.search_inMonth(key=search_in_range, month=ref_month, year=ref_year, filter=filter_type)
+    data_to_render = database_manager.search_inMonth(key=search_in_range,
+                                month=ref_month, year=ref_year, filter=filter_type,
+                                group_field=group_field, field_order=field_order)
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
@@ -412,7 +419,8 @@ def home(request):
 
     data += dr.toTable()
     print request.get_full_path()
-    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
+    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form,
+            'data_form_filter':form_filter })
 
 from main import tools
 
