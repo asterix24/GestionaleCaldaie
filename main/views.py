@@ -58,7 +58,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if len(data_to_render) >= 1 and data_to_render[0]['impianto_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.urlBar('impianto', ['edit','delete'])
-            dr.uniqueRow(True)
+            dr.uniqueRow()
             data += dr.toTable()
         data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
@@ -335,6 +335,9 @@ def anagrafe(request):
             dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
             dr.urlBar('cliente', ['edit', 'delete'])
             dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+            if search_string != "":
+                dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
+            dr.showStatistics()
             data += dr.toTable()
 
     return render(request, 'anagrafe.sub', {'query_path':request.get_full_path(), 'data': data,'data_form': form})
@@ -404,9 +407,8 @@ def home(request):
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.urlBar('cliente', ['edit', 'delete'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-
-    #TODO remove this..
-    data += "<h2>%s, clienti: %s</h2>" % (myforms.monthStr(ref_month), len(data_to_render))
+    dr.msgStatistics(("<br><h2>Per in mese di %s eventi in scadenza:" % myforms.monthStr(ref_month)) + " %s</h2><br>")
+    dr.showStatistics()
 
     data += dr.toTable()
     print request.get_full_path()

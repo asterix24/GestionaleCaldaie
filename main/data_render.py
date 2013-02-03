@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
+MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
 EMPTY_CELL = '<center>-</center>'
 ACTION_DICT = {
         'add':'plus.jpg',
@@ -180,11 +181,13 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
     return s
 
 class DataRender(object):
-    def __init__(self, items, msg_items_empty = MSG_ITEMS_EMPTY):
+    def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
         self.items = items
         self.colums = None
         self.display_header = True
         self.msg_items_empty = msg_items_empty
+        self.show_statistics = show_statistics
+        self.msg_statistics = msg_statistics
         self.url_type = []
         self.detail_type = None
         self.url_add = None
@@ -193,11 +196,17 @@ class DataRender(object):
     def showHeader(self, display_header):
         self.display_header = display_header
 
-    def uniqueRow(self, unique_row):
-        self.unique_row = unique_row
+    def uniqueRow(self):
+        self.unique_row = True
 
     def msgItemsEmpty(self, msg):
         self.msg_items_empty = msg
+
+    def showStatistics(self):
+        self.show_statistics = True
+
+    def msgStatistics(self, msg):
+        self.msg_statistics = msg
 
     def selectColums(self, colums):
         self.colums = colums
@@ -210,9 +219,17 @@ class DataRender(object):
         if self.items == []:
             return self.msg_items_empty
 
+        # Init table string
+        table = ""
+
+        # Show statistics of founded records
+        if self.show_statistics:
+            table += self.msg_statistics % len(self.items)
+            self.show_statistics = False
+
         duplicate_row = {}
         cycle = False
-        table = "<table id=\"customers\">"
+        table += "<table id=\"customers\">"
         for item_dict in self.items:
             if self.display_header:
                 table += "<tr>"
@@ -222,6 +239,7 @@ class DataRender(object):
                 table += "</tr>"
                 self.display_header = False
 
+            # To not display same row..
             skip_row = False
             if self.unique_row:
                 key = ""
