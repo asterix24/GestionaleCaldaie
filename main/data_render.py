@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
+EMPTY_CELL = '<center>-</center>'
 ACTION_DICT = {
         'add':'plus.jpg',
         'delete':'minus.jpg',
@@ -39,25 +40,33 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
     return url + data + "</a>"
 
 
+def __isValidKey(items, key):
+    if items[key] is None or items[key] == "":
+        return False
+    return True
+
 def __cliente_url(items, key, s=None):
     return make_url('','', items[key], '/anagrafe/%s/', items['cliente_id'])
 
 def __impianto_url(items, key, s=None):
+    if not __isValidKey(items, key):
+        return EMPTY_CELL
+
     return make_url('','', items[key], '/anagrafe/%s/impianto/%s/',
             items['cliente_id'], items['impianto_id'])
 
 def __verifica_url(items, key, s=None):
-    str = items[key]
-    if str is None:
+    if not __isValidKey(items, key):
         return "Nessuna verifica"
 
+    str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(DATA_FIELD_STR_FORMAT)
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
 def __ultima_analisi_url(items, key, s=None):
-    if not items.has_key(key) or items[key] is None:
+    if not __isValidKey(items, key):
         return "No Fumi"
 
     str = items[key]
@@ -67,10 +76,10 @@ def __ultima_analisi_url(items, key, s=None):
             items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
 def __tipo_caldaia(items, key, s=None):
-    str = items[key]
-    if str is None:
-        return s
+    if not __isValidKey(items, key):
+        return EMPTY_CELL
 
+    str = items[key]
     if str.lower() == 'altro':
         s = items['altro_tipo_caldaia']
     else:
@@ -79,10 +88,10 @@ def __tipo_caldaia(items, key, s=None):
     return s
 
 def __tipo_verifica(items, key, s=None):
-    str = items[key]
-    if str is None:
+    if not __isValidKey(items, key):
         return "No Manutezioni"
 
+    str = items[key]
     if str.lower() == 'altro':
         s = items['altro_tipo_verifica']
     else:
@@ -92,10 +101,10 @@ def __tipo_verifica(items, key, s=None):
     return s
 
 def __colore_bollino(items, key, s=None):
-    str = items[key]
-    if str is None:
-        return s
+    if not __isValidKey(items, key):
+        return EMPTY_CELL
 
+    str = items[key]
     if str.lower() == 'altro':
         s = items['altro_colore_bollino']
     else:
@@ -105,7 +114,7 @@ def __colore_bollino(items, key, s=None):
     return s
 
 def __analisi_combustione(items, key, s=None):
-    if items[key] is None:
+    if not __isValidKey(items, key):
         return "No Fumi"
 
     s = 'No.'
@@ -116,8 +125,8 @@ def __analisi_combustione(items, key, s=None):
 
 
 def __stato_pagamento(items, key, s=None):
-    if items[key] is None:
-        return None
+    if not __isValidKey(items, key):
+        return EMPTY_CELL
 
     s = "Da riscuotere."
     if items[key]:
@@ -132,6 +141,7 @@ RENDER_TABLE_URL = {
     'codice_impianto': __impianto_url,
     'matricola_caldaia': __impianto_url,
     'modello_caldaia': __impianto_url,
+    'marca_caldaia': __impianto_url,
     'data_verifica': __verifica_url,
     'data_ultima_verifica': __verifica_url,
     'ultima_analisi_combustione': __ultima_analisi_url,
@@ -227,22 +237,23 @@ class DataRender(object):
 
                 for i in self.colums:
                     try:
-                        if i in RENDER_TABLE:
-                            s = RENDER_TABLE[i](item_dict, i)
-                        elif i in RENDER_TABLE_URL:
-                            s = RENDER_TABLE_URL[i](item_dict, i)
-                        else:
-                            s  = item_dict[i]
-                            if type(s) == datetime.date:
-                                s = s.strftime(DATA_FIELD_STR_FORMAT)
-
-                        if s is None or s == "":
-                            s = '<center>-</center>'
+                        s = EMPTY_CELL
+                        if item_dict.has_key(i):
+                            if i in RENDER_TABLE:
+                                s = RENDER_TABLE[i](item_dict, i)
+                            elif i in RENDER_TABLE_URL:
+                                s = RENDER_TABLE_URL[i](item_dict, i)
+                            else:
+                                s  = item_dict[i]
+                                if s is None or s == "":
+                                    s = EMPTY_CELL
+                                elif type(s) == datetime.date:
+                                    s = s.strftime(DATA_FIELD_STR_FORMAT)
 
                     except (KeyError, ValueError), m:
                         logger.error("Table Errore nel render di %s (%s) s=%s {%s}" %
                                 (i, m, s, item_dict))
-                        s = '<center>-</center>'
+                        s = EMPTY_CELL
 
                     table += "<td>%s</td>" % s
 
