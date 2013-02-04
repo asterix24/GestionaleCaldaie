@@ -316,7 +316,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
 
 def generate_query(s, group, order):
     query_order = QUERY_ORDER
-    if group is not None:
+    if group is not None and group != "":
         if order is None:
             order = "ASC"
 
