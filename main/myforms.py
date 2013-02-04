@@ -68,8 +68,8 @@ def monthStr(ref_month):
 
 
 class RangeDataSelect(forms.Form):
-    search_in_range = forms.CharField(label="Cerca tra le scadenze ", required=False, max_length=200, widget=forms.TextInput(attrs={'size':'40'}))
-    filter_type = forms.CharField(label="Intervento", initial='all', required=False, widget=forms.Select(choices=FILTER_TYPES))
+    search_in_range = forms.CharField(label="Cerca tra le scadenze ", required=False, max_length=200, widget=forms.TextInput(attrs={'size':'20'}))
+    filter_type = forms.CharField(label="Tipo scadenza", initial='all', required=False, widget=forms.Select(choices=FILTER_TYPES))
     ref_month = forms.CharField(label="Mese di riferimento", initial=datetime.date.today().month, required=False, widget=forms.Select(choices=MONTH_CHOISE))
     ref_year = forms.CharField(label="Anno di riferimento", initial=datetime.date.today().year, required=False, max_length=4, widget=forms.TextInput(attrs={'size':'4'}))
     group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select(choices=FILTER_FIELD))

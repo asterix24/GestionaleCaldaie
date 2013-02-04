@@ -13,13 +13,23 @@
 <form action="{% url home %}" method="GET">
 <table>
 <tr>
-    {% for field in data_form %}
-    <td>{{field.label}}</td>
-    <td>{{field}}{{field.errors}}</td>
-    {% endfor %}
+    <td>{{data_form.search_in_range.label}}</td>
+    <td>{{data_form.search_in_range}}</td>
+    <td>{{data_form.ref_month.label}}</td>
+    <td>{{data_form.ref_month}}</td>
+    <td>{{data_form.ref_year.label}}</td>
+    <td>{{data_form.ref_year}}</td>
 </tr>
 <tr>
-    <td colspan="8"><input type="submit" value="Aggiorna"/></td>
+    <td>{{data_form.group_field.label}}</td>
+    <td>{{data_form.group_field}}</td>
+    <td>{{data_form.field_order.label}}</td>
+    <td>{{data_form.field_order}}</td>
+    <td>{{data_form.filter_type.label}}</td>
+    <td>{{data_form.filter_type}}</td>
+</tr>
+<tr>
+    <td><input type="submit" value="Aggiorna"/></td>
 </tr>
 </table>
 </form>
