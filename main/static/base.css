@@ -17,6 +17,7 @@ em {
     width:100%;
     border-collapse:collapse;
 }
+
 #customers td, #customers th
 {
     font-size:0.8em;
@@ -30,8 +31,8 @@ em {
     text-align:center;
     padding-top:4px;
     padding-bottom:3px;
-    background-color:#FFFFFF;
     border-bottom:4px solid #600;
+    background-color:#FFFFFF;
     color:#360;
 }
 
@@ -71,8 +72,8 @@ em {
     font-weight: bold;
     padding-top:5px;
     padding-bottom:4px;
-    background-color:#FFFFFF;
     border-bottom:4px solid #600;
+    background-color:#FFFFFF;
     color:#360;
 }
 
@@ -115,6 +116,23 @@ em {
 }
 
 #header h1 { margin: 0; }
+
+a.table_header
+{
+    text-decoration: none;
+    font-weight: bold;
+    color:#360;
+}
+
+a.table_header:hover
+{
+    text-decoration: none;
+    font-weight: bold;
+    color:#360;
+    border-bottom:4px solid #33CC00;
+    border-top:4px solid #33CC00;
+}
+
 
 #navigation
 {
