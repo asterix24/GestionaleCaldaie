@@ -351,9 +351,9 @@ def generate_query(s, group, order):
     return QUERY + " WHERE ( " + search_query_str + " ) " + query_order, param
 
 def search_inMonth(key=None, month=None, year=None, filter=None, group_field=None, field_order=None):
-    if month is None:
+    if month is None or month == "":
         month = datetime.date.today().month
-    if year is None:
+    if year is None or year == "":
         year = datetime.date.today().year
 
     if month > 12 and month < 1:

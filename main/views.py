@@ -355,12 +355,12 @@ def home(request):
     data = scripts.HOME_ADD_JS
 
     # Use default at first time when the home page is never loaded
-    search_in_range = None
+    search_in_range = ""
     filter_type = None
     ref_month = None
     ref_year = None
-    group_field = None
-    field_order = None
+    group_field = ""
+    field_order = ""
 
     if request.method == 'GET' and request.GET != {}:
         form = myforms.RangeDataSelect(request.GET)
@@ -381,9 +381,9 @@ def home(request):
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
     dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(ref_month)) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()
+    dr.orderUrl('home', search_in_range, group_field, field_order)
 
     data += dr.toTable()
-    print request.get_full_path()
     return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
 
 
