@@ -324,8 +324,8 @@ def anagrafe(request):
     search_string = ""
     data_to_render = []
     data = scripts.HOME_ADD_JS
-    group_field = None
-    field_order = None
+    group_field = ""
+    field_order = ""
 
     if request.method == 'GET' and request.GET != {}:
             form = myforms.FullTextSearchForm(request.GET)
@@ -342,6 +342,7 @@ def anagrafe(request):
             if search_string != "":
                 dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
             dr.showStatistics()
+            dr.orderUrl('anagrafe', search_string, group_field, field_order)
             data += dr.toTable()
 
     return render(request, 'anagrafe.sub', {'query_path':request.get_full_path(), 'data': data,'data_form': form})

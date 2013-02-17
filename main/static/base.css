@@ -117,20 +117,40 @@ em {
 
 #header h1 { margin: 0; }
 
-a.table_header
+a.table_header_asc
 {
     text-decoration: none;
     font-weight: bold;
     color:#360;
+    border-bottom:4px double #33CC00;
 }
 
-a.table_header:hover
+a.table_header_desc:hover
+{
+    text-transform:uppercase;
+    text-decoration: none;
+    font-weight: bold;
+    color:#360;
+    border-bottom:6px double #33CC00;
+    border-top: none;
+}
+
+a.table_header_desc
 {
     text-decoration: none;
     font-weight: bold;
     color:#360;
-    border-bottom:4px solid #33CC00;
-    border-top:4px solid #33CC00;
+    border-top:3px double #33CC00;
+}
+
+a.table_header_asc:hover
+{
+    text-transform:uppercase;
+    text-decoration: none;
+    font-weight: bold;
+    color:#360;
+    border-top:6px double #33CC00;
+    border-bottom: none;
 }
 
 

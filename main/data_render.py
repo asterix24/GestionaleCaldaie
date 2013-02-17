@@ -5,6 +5,8 @@ import datetime
 import logging
 import models
 
+from main import cfg
+
 logger = logging.getLogger(__name__)
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
@@ -39,7 +41,6 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
 
     data += "%s"  % message
     return url + data + "</a>"
-
 
 def isValidKey(items, key):
     if items[key] is None or items[key] == "":
@@ -193,6 +194,10 @@ class DataRender(object):
         self.url_add = None
         self.unique_row = False
 
+
+        self.base_url = ""
+        self.string = ""
+
     def showHeader(self, display_header):
         self.display_header = display_header
 
@@ -215,6 +220,24 @@ class DataRender(object):
         self.detail_type = detail_type
         self.url_type = url_type
 
+    def orderUrl(self, base_url, string, group_field, order):
+        # Alternate ordering
+        if group_field != "":
+            if order == 'asc':
+                order = 'desc'
+            else:
+                order = 'asc'
+
+            # Update ordering of select field
+            try:
+                _, field = group_field.split('.')
+                cfg.GROUP_FIELD_VIEW[field]['order'] = order
+            except (ValueError, KeyError), m:
+                logger.error("%s Errore nello split di %s" % (__name__, group_field))
+
+        self.base_url = base_url
+        self.string = string
+
     def toTable(self):
         if self.items == []:
             return self.msg_items_empty
@@ -235,7 +258,14 @@ class DataRender(object):
                 table += "<tr>"
                 table += "<th></th>"
                 for j in self.colums:
-                    table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
+
+                    s = j.replace('_', ' ').capitalize()
+
+                    if cfg.GROUP_FIELD_VIEW.has_key(j):
+                        s = "<a class=\"table_header_%s\" href=\"/%s/?s=%s&group_field=%s&field_order=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'], self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
+
+                    table += "<th>%s</th>" % s
+
                 table += "</tr>"
                 self.display_header = False
 
@@ -286,6 +316,9 @@ class DataRender(object):
         self.colums = None
         self.display_header = True
         self.unique_row = False
+
+        self.base_url = ""
+        self.string = ""
 
         return table
 
