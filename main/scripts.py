@@ -254,10 +254,14 @@ function otherField(id_select, id_combobox, id_other) {
 }
 
 function addMonth(dateText, months) {
-    var sd = dateText.split("/");
-    var d = new Date(parseInt(sd[2]), parseInt(sd[1]), parseInt(sd[0]));
+    var d = $.datepicker.parseDate("dd/mm/yy", dateText);
+    if (d.getMonth() == 1 && d.getDate() == 29 && months == 12)
+    {
+        d.setDate(d.getDate() - 1);
+    }
     d.setMonth(d.getMonth() + months);
-    return d.getDate() + "/" + (parseInt(d.getMonth()) + 1) + "/" + d.getFullYear();
+
+    return $.datepicker.formatDate('dd/mm/yy', d);
 }
 
 function deltaYear(dateText) {
