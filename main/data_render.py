@@ -145,6 +145,9 @@ def __stato_impianto(items, key, s=EMPTY_CELL):
 
     return items[key]
 
+def __anzianita_impianto(items, key, s=EMPTY_CELL):
+    return items[key]
+
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
     'cognome': __cliente_url,
@@ -164,6 +167,7 @@ RENDER_TABLE = {
     'analisi_combustione': __analisi_combustione,
     'stato_pagamento': __stato_pagamento,
     'stato_impianto': __stato_impianto,
+    'anzianita_impianto': __anzianita_impianto,
 }
 
 def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
@@ -180,6 +184,8 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
                     s = default_text
                 elif type(s) == datetime.date:
                     s = s.strftime(DATA_FIELD_STR_FORMAT)
+        else:
+            logger.error("Key not present %s" % (field_name))
 
     except (KeyError, ValueError), m:
         logger.error("%s Errore nel render di %s (%s) s=%s {%s}" % (__name__, i, m, s, item_dict))

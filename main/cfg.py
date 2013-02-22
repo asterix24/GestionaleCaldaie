@@ -7,7 +7,7 @@ HOME_STD_VIEW = [
  'numero_cellulare',
  'numero_telefono',
  'mail',
-'stato_impianto',
+ 'stato_impianto',
  'marca_caldaia',
  'modello_caldaia',
  'combustibile',
@@ -32,7 +32,7 @@ ANAGRAFE_STD_VIEW = [
  'numero_cellulare',
  'numero_telefono',
  'mail',
-'stato_impianto',
+ 'stato_impianto',
  'marca_caldaia',
  'modello_caldaia',
  'matricola_caldaia',
@@ -73,6 +73,7 @@ ANAGRAFE_IMPIANTI_STD_VIEW = [
 'potenza_caldaia',
 'tipo_caldaia',
 'combustibile',
+'anzianita_impianto',
 'data_installazione',
 'data_contratto'
 ]
