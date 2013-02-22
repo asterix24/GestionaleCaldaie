@@ -63,6 +63,7 @@ ANAGRAFE_CLIENTE_STD_VIEW = [
 ]
 
 ANAGRAFE_IMPIANTI_STD_VIEW = [
+'stato_impianto',
 'codice_impianto',
 'marca_caldaia',
 'modello_caldaia',

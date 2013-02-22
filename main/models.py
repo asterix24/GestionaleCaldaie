@@ -86,8 +86,16 @@ TIPO_CALDAIA = (
 ('altro', 'Altro..'),
 )
 
+STATO_CALDAIA = (
+('Attivo', 'Attivo'),
+('Scaduto', 'Scaduto'),
+('Dismesso', 'Dismesso'),
+(None, ''),
+)
+
 class Impianto(models.Model):
     impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
+    stato_impianto = models.CharField(default=None, max_length=100, null=True, blank=True, choices=STATO_CALDAIA)
     cliente_impianto = models.ForeignKey(Cliente)
     codice_impianto = models.CharField(max_length=100, null=True, blank=True)
     marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
@@ -159,7 +167,7 @@ class ImpiantoForm(forms.ModelForm):
 
     class Meta:
         model = Impianto
-        fields = ('cliente_impianto', 'codice_impianto',
+        fields = ('cliente_impianto', 'codice_impianto', 'stato_impianto',
         'marca_caldaia', 'modello_caldaia', 'matricola_caldaia',
         'potenza_caldaia', 'altra_potenza_caldaia', 'tipo_caldaia',
         'altro_tipo_caldaia', 'combustibile', 'data_installazione',

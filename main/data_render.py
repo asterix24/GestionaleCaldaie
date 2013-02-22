@@ -139,6 +139,11 @@ def __stato_pagamento(items, key, s=EMPTY_CELL):
 
     return s
 
+def __stato_impianto(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key) or items[key] is None:
+        return s
+
+    return items[key]
 
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
@@ -158,6 +163,7 @@ RENDER_TABLE = {
     'colore_bollino': __colore_bollino,
     'analisi_combustione': __analisi_combustione,
     'stato_pagamento': __stato_pagamento,
+    'stato_impianto': __stato_impianto,
 }
 
 def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
