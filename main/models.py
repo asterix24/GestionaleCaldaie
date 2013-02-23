@@ -12,10 +12,10 @@ class Cliente(models.Model):
     """
     cliente_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
     nome = models.CharField(max_length=100, null=True, blank=True)
-    cognome = models.CharField(max_length=100)
+    cognome = models.CharField(max_length=100, db_index=True)
     codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
     via = models.CharField(max_length=300, null=True, blank=True)
-    citta = models.CharField(max_length=100, null=True, blank=True)
+    citta = models.CharField(max_length=100, null=True, blank=True, db_index=True)
     numero_telefono = models.CharField(max_length=20, null=True, blank=True)
     numero_cellulare = models.CharField(max_length=20, null=True, blank=True)
     mail = models.EmailField(default="", null=True, blank=True)
@@ -96,7 +96,7 @@ STATO_CALDAIA = (
 class Impianto(models.Model):
     impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
     stato_impianto = models.CharField(default=None, max_length=100, null=True, blank=True, choices=STATO_CALDAIA)
-    cliente_impianto = models.ForeignKey(Cliente)
+    cliente_impianto = models.ForeignKey(Cliente, db_index=True)
     codice_impianto = models.CharField(max_length=100, null=True, blank=True)
     marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
     modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
@@ -207,7 +207,7 @@ BOLLINO_COLOR_CHOICES_DICT = {
     }
 
 class Verifica(models.Model):
-	verifica_impianto = models.ForeignKey(Impianto)
+	verifica_impianto = models.ForeignKey(Impianto, db_index=True)
 
 	stato_verifica = models.BooleanField(default=False)
 	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)

@@ -140,13 +140,20 @@ def __stato_pagamento(items, key, s=EMPTY_CELL):
     return s
 
 def __stato_impianto(items, key, s=EMPTY_CELL):
-    if not isValidKey(items, key) or items[key] is None:
+    if not isValidKey(items, key):
         return s
 
     return items[key]
 
 def __anzianita_impianto(items, key, s=EMPTY_CELL):
-    return items[key]
+    if not isValidKey(items, key):
+        return s
+
+    d = items[key]
+    y = d.days / 365
+    m = (d.days - (y * 365)) / 31
+    d = (d.days - (y * 365)) - m * 31
+    return "%s anni, %s mesi, %s giorni" % (y, m, d)
 
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
