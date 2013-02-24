@@ -209,7 +209,7 @@ BOLLINO_COLOR_CHOICES_DICT = {
 class Verifica(models.Model):
 	verifica_impianto = models.ForeignKey(Impianto, db_index=True)
 
-	stato_verifica = models.BooleanField(default=False)
+	stato_verifica = models.BooleanField(default=True)
 	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)
 	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
 	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
@@ -240,7 +240,7 @@ class Verifica(models.Model):
 		return u"%s" % self.data_verifica
 
 class VerificaForm(forms.ModelForm):
-    stato_verifica = forms.BooleanField(label='Chiudi verifica', required=False)
+    stato_verifica = forms.BooleanField(label='Stato verifica', required=False)
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     analisi_combustione = forms.BooleanField(initial=False, required=False)

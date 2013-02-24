@@ -139,9 +139,8 @@ def verifiche_csv(row):
 
             table_dict['colore_bollino'] = color
 
-            if table_dict['colore_bollino'] == 'blu':
-                table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365) * 2
-            elif table_dict['colore_bollino'] == 'arancione':
+            table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365) * 2
+            if table_dict['colore_bollino'] == 'arancione':
                 table_dict['prossima_analisi_combustione'] = data_fmt(row[ID_DATA_FUMI]) + datetime.timedelta(days=365)
 
             n = row[ID_NUMERO_BOLLINO].strip()

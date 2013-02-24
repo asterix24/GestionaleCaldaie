@@ -1,4 +1,5 @@
 HOME_STD_VIEW = [
+ 'stato_verifica',
  'codice_impianto',
  'cognome',
  'nome',
@@ -79,6 +80,7 @@ ANAGRAFE_IMPIANTI_STD_VIEW = [
 ]
 
 ANAGRAFE_VERIFICA_STD_VIEW = [
+'stato_verifica',
 'data_verifica',
 'tipo_verifica',
 'numero_rapporto',

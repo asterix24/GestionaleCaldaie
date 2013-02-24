@@ -16,55 +16,6 @@ from tools import *
 import logging
 logger = logging.getLogger(__name__)
 
-#SELECT
-DB_COLUM = """
-main_cliente.numero_cellulare,
-main_cliente.via,
-main_cliente.nome,
-main_cliente.cognome,
-main_cliente.codice_fiscale,
-main_cliente.cliente_data_inserimento,
-main_cliente.numero_telefono,
-main_cliente.mail,
-main_cliente.citta,
-main_cliente.id AS cliente_id,
-main_impianto.stato_impianto,
-main_impianto.modello_caldaia,
-main_impianto.impianto_data_inserimento,
-main_impianto.matricola_caldaia,
-main_impianto.combustibile,
-main_impianto.data_installazione,
-age(main_impianto.data_installazione) AS anzianita_impianto,
-main_impianto.data_contratto,
-main_impianto.tipo_caldaia,
-main_impianto.altro_tipo_caldaia,
-main_impianto.potenza_caldaia,
-main_impianto.altra_potenza_caldaia,
-main_impianto.marca_caldaia,
-main_impianto.codice_impianto,
-main_impianto.id AS impianto_id,
-main_intervento.note_intervento,
-main_intervento.tipo_intervento,
-main_intervento.data_intervento,
-main_intervento.id AS intervento_id,
-main_verifica.id AS verifica_id,
-main_verifica.stato_verifica,
-main_verifica.data_verifica,
-main_verifica.tipo_verifica,
-main_verifica.altro_tipo_verifica,
-main_verifica.codice_id,
-main_verifica.numero_rapporto,
-main_verifica.prossima_verifica,
-main_verifica.colore_bollino,
-main_verifica.numero_bollino,
-main_verifica.valore_bollino,
-main_verifica.analisi_combustione,
-main_verifica.prossima_analisi_combustione,
-main_verifica.stato_pagamento,
-main_verifica.costo_intervento,
-main_verifica.note_verifica
-"""
-
 #
 DB_COLUM_SEARCH_ID ="""
 main_cliente.numero_cellulare,
@@ -370,9 +321,9 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
     query_str, param = generate_query(key, group_field, field_order)
 
     query_year = """(
-        main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\' OR
-        main_verifica.prossima_verifica BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\'
-        )""" % (year, year, year, year)
+        EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione ) < %s OR
+        EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s
+        )""" % (year, year)
 
     query_month = """(
         EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s OR
@@ -380,13 +331,13 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
         )""" % (month, month)
 
     if filter == 'fumi':
-        query_year = "( main_verifica.prossima_analisi_combustione BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\')" % (year, year)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione ) < %s)" % (year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % month
     if filter == 'verifiche':
-        query_year = "( main_verifica.prossima_verifica BETWEEN \'%s-01-01 00:00:00\' and \'%s-12-31 23:59:59.999999\')" % (year, year)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica ) < %s)" % (year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % month
 
-    query_str2 = " ( " + query_year + " AND " + query_month + " )"
+    query_str2 = " ( main_verifica.stato_verifica = True AND " + query_year + " AND " + query_month + " )"
     return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
 

@@ -80,6 +80,17 @@ def __ultima_analisi_url(items, key, s=EMPTY_CELL):
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
+def __stato_verifica_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
+    s = "Chiusa"
+    if items[key]:
+        s = "Aperta"
+
+    return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
+            items['cliente_id'], items['impianto_id'], items['verifica_id'])
+
 def __tipo_caldaia(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
@@ -139,6 +150,7 @@ def __stato_pagamento(items, key, s=EMPTY_CELL):
 
     return s
 
+
 def __stato_impianto(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
@@ -155,6 +167,16 @@ def __anzianita_impianto(items, key, s=EMPTY_CELL):
     d = (d.days - (y * 365)) - m * 31
     return "%s anni, %s mesi, %s giorni" % (y, m, d)
 
+def __stato_verifica(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
+    s = "Chiusa"
+    if items[key]:
+        s = "Aperta"
+
+    return s
+
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
     'cognome': __cliente_url,
@@ -165,6 +187,7 @@ RENDER_TABLE_URL = {
     'data_verifica': __verifica_url,
     'data_ultima_verifica': __verifica_url,
     'ultima_analisi_combustione': __ultima_analisi_url,
+    'stato_verifica': __stato_verifica_url,
 }
 
 RENDER_TABLE = {
@@ -175,13 +198,14 @@ RENDER_TABLE = {
     'stato_pagamento': __stato_pagamento,
     'stato_impianto': __stato_impianto,
     'anzianita_impianto': __anzianita_impianto,
+    'stato_verifica': __stato_verifica,
 }
 
 def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
     try:
         s = default_text
         if item_dict.has_key(field_name):
-            if field_name in RENDER_TABLE:
+            if with_url == False and field_name in RENDER_TABLE:
                 s = RENDER_TABLE[field_name](item_dict, field_name, default_text)
             elif with_url and field_name in RENDER_TABLE_URL:
                 s = RENDER_TABLE_URL[field_name](item_dict, field_name, default_text)
