@@ -75,3 +75,16 @@ class RangeDataSelect(forms.Form):
     group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select(choices=FILTER_FIELD))
     field_order = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select(choices=FILTER_ORDER))
 
+from django import forms
+from django.forms.widgets import RadioFieldRenderer
+from django.utils.encoding import force_unicode
+from django.utils.safestring import mark_safe
+
+class CustomRadioSelect(RadioFieldRenderer):
+    def render(self):
+        s = u"<div id=\"radio_fmt\">"
+        for i in self:
+            s += u"%s<label for=\"id_%s_%s\">%s</label>" % (i.tag(), i.name, i.index, i.choice_label)
+        s += u"</div>"
+        return mark_safe(s)
+

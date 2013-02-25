@@ -89,9 +89,9 @@ $(function() {
 __VERIFICA_ADD_JS = """
 <script>
 %s
-
 $(function() {
     $("input[type=submit], a[name=href_button]").button();
+    $("div[id=radio_fmt]").buttonset();
 
     if (!$("#id_analisi_combustione").is(':checked')) {
         $("#tr_colore_bollino").hide();

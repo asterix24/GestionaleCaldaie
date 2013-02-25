@@ -84,9 +84,12 @@ def __stato_verifica_url(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    s = "Chiusa"
-    if items[key]:
-        s = "Aperta"
+    if items[key] == 'A':
+        s = 'Aperto'
+    elif items[key] == 'C':
+        s = 'Chiuso'
+    elif items[key] == 'S':
+        s = 'Sospeso'
 
     return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
@@ -171,11 +174,12 @@ def __stato_verifica(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    s = "Chiusa"
-    if items[key]:
-        s = "Aperta"
-
-    return s
+    if items[key] == 'A':
+        return 'Aperto'
+    if items[key] == 'C':
+        return 'Chiuso'
+    if items[key] == 'S':
+        return 'Sospeso'
 
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
@@ -219,7 +223,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
             logger.error("Key not present %s" % (field_name))
 
     except (KeyError, ValueError), m:
-        logger.error("%s Errore nel render di %s (%s) s=%s {%s}" % (__name__, i, m, s, item_dict))
+        logger.error("%s Errore nel render di (%s) s=%s {%s}" % (__name__, m, s, item_dict))
         s = default_text
 
     return s

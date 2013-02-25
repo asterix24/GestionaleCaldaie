@@ -3,6 +3,7 @@
 
 from django.db import models
 from django import forms
+from main import myforms
 
 import datetime
 
@@ -206,10 +207,22 @@ BOLLINO_COLOR_CHOICES_DICT = {
     BOLLINO_COLOR_CHOICES[5][0]:BOLLINO_COLOR_CHOICES[5][1]
     }
 
+STATO_VERIFICA = (
+    ('A','Aperto'),
+    ('C','Chiuso'),
+    ('S','Sospeso'),
+    )
+
+
+STATO_PAGAMENTO = (
+    ('True','Pagato'),
+    ('False','Non Riscosso'),
+    )
+
 class Verifica(models.Model):
 	verifica_impianto = models.ForeignKey(Impianto, db_index=True)
 
-	stato_verifica = models.BooleanField(default=True)
+	stato_verifica = models.CharField(default='A', max_length=80, null=True, blank=True, choices=STATO_VERIFICA)
 	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)
 	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
 	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
@@ -240,11 +253,13 @@ class Verifica(models.Model):
 		return u"%s" % self.data_verifica
 
 class VerificaForm(forms.ModelForm):
-    stato_verifica = forms.BooleanField(label='Stato verifica', required=False)
+    stato_verifica = forms.CharField(label='Stato verifica', initial='A', required=False,
+             widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     analisi_combustione = forms.BooleanField(initial=False, required=False)
-    stato_pagamento = forms.BooleanField(label="Verifica riscossa", initial=False, required=False)
+    stato_pagamento = forms.BooleanField(label="Stato pagamento", initial=False, required=False,
+             widget=forms.RadioSelect(choices=STATO_PAGAMENTO, renderer=myforms.CustomRadioSelect))
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
     scadenza_fumi_tra = forms.IntegerField(label='Prossima analisi combustione tra mesi', initial="24", required=False)
 

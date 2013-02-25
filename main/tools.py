@@ -111,6 +111,7 @@ def verifiche_csv(row):
     table_dict['data_verifica'] = None
     table_dict['prossima_analisi_combustione'] = None
     table_dict['prossima_verifica'] = None
+    table_dict['stato_verifica'] = 'A'
 
     if data_verifica != None:
         table_dict['data_verifica'] = data_verifica

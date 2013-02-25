@@ -337,7 +337,7 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
         query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica ) < %s)" % (year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % month
 
-    query_str2 = " ( main_verifica.stato_verifica = True AND " + query_year + " AND " + query_month + " )"
+    query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
     return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
 
