@@ -51,13 +51,13 @@ def __cliente_url(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/', items['cliente_id'])
+    return make_url('','', items[key], '/anagrafe/%s/#cliente', items['cliente_id'])
 
 def __impianto_url(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/',
+    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
             items['cliente_id'], items['impianto_id'])
 
 def __verifica_url(items, key, s=EMPTY_CELL):
@@ -67,7 +67,7 @@ def __verifica_url(items, key, s=EMPTY_CELL):
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
 def __ultima_analisi_url(items, key, s=EMPTY_CELL):
@@ -77,7 +77,7 @@ def __ultima_analisi_url(items, key, s=EMPTY_CELL):
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
 def __stato_verifica_url(items, key, s=EMPTY_CELL):
@@ -91,8 +91,15 @@ def __stato_verifica_url(items, key, s=EMPTY_CELL):
     elif items[key] == 'S':
         s = 'Sospeso'
 
-    return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/',
+    return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
+
+def __stato_impianto_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
+    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
+            items['cliente_id'], items['impianto_id'])
 
 def __tipo_caldaia(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
@@ -192,6 +199,7 @@ RENDER_TABLE_URL = {
     'data_ultima_verifica': __verifica_url,
     'ultima_analisi_combustione': __ultima_analisi_url,
     'stato_verifica': __stato_verifica_url,
+    'stato_impianto': __stato_impianto_url,
 }
 
 RENDER_TABLE = {
@@ -309,7 +317,8 @@ class DataRender(object):
                     s = j.replace('_', ' ').capitalize()
 
                     if cfg.GROUP_FIELD_VIEW.has_key(j):
-                        s = "<a class=\"table_header_%s\" href=\"/%s/?s=%s&group_field=%s&field_order=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'], self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
+                        s = "<a class=\"table_header_%s\" href=\"/%s/?s=%s&group_field=%s&field_order=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
+                                self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
 
                     table += "<th>%s</th>" % s
 
@@ -375,9 +384,9 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
     return_link = ''
     if detail_type is not None:
         if detail_type == 'cliente':
-            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/', cliente_id=item_dict['cliente_id'])
+            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/#cliente', cliente_id=item_dict['cliente_id'])
         elif detail_type == 'impianto':
-            return_link += make_url('button', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/',
+            return_link += make_url('button', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/#impianto',
                     cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
         else:
             return_link = ''

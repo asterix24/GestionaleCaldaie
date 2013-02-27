@@ -24,9 +24,7 @@
     <td>{{data_form.ref_month}}</td>
     <td>{{data_form.ref_year.label}}</td>
     <td>{{data_form.ref_year}}</td>
-<tr>
     <td><input type="submit" value="Aggiorna"/></td>
-</tr>
 </table>
 </form>
 

@@ -18,7 +18,12 @@
 
 <table id="customers_detail">
 <tr>
-<th></th> <th>{{header_msg}}</th>
+<th></th>
+<th>
+{% autoescape off %}
+    {{header_msg}}
+{% endautoescape %}
+</th>
 </tr>
 
 {% for form in data_forms %}
@@ -32,7 +37,7 @@
 <input class=navigation_buttons type="submit" value="Salva"/>
 </form>
 
-<form action="{% url anagrafe %}{{return_url}}" method="post">{% csrf_token %}
+<form action="{{return_url}}" method="post">{% csrf_token %}
 <input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
 

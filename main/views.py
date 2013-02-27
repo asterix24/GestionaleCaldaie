@@ -50,7 +50,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     data = ""
     data_to_render = database_manager.search_clienteId(cliente_id)
     if not show_cliente:
-        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente")
+        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>")
 
     dr = data_render.DataRender(data_to_render)
 
@@ -64,7 +64,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente')
 
         if data_to_render[0]['verifica_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
@@ -77,10 +77,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             data += dr.toTable()
 
         data += data_render.make_url('button', 'add', 'Aggiungi una verifica a questo impianto..',
-                                '/anagrafe/%s/impianto/%s/verifica/add', cliente_id, impianto_id, sub_impianto_id)
+                                '/anagrafe/%s/impianto/%s/verifica/add#verifica', cliente_id, impianto_id, sub_impianto_id)
 
         data += data_render.make_url('button', 'add', 'Aggiungi un\'intervento a questo impianto..',
-                                '/anagrafe/%s/impianto/%s/intervento/add', cliente_id, impianto_id, sub_impianto_id)
+                                '/anagrafe/%s/impianto/%s/intervento/add#intervento', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -88,7 +88,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_verificaId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "Dettaglio Verifica e Manutenzioni", 'impianto')
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>", 'impianto')
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -96,7 +96,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento", 'impianto')
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>", 'impianto')
     else:
         data = None
 
@@ -153,22 +153,22 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
     if cliente_id is None:
         header_msg = "Aggiungi Nuovo Cliente"
         post_url = "add/"
-        return_url = ""
+        return_url = "/#cliente"
     else:
         if detail_type == 'impianto':
-            header_msg = "Aggiungi Nuovo Impianto"
+            header_msg = "<a id=\"impianto\">Aggiungi Nuovo Impianto</a>"
             post_url = "%s/impianto/add/" % cliente_id
-            return_url = "%s/" % cliente_id
+            return_url = "/anagrafe/%s/#impianto" % cliente_id
 
         if detail_type == 'verifica':
-            header_msg = "Aggiungi Nuova Verifica e Manutenzione"
+            header_msg = "<a id=\"verifica\">Aggiungi Nuova Verifica e Manutenzione</a>"
             post_url = "%s/impianto/%s/verifica/add/" % (cliente_id, impianto_id)
-            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+            return_url = "/anagrafe/%s/impianto/%s/#verifica" % (cliente_id, impianto_id)
 
         if detail_type == 'intervento':
-            header_msg = "Aggiungi Nuovo Intervento"
+            header_msg = "<a id=\"intervento\">Aggiungi Nuovo Intervento</a>"
             post_url = "%s/impianto/%s/intervento/add/" % (cliente_id, impianto_id)
-            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+            return_url = "/anagrafe/%s/impianto/%s/#intervento" % (cliente_id, impianto_id)
 
         if detail_type is None:
             return _display_error(request, "Qualcosa e' andato storto..")
@@ -206,29 +206,29 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         form = models.ClienteForm(instance=select)
         header_msg = "Modifica Cliente"
         post_url = "%s/edit/" % cliente_id
-        return_url = "%s/" % cliente_id
+        return_url = "/anagrafe/%s/#cliente" % cliente_id
     else:
         if detail_type == 'impianto':
             select = models.Impianto.objects.get(pk=impianto_id)
             form = models.ImpiantoForm(instance=select)
-            header_msg = "Modifica Impianto"
+            header_msg = "<a id=\"impianto\">Modifica Impianto</a>"
             post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
-            return_url = "%s/impianto/%s/" % (cliente_id, impianto_id)
+            return_url = "/anagrafe/%s/impianto/%s/#impianto" % (cliente_id, impianto_id)
 
         if detail_type == 'verifica':
             select = models.Verifica.objects.get(pk=sub_impianto_id)
             form = models.VerificaForm(instance=select)
-            header_msg = "Modifica Verifica e Manutenzione"
+            header_msg = "<a id=\"verifica\">Modifica Verifica e Manutenzione</a>"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            return_url = "%s/impianto/%s/verifica/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "/anagrafe/%s/impianto/%s/verifica/%s/#verifica" % (cliente_id, impianto_id, sub_impianto_id)
             data = _verifica_cfg(cliente_id, detail_type, impianto_id)
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)
             form = models.InterventoForm(instance=select)
-            header_msg = "Modifica Intervento"
+            header_msg = "<a id=\"intervento\">Modifica Intervento</a>"
             post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            return_url = "%s/impianto/%s/intervento/%s/" % (cliente_id, impianto_id, sub_impianto_id)
+            return_url = "/anagrafe/%s/impianto/%s/intervento/%s/#intervento" % (cliente_id, impianto_id, sub_impianto_id)
 
         if detail_type is None:
             return _display_error(request, "Qualcosa e' andato storto..")
@@ -436,7 +436,7 @@ from main import tools
 
 def populatedb(request):
     #data = tools.insert_csv_files(cli_on=False)
-    data = tools.load_csv('main/elenco2011.csv')
+    data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
 
 def test(request, search_string):
