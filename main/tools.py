@@ -80,6 +80,7 @@ ID_CODICE_IMPIANTO=0
 def impianto_csv(row):
     table_dict = {}
 
+    table_dict['stato_impianto'] = 'Attivo'
     table_dict['marca_caldaia'] = row[ID_MARCA_CALDAIA].strip().upper()
     table_dict['tipo_caldaia'] = row[ID_TIPO].strip().upper()
     table_dict['modello_caldaia'] = row[ID_MODELLO_CALDAIA].strip().upper()
