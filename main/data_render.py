@@ -19,6 +19,11 @@ ACTION_DICT = {
         'edit':'edit.jpg'
         }
 
+CLIENTE_ID = 0
+IMPIANTO_ID = 1
+VERIFICA_ID = 2
+INTERVENTO_ID = 3
+
 def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     url = "<a href=\""
@@ -244,7 +249,7 @@ class DataRender(object):
         self.msg_items_empty = msg_items_empty
         self.show_statistics = show_statistics
         self.msg_statistics = msg_statistics
-        self.url_type = []
+        self.url_action = []
         self.detail_type = None
         self.url_add = None
         self.unique_row = False
@@ -271,9 +276,9 @@ class DataRender(object):
     def selectColums(self, colums):
         self.colums = colums
 
-    def urlBar(self, detail_type, url_type):
+    def actionWidget(self, detail_type, url_action):
         self.detail_type = detail_type
-        self.url_type = url_type
+        self.url_action = url_action
 
     def orderUrl(self, base_url, string, group_field, order):
         # Alternate ordering
@@ -307,6 +312,10 @@ class DataRender(object):
 
         duplicate_row = {}
         cycle = False
+        if self.detail_type == 'check':
+            for i in self.url_action:
+                table += "<p name='button'>%s</p>" % i
+
         table += "<table id=\"customers\">"
         for item_dict in self.items:
             if self.display_header:
@@ -345,19 +354,28 @@ class DataRender(object):
                 cycle = not cycle
 
                 table += "<tr%s>" % cycle_str
+                # Aggiustare quest blocco..
                 if self.detail_type is not None:
                     p = ''
-                    for j in self.url_type:
-                        if self.detail_type == 'cliente':
-                            p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
-                        elif self.detail_type == 'impianto':
-                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
-                                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
-                        else:
-                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
-                                    cliente_id=item_dict['cliente_id'],
-                                    impianto_id=item_dict['impianto_id'],
-                                    sub_impianto_id=item_dict[self.detail_type + '_id'])
+                    if self.detail_type == 'check':
+                        cliente_id = item_dict.get('cliente_id', '')
+                        impianto_id = item_dict.get('impianto_id', '')
+                        verifica_id = item_dict.get('verifica_id', '')
+                        intervento_id = item_dict.get('intervento_id', '')
+                        p += "<input type=\"checkbox\" name=\"row_select\" value=\"%s,%s,%s,%s\">" % (cliente_id,
+                                    impianto_id, verifica_id, intervento_id)
+                    else:
+                        for j in self.url_action:
+                            if self.detail_type == 'cliente':
+                                p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
+                            elif self.detail_type == 'impianto':
+                                p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
+                                        cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+                            else:
+                                p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
+                                        cliente_id=item_dict['cliente_id'],
+                                        impianto_id=item_dict['impianto_id'],
+                                        sub_impianto_id=item_dict[self.detail_type + '_id'])
 
                     table += "<td>%s</td>" % p
 
@@ -367,7 +385,7 @@ class DataRender(object):
             table += "</tr>"
         table += "</table><br>"
 
-        self.url_type = []
+        self.url_action = []
         self.detail_type = None
         self.colums = None
         self.display_header = True

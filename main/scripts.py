@@ -6,10 +6,21 @@
 HOME_ADD_JS = """
 <script>
 $(function() {
-    $("input[type=submit], a[name=href_button]").button();
+    $("input[type=submit], a[name=href_button], p[name=button]").button();
+    $("p[name=button]").click( function() {
+        var button_action = $(this).text();
+        $("#home_act").append(
+            $('<input/>')
+            .attr('type', 'hidden')
+            .attr('name', 'action')
+            .val(button_action)
+        );
+        $("#home_act").trigger("submit");
+    });
 });
 </script>
 """
+
 SHOW_ADD_JS = """
 <script>
 $(function() {

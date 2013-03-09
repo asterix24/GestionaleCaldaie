@@ -28,8 +28,11 @@
 </table>
 </form>
 
+
+<form action={% url home %} method="POST" id="home_act">{% csrf_token %}
 {% autoescape off %}
     {{ data }}
 {% endautoescape %}
+</form>
 
 {% endblock %}

@@ -57,7 +57,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     if detail_type is None:
         if len(data_to_render) >= 1 and data_to_render[0]['impianto_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
-            dr.urlBar('impianto', ['edit','delete'])
+            dr.actionWidget('impianto', ['edit','delete'])
             dr.uniqueRow()
             data += dr.toTable()
         data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
@@ -68,12 +68,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if data_to_render[0]['verifica_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
-            dr.urlBar('verifica', ['edit','delete'])
+            dr.actionWidget('verifica', ['edit','delete'])
             data += dr.toTable()
 
         if data_to_render[0]['intervento_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
-            dr.urlBar('intervento', ['edit','delete'])
+            dr.actionWidget('intervento', ['edit','delete'])
             data += dr.toTable()
 
         data += data_render.make_url('button', 'add', 'Aggiungi una verifica a questo impianto..',
@@ -350,6 +350,9 @@ def anagrafe(request):
 import csv
 import datetime
 
+
+
+
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
@@ -361,6 +364,23 @@ def home(request):
     ref_year = None
     group_field = ""
     field_order = ""
+
+    if request.method == 'POST':
+        selected_rows = request.POST.getlist('row_select', [])
+        action = request.POST.get('action', '')
+
+        for i in selected_rows:
+            ids = i.split(',')
+            verifica_id = ids[data_render.VERIFICA_ID]
+            if verifica_id != 'None':
+                _id = int(verifica_id)
+                if action == 'Apri':
+                    models.Verifica.objects.filter(id=_id).update(stato_verifica='A')
+                if action == 'Chiudi':
+                    models.Verifica.objects.filter(id=_id).update(stato_verifica='C')
+                if action == 'Sospendi':
+                    models.Verifica.objects.filter(id=_id).update(stato_verifica='S')
+
 
     if request.method == 'GET' and request.GET != {}:
         form = myforms.RangeDataSelect(request.GET)
@@ -377,7 +397,7 @@ def home(request):
                                 group_field=group_field, field_order=field_order)
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
-    dr.urlBar('cliente', ['edit', 'delete'])
+    dr.actionWidget('check', ['Apri','Chiudi','Sospendi'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
     dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(ref_month)) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()
@@ -438,6 +458,15 @@ def populatedb(request):
     #data = tools.insert_csv_files(cli_on=False)
     data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
+
+def check_test(request):
+    print request.POST,'\n'
+    print "items\n", request.POST.items()
+    print "list\n", request.POST.lists()
+    print request.POST.get('action','nulla')
+    print request.POST.get('prova','ppnulla')
+    return _display_ok(request, "ok")
+
 
 def test(request, search_string):
     form = myforms.FullTextSearchForm()
