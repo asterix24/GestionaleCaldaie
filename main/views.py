@@ -397,7 +397,7 @@ def home(request):
                                 group_field=group_field, field_order=field_order)
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
-    dr.actionWidget('check', ['Apri','Chiudi','Sospendi'])
+    dr.actionWidget('check', ['Seleziona Tutti', 'Apri','Chiudi','Sospendi'])
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
     dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(ref_month)) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()
