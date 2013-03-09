@@ -311,15 +311,15 @@ class DataRender(object):
         for item_dict in self.items:
             if self.display_header:
                 table += "<tr>"
-                table += "<th></th>"
+
+                if self.detail_type is not None:
+                    table += "<th></th>"
+
                 for j in self.colums:
-
                     s = j.replace('_', ' ').capitalize()
-
                     if cfg.GROUP_FIELD_VIEW.has_key(j):
                         s = "<a class=\"table_header_%s\" href=\"/%s/?s=%s&group_field=%s&field_order=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
                                 self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
-
                     table += "<th>%s</th>" % s
 
                 table += "</tr>"

@@ -337,7 +337,7 @@ def anagrafe(request):
             data_to_render = database_manager.search_fullText(search_string, group_field, field_order)
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
-            dr.urlBar('cliente', ['edit', 'delete'])
+
             dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
             if search_string != "":
                 dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
