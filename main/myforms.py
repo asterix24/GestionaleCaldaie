@@ -5,34 +5,19 @@ import calendar
 import logging
 logger = logging.getLogger(__name__)
 
-FILTER_FIELD = (
-    ("main_cliente.cognome", "Cognome.."),
-    ("main_cliente.nome", "Nome.."),
-    ("main_cliente.via", "Via.."),
-    ("main_cliente.citta", "Citta.."),
-    ("main_impianto.marca_caldaia", "Marca Caldaia.."),
-    ("main_impianto.modello_caldaia", "Modello Caldaia.."),
-    ("main_impianto.combustibile", "Combustibile.."),
-    ("main_impianto.data_installazione", "Data Installazione.."),
-    ("main_impianto.data_contratto", "Data Contratto.."),
-    ("main_impianto.potenza_caldaia", "Potenza Caldaia.."),
-    ("main_impianto.tipo_caldaia", "Tipo Caldaia.."),
-        )
-FILTER_ORDER = (
-        ('ASC', 'A->Z'),
-        ('DESC', 'Z->A'),
-        )
 
 class FullTextSearchForm(forms.Form):
     s = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size':'40'}))
-    group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select(choices=FILTER_FIELD))
-    field_order = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select(choices=FILTER_ORDER))
+    group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select())
+    field_order = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select())
 
 FILTER_TYPES = (
-        ('all', 'Tutti..'),
-        ('fumi', 'Analisi combustioni'),
-        ('verifiche', 'Verifiche'),
-        )
+       ('all','Tutti..'),
+       ('fumi','Analisi combustioni'),
+       ('fumi_prossimi','Prossime Analisi combustioni'),
+       ('verifiche','Verifiche'),
+       ('verifiche_prossima','Prossime Verifiche'),
+)
 
 MONTH_CHOISE = (
 	('1','Gennaio'),
@@ -72,8 +57,8 @@ class RangeDataSelect(forms.Form):
     filter_type = forms.CharField(label="Tipo scadenza", initial='all', required=False, widget=forms.Select(choices=FILTER_TYPES))
     ref_month = forms.CharField(label="Mese di riferimento", initial=datetime.date.today().month, required=False, widget=forms.Select(choices=MONTH_CHOISE))
     ref_year = forms.CharField(label="Anno di riferimento", initial=datetime.date.today().year, required=False, max_length=4, widget=forms.TextInput(attrs={'size':'4'}))
-    group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select(choices=FILTER_FIELD))
-    field_order = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select(choices=FILTER_ORDER))
+    group_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select())
+    field_order = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select())
 
 from django import forms
 from django.forms.widgets import RadioFieldRenderer

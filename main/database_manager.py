@@ -320,22 +320,36 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
     #if group_field is not None:
     query_str, param = generate_query(key, group_field, field_order)
 
+
     query_year = """(
-        EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione ) < %s OR
-        EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s
-        )""" % (year, year)
+        ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione) OR
+        ( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s) OR
+        ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s) OR
+        ( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)
+        )""" % (year, year, year, year)
 
     query_month = """(
-        EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s OR
-        EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s
-        )""" % (month, month)
+        ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione) OR
+        ( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s ) OR
+        ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s ) OR
+        ( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )
+        )""" % (month, month, month, month)
 
     if filter == 'fumi':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione ) < %s)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % month
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione)" % (year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione)" % (month)
+
+    if filter == 'fumi_prossimi':
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s)" % (year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % (month)
+
     if filter == 'verifiche':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica ) < %s)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % month
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s)" % (year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s )" % (month)
+
+    if filter == 'verifiche_prossima':
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (month)
 
     query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
     return query_table(query_str, param, query_str2, [], verifiche_only=True)
