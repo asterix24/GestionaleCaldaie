@@ -73,38 +73,38 @@ class ClienteForm(forms.ModelForm):
     class Meta:
 		model = Cliente
 
-POTENZA_CALDAIA = (
-('C1', 'C1: Inferiore a 35 kW'),
-('C2', 'C2: Compresa tra 35 kW e 350 kW'),
-('C3', 'C3: Uguale o superiore a 350 kW'),
-('altro', 'Altro..'),
-)
+POTENZA_CALDAIA = {
+    'C1'   : 'C1: Inferiore a 35 kW',
+    'C2'   : 'C2: Compresa tra 35 kW e 350 kW',
+    'C3'   : 'C3: Uguale o superiore a 350 kW',
+    'altro': 'Altro..',
+}
 
-TIPO_CALDAIA = (
-('A', 'A: camera aperta senza canna fumaria'),
-('B', 'B: camera aperta con canna fumaria a tiraggio naturale'),
-('C', 'C: camera chiusa con canna fumaria a tiraggio forzato'),
-('altro', 'Altro..'),
-)
+TIPO_CALDAIA = {
+    'A'    : 'A: camera aperta senza canna fumaria',
+    'B'    : 'B: camera aperta con canna fumaria a tiraggio naturale',
+    'C'    : 'C: camera chiusa con canna fumaria a tiraggio forzato',
+    'altro': 'Altro..',
+}
 
-STATO_CALDAIA = (
-('Attivo', 'Attivo'),
-('Scaduto', 'Scaduto'),
-('Dismesso', 'Dismesso'),
-(None, ''),
-)
+STATO_CALDAIA = {
+    'Attivo'  : 'Attivo',
+    'Scaduto' : 'Scaduto',
+    'Dismesso': 'Dismesso',
+    None : ''
+}
 
 class Impianto(models.Model):
     impianto_data_inserimento = models.DateField(default=datetime.date.today(), editable=False)
-    stato_impianto = models.CharField(default=None, max_length=100, null=True, blank=True, choices=STATO_CALDAIA)
+    stato_impianto = models.CharField(default=None, max_length=100, null=True, blank=True, choices=STATO_CALDAIA.items())
     cliente_impianto = models.ForeignKey(Cliente, db_index=True)
     codice_impianto = models.CharField(max_length=100, null=True, blank=True)
     marca_caldaia = models.CharField(max_length=100, null=True, blank=True)
     modello_caldaia = models.CharField(max_length=100, null=True, blank=True)
     matricola_caldaia = models.CharField(max_length=100, null=True, blank=True)
-    potenza_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=POTENZA_CALDAIA)
+    potenza_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=POTENZA_CALDAIA.items())
     altra_potenza_caldaia = models.CharField(max_length=100, null=True, blank=True)
-    tipo_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=TIPO_CALDAIA)
+    tipo_caldaia = models.CharField(max_length=100, null=True, blank=True, choices=TIPO_CALDAIA.items())
     altro_tipo_caldaia = models.CharField(max_length=100, null=True, blank=True)
     combustibile = models.CharField(max_length=100, null=True, blank=True)
 
@@ -175,56 +175,39 @@ class ImpiantoForm(forms.ModelForm):
         'data_contratto')
 
 
-VERIFICHE_TYPE_CHOICES = (
-	('programmata', 'Manutenzione Ordinaria'),
-	('straordinaria', 'Manutenzione Straordinaria'),
-	('prima_accensione','Prima Accensione'),
-	('altro','Altro..'),
-	)
+VERIFICHE_TYPE_CHOICES = {
+    'programmata'     : 'Manutenzione Ordinaria',
+	'straordinaria'   : 'Manutenzione Straordinaria',
+	'prima_accensione': 'Prima Accensione',
+	'altro'           : 'Altro..',
+}
 
-VERIFICHE_TYPE_CHOISES_DICT = {
-    VERIFICHE_TYPE_CHOICES[0][0]:VERIFICHE_TYPE_CHOICES[0][1],
-    VERIFICHE_TYPE_CHOICES[1][0]:VERIFICHE_TYPE_CHOICES[1][1],
-    VERIFICHE_TYPE_CHOICES[2][0]:VERIFICHE_TYPE_CHOICES[2][1],
-    VERIFICHE_TYPE_CHOICES[3][0]:VERIFICHE_TYPE_CHOICES[3][1]
-    }
+BOLLINO_COLOR_CHOICES = {
+    'blu'      :'Blu',
+	'verde'    :'Verde',
+	'giallo'   :'Giallo',
+	'arancione':'Arancione',
+	'no'       :'No',
+	'altro'    :'Altro..',
+}
 
-BOLLINO_COLOR_CHOICES = (
-	('blu','Blu'),
-	('verde','Verde'),
-	('giallo','Giallo'),
-	('arancione','Arancione'),
-	('no','No'),
-	('altro','Altro..'),
-	)
+STATO_VERIFICA = {
+    'A':'Aperto',
+    'C':'Chiuso',
+    'S':'Sospeso',
+ }
 
-BOLLINO_COLOR_CHOICES_DICT = {
-    BOLLINO_COLOR_CHOICES[0][0]:BOLLINO_COLOR_CHOICES[0][1],
-    BOLLINO_COLOR_CHOICES[1][0]:BOLLINO_COLOR_CHOICES[1][1],
-    BOLLINO_COLOR_CHOICES[2][0]:BOLLINO_COLOR_CHOICES[2][1],
-    BOLLINO_COLOR_CHOICES[3][0]:BOLLINO_COLOR_CHOICES[3][1],
-    BOLLINO_COLOR_CHOICES[4][0]:BOLLINO_COLOR_CHOICES[4][1],
-    BOLLINO_COLOR_CHOICES[5][0]:BOLLINO_COLOR_CHOICES[5][1]
-    }
-
-STATO_VERIFICA = (
-    ('A','Aperto'),
-    ('C','Chiuso'),
-    ('S','Sospeso'),
-    )
-
-
-STATO_PAGAMENTO = (
-    ('True','Pagato'),
-    ('False','Non Riscosso'),
-    )
+STATO_PAGAMENTO = {
+    'True':'Pagato',
+    'False':'Non Riscosso',
+}
 
 class Verifica(models.Model):
 	verifica_impianto = models.ForeignKey(Impianto, db_index=True)
 
-	stato_verifica = models.CharField(default='A', max_length=80, null=True, blank=True, choices=STATO_VERIFICA)
+	stato_verifica = models.CharField(default='A', max_length=80, null=True, blank=True, choices=STATO_VERIFICA.items())
 	data_verifica = models.DateField(default=datetime.date.today(), null=True, blank=True)
-	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES)
+	tipo_verifica = models.CharField(max_length=80, null=True, blank=True, choices=VERIFICHE_TYPE_CHOICES.items())
 	altro_tipo_verifica = models.CharField(max_length=80, null=True, blank=True)
 	codice_id = models.CharField(max_length=15, null=True, blank=True)
 	numero_rapporto = models.CharField(max_length=15, null=True, blank=True)
@@ -234,7 +217,7 @@ class Verifica(models.Model):
 
     # Sezione analisi combustione
 	analisi_combustione = models.NullBooleanField(null=True, blank=True)
-	colore_bollino = models.CharField(default='blu', max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES)
+	colore_bollino = models.CharField(default='blu', max_length = 100, null=True, blank=True, choices=BOLLINO_COLOR_CHOICES.items())
 	altro_colore_bollino = models.CharField(max_length = 100, null=True, blank=True)
 	numero_bollino = models.IntegerField(null=True, blank=True)
 	valore_bollino = models.DecimalField(max_digits = 10, decimal_places = 2, null=True, blank=True)
@@ -254,12 +237,12 @@ class Verifica(models.Model):
 
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.CharField(label='Stato verifica', initial='A', required=False,
-             widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
-    tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
+             widget=forms.RadioSelect(choices=STATO_VERIFICA.items(), renderer=myforms.CustomRadioSelect))
+    tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES.items()))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     analisi_combustione = forms.BooleanField(initial=False, required=False)
     stato_pagamento = forms.BooleanField(label="Stato pagamento", initial=False, required=False,
-             widget=forms.RadioSelect(choices=STATO_PAGAMENTO, renderer=myforms.CustomRadioSelect))
+             widget=forms.RadioSelect(choices=STATO_PAGAMENTO.items(), renderer=myforms.CustomRadioSelect))
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
     scadenza_fumi_tra = forms.IntegerField(label='Prossima analisi combustione tra mesi', initial="24", required=False)
 
