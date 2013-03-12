@@ -7,6 +7,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
 	url(r'^$', 'main.views.home', name='home'),
 	url(r'^home/$', 'main.views.home', name='home'),
+	url(r'^maps/$', 'main.views.maps', name='maps'),
 	url(r'^export/$', 'main.views.exportCSV', name='exportCSV'),
 	url(r'^export/(?P<detail_type>\w+)/$', 'main.views.exportCSV', name='exportCSV'),
 	url(r'^anagrafe/$', 'main.views.anagrafe', name='anagrafe'),
@@ -46,4 +47,5 @@ urlpatterns = patterns('',
 
 	#url(r'^dev/populatedb/$', 'main.views.populatedb', name='populat_db'),
 	#url(r'^test/(?P<search_string>\w+)/$', 'main.views.test', name='test'),
+	url(r'^check_test/$', 'main.views.check_test', name='check_test'),
 )

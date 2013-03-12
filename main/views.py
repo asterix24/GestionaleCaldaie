@@ -122,7 +122,6 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
 
             instance = form.save()
             return show_record(request, cliente_id=instance.id, message=msg)
-
     else:
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)
@@ -247,7 +246,6 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
             action = '\"Cancella Cliente\"'
             post_url = "%s/delete/" % cliente_id
             return_url = ""
-
         else:
             if detail_type == 'impianto':
                 header_msg = '<h1>Attenzione! stai cancellanodo l\'impianto selezionato.</h1>'
@@ -350,9 +348,6 @@ def anagrafe(request):
 import csv
 import datetime
 
-
-
-
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
@@ -408,7 +403,6 @@ def home(request):
 
 
 def exportCSV(request, detail_type=None):
-
     data_table = []
     filename='Elenco'
     if detail_type is None or detail_type == "home":
@@ -451,6 +445,10 @@ def exportCSV(request, detail_type=None):
 
     return response
 
+def maps(request):
+    data = scripts.MAPS_ADD_JS
+    return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})
+
 
 from main import tools
 
@@ -459,13 +457,6 @@ def populatedb(request):
     data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
 
-def check_test(request):
-    print request.POST,'\n'
-    print "items\n", request.POST.items()
-    print "list\n", request.POST.lists()
-    print request.POST.get('action','nulla')
-    print request.POST.get('prova','ppnulla')
-    return _display_ok(request, "ok")
 
 
 def test(request, search_string):
@@ -481,4 +472,32 @@ def test(request, search_string):
 
     return render(request, 'anagrafe.sub', {'data': data,'forms': form })
 
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+
+def check_test(request):
+    # Create the HttpResponse object with the appropriate PDF hVeaders.
+    response = HttpResponse(mimetype='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+
+    # Create the PDF object, using the response object as its "file."
+    p = canvas.Canvas(response)
+
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+    p.drawString(100, 100, "Hello world.")
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+    return response
+
+    """
+    print request.POST,'\n'
+    print "items\n", request.POST.items()
+    print "list\n", request.POST.lists()
+    print request.POST.get('action','nulla')
+    print request.POST.get('prova','ppnulla')
+    return _display_ok(request, "ok")
+    """
 

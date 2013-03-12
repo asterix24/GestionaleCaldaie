@@ -29,6 +29,25 @@ $(function() {
 </script>
 """
 
+MAPS_ADD_JS = """
+<script>
+$(function() {
+    var mapOptions = {
+      center: new google.maps.LatLng(-34.397, 150.644),
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    var myLatLng = new google.maps.LatLng(-33.890542, 151.274856);
+    var beachMarker = new google.maps.Marker({
+        position: myLatLng,
+        map: map
+    })
+
+});
+</script>
+"""
+
 SHOW_ADD_JS = """
 <script>
 $(function() {
