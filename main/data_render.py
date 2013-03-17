@@ -226,6 +226,10 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
 
     return s
 
+
+WIDGET_KEY = 0
+WIDGET_LIST = 1
+
 class DataRender(object):
     def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
         self.items = items
@@ -238,7 +242,7 @@ class DataRender(object):
         self.detail_type = None
         self.url_add = None
         self.unique_row = False
-
+        self.widget_list = []
 
         self.base_url = ""
         self.string = ""
@@ -264,6 +268,9 @@ class DataRender(object):
     def actionWidget(self, detail_type, url_action):
         self.detail_type = detail_type
         self.url_action = url_action
+
+    def menuWidget(self, widget_list):
+        self.widget_list = widget_list
 
     def orderUrl(self, base_url, string, group_field, order):
         # Alternate ordering
@@ -297,16 +304,23 @@ class DataRender(object):
 
         duplicate_row = {}
         cycle = False
-        if self.detail_type == 'check':
-            for i in self.url_action:
-                table += "<p name='button'>%s</p>" % i
+
+        show_check = False
+        for widget in self.widget_list:
+            if widget[WIDGET_KEY] == 'check':
+                show_check = True
+                for i in widget[WIDGET_LIST]:
+                    table += "<input type=\"button\" name=\"button_check\" value=\"%s\">" % i
+            if widget[WIDGET_KEY] == 'button':
+                for i in widget[WIDGET_LIST]:
+                    table += "<input type=\"submit\" name=\"button_action\" value=\"%s\">" % i
 
         table += "<table id=\"customers\">"
         for item_dict in self.items:
             if self.display_header:
                 table += "<tr>"
 
-                if self.detail_type is not None:
+                if self.widget_list != []:
                     table += "<th></th>"
 
                 for j in self.colums:
@@ -340,9 +354,9 @@ class DataRender(object):
 
                 table += "<tr%s>" % cycle_str
                 # Aggiustare quest blocco..
-                if self.detail_type is not None:
+                if self.detail_type is not None or self.widget_list != []:
                     p = ''
-                    if self.detail_type == 'check':
+                    if show_check:
                         cliente_id = item_dict.get('cliente_id', '')
                         impianto_id = item_dict.get('impianto_id', '')
                         verifica_id = item_dict.get('verifica_id', '')
@@ -375,6 +389,8 @@ class DataRender(object):
         self.colums = None
         self.display_header = True
         self.unique_row = False
+        self.widget_list = []
+        show_check = False
 
         self.base_url = ""
         self.string = ""
