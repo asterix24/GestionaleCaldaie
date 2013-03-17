@@ -367,8 +367,7 @@ def home(request):
 
     if request.method == 'POST':
         selected_rows = request.POST.getlist('row_select', [])
-        action = request.POST.get(u'button_action', '')
-
+        action = request.POST.get('button_action', '')
         for i in selected_rows:
             ids = i.split(',')
             verifica_id = ids[data_render.VERIFICA_ID]

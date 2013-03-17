@@ -177,7 +177,7 @@ class ImpiantoForm(forms.ModelForm):
 
 VERIFICHE_TYPE_CHOICES = {
     'programmata'     : 'Manutenzione Ordinaria',
-	'straordinaria'   : 'Manutenzione Straordinaria',
+	'provafumi'       : 'Prova Fumi',
 	'prima_accensione': 'Prima Accensione',
 	'altro'           : 'Altro..',
 }

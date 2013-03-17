@@ -31,6 +31,7 @@ $(function() {
       zoom: 8,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
+
     var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     var myLatLng = new google.maps.LatLng(-33.890542, 151.274856);
     var beachMarker = new google.maps.Marker({
