@@ -2,12 +2,12 @@
 
 {% block navigation_menu_block_top %}
 <li><a href="/export{{query_path}}">Esporta CSV</a></li>
-<li><a href="/maps{{query_path}}">Mappa</a></li>
+<li><a href="/maps/">Mappa</a></li>
 {% endblock %}
 
 {% block navigation_menu_block_bot %}
 <li><a href="/export{{query_path}}">Esporta CSV</a></li>
-<li><a href="/maps{{query_path}}">Mappa</a></li>
+<li><a href="/maps/">Mappa</a></li>
 {% endblock %}
 
 {% block center_block %}
