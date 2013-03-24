@@ -10,35 +10,35 @@ urlpatterns = patterns('',
 	url(r'^maps/$', 'main.views.maps', name='maps'),
 	url(r'^export/$', 'main.views.exportCSV', name='exportCSV'),
 	url(r'^export/(?P<detail_type>\w+)/$', 'main.views.exportCSV', name='exportCSV'),
-	url(r'^anagrafe/$', 'main.views.anagrafe', name='anagrafe'),
+	url(r'^anagrafe/$', 'main.anagrafe.anagrafe', name='anagrafe'),
 
 	# Client manager urls
-	url(r'^anagrafe/add/$', 'main.views.add_record', name='add_record'),
-	url(r'^anagrafe/(?P<cliente_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
-	url(r'^anagrafe/(?P<cliente_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
-	url(r'^anagrafe/(?P<cliente_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
+	url(r'^anagrafe/add/$', 'main.anagrafe.add_record', name='add_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/$', 'main.anagrafe.detail_record', name='detail_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/edit/$', 'main.anagrafe.edit_record', name='edit_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/delete/$', 'main.anagrafe.delete_record', name='delete_record'),
 
 	# Impianti manager urls
-	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/add/$', 'main.views.add_record', name='add_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/add/$', 'main.anagrafe.add_record', name='add_record'),
 	# Add new Impianto to existing Cliente
-	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/add/$', 'main.views.add_record', name='add_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/add/$', 'main.anagrafe.add_record', name='add_record'),
 	# Add new Verifica/Interventi to existing Impianto
-	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/add/$', 'main.views.add_record', name='add_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/add/$', 'main.anagrafe.add_record', name='add_record'),
 
 	# Delete Impianti
-	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/delete/$', 'main.anagrafe.delete_record', name='delete_record'),
 	# Delete verifica/interventi
 	#/anagrafe/356/impianto/762/verifica/758/delete/
-	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/delete/$', 'main.views.delete_record', name='delete_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/delete/$', 'main.anagrafe.delete_record', name='delete_record'),
 	# Show Impianti detail of select Cliente
-	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/$', 'main.anagrafe.detail_record', name='detail_record'),
 	# Show Verifica/Interventi detail of select Impianti
-	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/$', 'main.views.detail_record', name='detail_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/$', 'main.anagrafe.detail_record', name='detail_record'),
 
 	# /anagrafe/356/impianto/760/edit/
-	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/(?P<detail_type>\w+)/(?P<impianto_id>\d+)/edit/$', 'main.anagrafe.edit_record', name='edit_record'),
 	# /anagrafe/356/impianto/760/verifica/1/edit/
-	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/edit/$', 'main.views.edit_record', name='edit_record'),
+	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/edit/$', 'main.anagrafe.edit_record', name='edit_record'),
 
 	# Uncomment the admin/doc line below to enable admin documentation:
 	#url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
