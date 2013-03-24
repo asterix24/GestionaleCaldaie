@@ -1,0 +1,87 @@
+{% for item in items %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+
+    <title> {{title}} </title>
+
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 1cm;
+            top: 1cm;
+            left: 2.5cm;
+            right: 2.5cm;
+            height: 2cm;
+
+            @frame header {
+                -pdf-frame-content: headerContent;
+                -pdf-frame-border: 2;
+                bottom: 25cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 3cm;
+            }
+            @frame body {
+                -pdf-frame-content: bodyContent;
+                -pdf-frame-border: 2;
+                bottom: 5cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 19cm;
+            }
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                -pdf-frame-border: 2;
+                bottom: 2cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 2.5cm;
+            }
+            #footer_font {
+                font-size: 110%;
+                color: red;
+            }
+
+        }
+    </style>
+    </head>
+    <body>
+        <div id="headerContent">
+            <center> <img src="main/static/logo_besalba.jpg" align="center" height="100%"> </center>
+        </div>
+
+        <div id="bodyContent">
+            <h1>body</h1>
+        </div>
+
+        <hr/>
+
+        <div id="footerContent">
+            <table>
+                <tr>
+                    <td id="footer_font">Via della Montagna - 87010 Frascineto (CS)</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>Tel. 0981 32214 - Cell. 328 6149064 - 320 0888958</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>P.IVA 01565380787 - e-mail: info@besalba.it</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>www.besalba.it - PEC: besalba@pec.it</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+    </body>
+</html>
+<pdf:nextpage>
+{% endfor %}
