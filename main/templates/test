@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-
-{% block center_block %}
-
-{% autoescape off %}
-    {{ data }}
-{% endautoescape %}
-
-{% endblock %}
