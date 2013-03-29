@@ -137,102 +137,38 @@ def test(request, search_string):
     data = scripts.HOME_ADD_JS
     data_to_render = database_manager.query_test(search_string)
     print len(data_to_render)
-    """
-    for i in data_to_render:
-        for v,k in i.items():
-            print v, " : ", k
-    """
-
     return render(request, 'anagrafe.sub', {'data': data,'forms': form })
 
 
 from django.http import HttpResponse
-
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm, mm
-from reportlab.platypus import Paragraph, Frame
-
-def check_test1(request):
-    # Create the HttpResponse object with the appropriate PDF headers.
-    response = HttpResponse(content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-
-    # Create the PDF object, using the response object as its "file."
-    p = canvas.Canvas(response)
-
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.rect(3*cm, 4*cm, 15*cm, 23*cm, fill=0, stroke=1)
-    ih, iw = p.drawImage("main/static/logo_besalba.jpg", 4.5*cm, 21.5*cm, width=11*cm, anchor='c', preserveAspectRatio=True)
-    #print ih/cm, iw/cm
-    p.setLineWidth(1.2)
-    p.line(3*cm,4*cm,18*cm,4*cm)
-    p.line(3*cm,3.9*cm,18*cm,3.9*cm)
-
-
-    textobject = p.beginText()
-    textobject.setTextOrigin(2.9*cm, 4.2*cm)
-    textobject.setFont("Helvetica", 7)
-    textobject.textLine("Trattamento  dati  personali:  i  dati  sono  trattati  dalla  BESALBA  IMPIANTI  Snc  nel  rispetto  della    normativa  vigente  (D.Lgs.  196/03)  .")
-    p.drawText(textobject)
-
-    textobject = p.beginText()
-    textobject.setTextOrigin(11.5*cm, 3.5*cm)
-    textobject.setFont("Helvetica-Oblique", 9)
-    textobject.textLines('''
-    Via della Montagna – 87010 Frascineto (CS)
-    T. 0981 32214 /C. 328 6149064 - 320 0888958
-    P.IVA 01565380787 - e-mail: info@besalba.it
-    www.besalba.it -    PEC: besalba@pec.it
-    ''')
-    p.drawText(textobject)
-
-    textobject = p.beginText()
-    textobject.setTextOrigin(3*cm, 3.5*cm)
-    textobject.setFont("Helvetica-Oblique", 9)
-    textobject.textLines('''
-    Impianti termoidraulici – gas – condizionamento
-    Panelli solari – manutenzione caldaie
-    Caldaie Junkers Bosch – Centro Assistenza Tecnica
-    Impianti Fotovoltaici
-    ''')
-    p.drawText(textobject)
-
-
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-    return response
-
-from django.template.loader import get_template
-from django.template import *
-
-def check_test1(request):
-    template = get_template('lettera.rtf')
-    print template.render({'prova':"funziona!!!"})
-
-import re
+from PyRTF import *
 
 def check_test(request):
-    pat = re.compile('<(\w+)>')
-    b = open('main/templates/out.rtf', 'a')
+    doc     = Document()
+    ss      = doc.StyleSheet
+    section = Section()
+    doc.Sections.append(section)
+
+    image = Image('main/static/logo_besalba.jpg', scale=40)
+    section.Header.append(Paragraph(image, ParagraphPS().SetAlignment(3)))
+    section.Footer.append('www.besalba.it')
 
     for i in range(3):
-        a = open('main/templates/lettera.rtf', 'r')
-        for line in a:
-            l = pat.findall(line)
-            if l:
-                for k in l:
-                    line = line.replace(k, "XXXX" + k + str(i))
-            b.write(line)
-        print i, a.tell()
-        a.close()
+        p = Paragraph(ss.ParagraphStyles.Heading1)
+        p.append('Lettera %s' % i)
+        section.append(p)
 
-    b.close()
+        p = Paragraph( ss.ParagraphStyles.Normal )
+        p.append('This document has different headers and footers for the first and then subsequent pages. '
+                  'If you insert a page break you should see a different header and footer.')
+        section.append(p)
+
+        p = Paragraph(ss.ParagraphStyles.Normal, ParagraphPS().SetPageBreakBefore(True))
+        section.append(p)
+
     response = http.HttpResponse(mimetype='application/rtf')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.rtf"'
+    DR = Renderer()
+    DR.Write(doc, response)
     return response
-
-
 
