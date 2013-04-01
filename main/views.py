@@ -149,9 +149,28 @@ def check_test(request):
     section = Section()
     doc.Sections.append(section)
 
+    # header section
     image = Image('main/static/logo_besalba.jpg', scale=40)
     section.Header.append(Paragraph(image, ParagraphPS().SetAlignment(3)))
-    section.Footer.append('www.besalba.it')
+
+    # footer section
+    red_txt = TextPS(colour=ss.Colours.Red, font=ss.Fonts.Arial, size=18)
+    blue_txt = TextPS(colour=ss.Colours.Blue, font=ss.Fonts.Arial, size=18)
+
+    thin_edge  = BorderPS(width=20, style=BorderPS.DOUBLED, spacing=100)
+    thin_frame  = FramePS(thin_edge)
+
+    para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
+    p = Paragraph(ss.ParagraphStyles.Normal, para_props, thin_frame)
+    p.append(Text('Impianti termoidraulici - gas - condizionamento', red_txt), TAB, Text('Via della Montagna - 87010 Frascineto (CS)', blue_txt))
+    p.append(LINE)
+    p.append(Text('Panelli solari - manutenzione caldaie', blue_txt), TAB, Text('T. 0981 32214 C. 328 6149064 - 320 0888958', red_txt))
+    p.append(LINE)
+    p.append(Text('Caldaie Junkers Bosch - Centro Assistenza Tecnica', red_txt), TAB, Text('P.IVA 01565380787 - e-mail: info@besalba.it', blue_txt))
+    p.append(LINE)
+    p.append(Text('Impianti Fotovoltaici', blue_txt), TAB, Text('www.besalba.it - PEC: besalba@pec.it',red_txt))
+
+    section.Footer.append(p)
 
     for i in range(3):
         p = Paragraph(ss.ParagraphStyles.Heading1)
