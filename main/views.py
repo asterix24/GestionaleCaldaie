@@ -143,10 +143,14 @@ def test(request, search_string):
 from django.http import HttpResponse
 from PyRTF import *
 
+def rtf_encode(unistr):
+    return ''.join([c if ord(c) < 128 else u'\\u' + unicode(ord(c)) + u'?' for c in unistr])
+
 def check_test(request):
+    # 1000 = 1,27cm
     doc     = Document()
     ss      = doc.StyleSheet
-    section = Section()
+    section = Section(paper=StandardPaper.A4)
     doc.Sections.append(section)
 
     # header section
@@ -157,8 +161,13 @@ def check_test(request):
     red_txt = TextPS(colour=ss.Colours.Red, font=ss.Fonts.Arial, size=18)
     blue_txt = TextPS(colour=ss.Colours.Blue, font=ss.Fonts.Arial, size=18)
 
-    thin_edge  = BorderPS(width=20, style=BorderPS.DOUBLED, spacing=100)
+    thin_edge  = BorderPS(width=40, style=BorderPS.SINGLE, spacing=50)
     thin_frame  = FramePS(thin_edge)
+
+    p = Paragraph(ss.ParagraphStyles.Normal)
+    txt_style = TextPS(font=ss.Fonts.Arial, size=15)
+    p.append(Text('Trattamento dati personali: i dati sono trattati dalla BESALBA IMPIANTI Snc nel rispetto della normativa vigente (D.Lgs. 196/03).', txt_style))
+    section.Footer.append(p)
 
     para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
     p = Paragraph(ss.ParagraphStyles.Normal, para_props, thin_frame)
@@ -172,9 +181,16 @@ def check_test(request):
 
     section.Footer.append(p)
 
+    txt_style = TextPS(font=ss.Fonts.Arial, size=27)
+    para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
+    p = Paragraph(ss.ParagraphStyles.Normal, para_props)
+    #Text('%s', txt_style)
+
+    print 'Oggetto: novità manutenzione impianti termici'
+    txt_style = TextPS(font=ss.Fonts.Arial, bold=1, size=27)
     for i in range(3):
         p = Paragraph(ss.ParagraphStyles.Heading1)
-        p.append('Lettera %s' % i)
+        p.append(Text('', txt_style))
         section.append(p)
 
         p = Paragraph( ss.ParagraphStyles.Normal )
