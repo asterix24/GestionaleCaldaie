@@ -153,20 +153,25 @@ def check_test(request):
     section = Section(paper=StandardPaper.A4)
     doc.Sections.append(section)
 
+    # Text style
+    red_txt = TextPS(colour=ss.Colours.Red, font=ss.Fonts.Arial, size=18)
+    blue_txt = TextPS(colour=ss.Colours.Blue, font=ss.Fonts.Arial, size=18)
+    txt_small = TextPS(font=ss.Fonts.Arial, size=15)
+    txt_normal = TextPS(font=ss.Fonts.Arial, size=27)
+    txt_normal_bold = TextPS(font=ss.Fonts.Arial, bold=1, size=27)
+
     # header section
     image = Image('main/static/logo_besalba.jpg', scale=40)
     section.Header.append(Paragraph(image, ParagraphPS().SetAlignment(3)))
 
     # footer section
-    red_txt = TextPS(colour=ss.Colours.Red, font=ss.Fonts.Arial, size=18)
-    blue_txt = TextPS(colour=ss.Colours.Blue, font=ss.Fonts.Arial, size=18)
+
 
     thin_edge  = BorderPS(width=40, style=BorderPS.SINGLE, spacing=50)
     thin_frame  = FramePS(thin_edge)
 
     p = Paragraph(ss.ParagraphStyles.Normal)
-    txt_style = TextPS(font=ss.Fonts.Arial, size=15)
-    p.append(Text('Trattamento dati personali: i dati sono trattati dalla BESALBA IMPIANTI Snc nel rispetto della normativa vigente (D.Lgs. 196/03).', txt_style))
+    p.append(Text('Trattamento dati personali: i dati sono trattati dalla BESALBA IMPIANTI Snc nel rispetto della normativa vigente (D.Lgs. 196/03).', txt_small))
     section.Footer.append(p)
 
     para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
@@ -181,16 +186,18 @@ def check_test(request):
 
     section.Footer.append(p)
 
-    txt_style = TextPS(font=ss.Fonts.Arial, size=27)
     para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
     p = Paragraph(ss.ParagraphStyles.Normal, para_props)
     #Text('%s', txt_style)
 
-    print 'Oggetto: novità manutenzione impianti termici'
-    txt_style = TextPS(font=ss.Fonts.Arial, bold=1, size=27)
     for i in range(3):
+
+        p.append(TAB, Text('NOME', txt_normal), TAB, Text('COGNOME', txt_normal))
+        p.append(TAB, Text('VIA', txt_normal))
+        p.append(TAB, Text('CAP', txt_normal), TAB, Text('CITTA', txt_normal))
+
         p = Paragraph(ss.ParagraphStyles.Heading1)
-        p.append(Text('', txt_style))
+        p.append(Text('XXXX\u224\'e0X\u232\'e8X\u236\'ecX\u242\'f2X\u249\'f9XXXX', txt_normal_bold))
         section.append(p)
 
         p = Paragraph( ss.ParagraphStyles.Normal )
