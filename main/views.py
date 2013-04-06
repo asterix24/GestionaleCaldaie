@@ -141,69 +141,49 @@ def test(request, search_string):
 
 
 from django.http import HttpResponse
-from PyRTF import *
-
-def rtf_encode(unistr):
-    return ''.join([c if ord(c) < 128 else u'\\u' + unicode(ord(c)) + u'?' for c in unistr])
+import re
 
 def check_test(request):
+    pat = re.compile('<(\w+)>')
+    block = []
+    block_copy = False
+    add_page = False
+
+    items = ['uno', 'due', 'tre', 'quattro']
+    with open('main/templates/out.rtf', 'w') as out:
+        in_tpl = open('main/templates/lettera.rtf', 'r')
+        for line in in_tpl:
+            if '>>START<<' in line:
+                #inizio la copia del blocco.
+                block_copy = True
+                print "Start"
+                continue
+            if '>>END<<' in line:
+                #inizio la copia del blocco.
+                block_copy = False
+                add_page = True
+                print "End"
+
+            if block_copy and not add_page:
+                block.append(line)
+            elif add_page:
+                for item in items:
+                    for s in block:
+                        key_found = pat.findall(s)
+                        for k in key_found:
+                            print k
+                            s = s.replace(k, str(item) + k.lower())
+                        out.write(s)
+
+                add_page = False
+                block_copy = False
+            else:
+                out.write(line)
+        in_tpl.close()
+
     # 1000 = 1,27cm
-    doc     = Document()
-    ss      = doc.StyleSheet
-    section = Section(paper=StandardPaper.A4)
-    doc.Sections.append(section)
+    response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
+    response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
 
-    # header section
-    image = Image('main/static/logo_besalba.jpg', scale=40)
-    section.Header.append(Paragraph(image, ParagraphPS().SetAlignment(3)))
-
-    # footer section
-    red_txt = TextPS(colour=ss.Colours.Red, font=ss.Fonts.Arial, size=18)
-    blue_txt = TextPS(colour=ss.Colours.Blue, font=ss.Fonts.Arial, size=18)
-
-    thin_edge  = BorderPS(width=40, style=BorderPS.SINGLE, spacing=50)
-    thin_frame  = FramePS(thin_edge)
-
-    p = Paragraph(ss.ParagraphStyles.Normal)
-    txt_style = TextPS(font=ss.Fonts.Arial, size=15)
-    p.append(Text('Trattamento dati personali: i dati sono trattati dalla BESALBA IMPIANTI Snc nel rispetto della normativa vigente (D.Lgs. 196/03).', txt_style))
-    section.Footer.append(p)
-
-    para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
-    p = Paragraph(ss.ParagraphStyles.Normal, para_props, thin_frame)
-    p.append(Text('Impianti termoidraulici - gas - condizionamento', red_txt), TAB, Text('Via della Montagna - 87010 Frascineto (CS)', blue_txt))
-    p.append(LINE)
-    p.append(Text('Panelli solari - manutenzione caldaie', blue_txt), TAB, Text('T. 0981 32214 C. 328 6149064 - 320 0888958', red_txt))
-    p.append(LINE)
-    p.append(Text('Caldaie Junkers Bosch - Centro Assistenza Tecnica', red_txt), TAB, Text('P.IVA 01565380787 - e-mail: info@besalba.it', blue_txt))
-    p.append(LINE)
-    p.append(Text('Impianti Fotovoltaici', blue_txt), TAB, Text('www.besalba.it - PEC: besalba@pec.it',red_txt))
-
-    section.Footer.append(p)
-
-    txt_style = TextPS(font=ss.Fonts.Arial, size=27)
-    para_props = ParagraphPS(tabs=[TabPropertySet(alignment=TabPropertySet.LEFT, leader=TabPropertySet.HYPHENS, width=5100)])
-    p = Paragraph(ss.ParagraphStyles.Normal, para_props)
-    #Text('%s', txt_style)
-
-    print 'Oggetto: novità manutenzione impianti termici'
-    txt_style = TextPS(font=ss.Fonts.Arial, bold=1, size=27)
-    for i in range(3):
-        p = Paragraph(ss.ParagraphStyles.Heading1)
-        p.append(Text('', txt_style))
-        section.append(p)
-
-        p = Paragraph( ss.ParagraphStyles.Normal )
-        p.append('This document has different headers and footers for the first and then subsequent pages. '
-                  'If you insert a page break you should see a different header and footer.')
-        section.append(p)
-
-        p = Paragraph(ss.ParagraphStyles.Normal, ParagraphPS().SetPageBreakBefore(True))
-        section.append(p)
-
-    response = http.HttpResponse(mimetype='application/rtf')
-    response['Content-Disposition'] = 'attachment; filename="somefilename.rtf"'
-    DR = Renderer()
-    DR.Write(doc, response)
     return response
 
