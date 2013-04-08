@@ -149,17 +149,20 @@ def check_test(request):
     block_copy = False
     add_page = False
 
-    items = ['uno', 'due', 'tre', 'quattro']
+    # items = ['uno', 'due', 'tre', 'quattro']
+    items = ['uno','due']
     with open('main/templates/out.rtf', 'w') as out:
         in_tpl = open('main/templates/lettera.rtf', 'r')
         for line in in_tpl:
+
+            #inizio la copia del blocco.
             if '>>START<<' in line:
-                #inizio la copia del blocco.
-                block_copy = True
                 print "Start"
+                block_copy = True
                 continue
+
+            #inizio la copia del blocco.
             if '>>END<<' in line:
-                #inizio la copia del blocco.
                 block_copy = False
                 add_page = True
                 print "End"
@@ -172,7 +175,9 @@ def check_test(request):
                         key_found = pat.findall(s)
                         for k in key_found:
                             print k
-                            s = s.replace(k, str(item) + k.lower())
+                            pat_single = re.compile('<' + k + '>')
+                            s = pat_single.sub(str(item) + k.lower(), s)
+                            #s = s.replace(k, str(item) + k.lower())
                         out.write(s)
 
                 add_page = False
@@ -181,9 +186,11 @@ def check_test(request):
                 out.write(line)
         in_tpl.close()
 
-    # 1000 = 1,27cm
-    response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
-    response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
+    return render(request, 'anagrafe.sub', {'data': "" })
 
-    return response
+    # 1000 = 1,27cm
+    #response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
+    #response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
+
+    #return response
 
