@@ -150,7 +150,12 @@ def check_test(request):
     add_page = False
 
     # items = ['uno', 'due', 'tre', 'quattro']
-    items = ['uno','due']
+    #items = ['uno','due']
+    items = [
+            { 'nome': 'uno', 'data': '1/2/3', 'via': 'non ce' },
+            { 'nome': 'due', 'data': '1/2/4', 'via': 'non ce 0' },
+            { 'nome': 'tre', 'data': '1/2/5', 'via': 'non ce 1' },
+            ]
     with open('main/templates/out.rtf', 'w') as out:
         in_tpl = open('main/templates/lettera.rtf', 'r')
         for line in in_tpl:
@@ -176,7 +181,9 @@ def check_test(request):
                         for k in key_found:
                             print k
                             pat_single = re.compile('<' + k + '>')
-                            s = pat_single.sub(str(item) + k.lower(), s)
+                            key = k.lower()
+                            if item.has_key(key):
+                                s = pat_single.sub(item[key], s)
                             #s = s.replace(k, str(item) + k.lower())
                         out.write(s)
 
