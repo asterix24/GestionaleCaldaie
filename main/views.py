@@ -141,10 +141,15 @@ def test(request, search_string):
 
 
 from django.http import HttpResponse
+from functools import partial
 import re
 
+def tag_replace(m, item_dict):
+    k = m.group()
+    k = k[1:-1].lower()
+    return item_dict.get(k, '-')
+
 def check_test(request):
-    pat = re.compile('<(\w+)>')
     block = []
     block_copy = False
     add_page = False
@@ -177,15 +182,9 @@ def check_test(request):
             elif add_page:
                 for item in items:
                     for s in block:
-                        key_found = pat.findall(s)
-                        for k in key_found:
-                            print k
-                            pat_single = re.compile('<' + k + '>')
-                            key = k.lower()
-                            if item.has_key(key):
-                                s = pat_single.sub(item[key], s)
-                            #s = s.replace(k, str(item) + k.lower())
+                        s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
                         out.write(s)
+                        print s
 
                 add_page = False
                 block_copy = False
