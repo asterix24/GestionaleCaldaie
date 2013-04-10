@@ -20,8 +20,17 @@ import datetime
 
 HOME_MENU = [
     ('check' , ['Seleziona Tutti']),
-    ('button', ['Apri','Chiudi','Sospendi'])
+    ('button', ['Lettera', 'Apri','Chiudi','Sospendi'])
 ]
+
+def __getIds(raw_items, item_id):
+    l = []
+    for k in raw_items:
+        ids = k.split(',')
+        l.append(int(ids[item_id]))
+
+    return l
+
 
 def home(request):
     form = myforms.RangeDataSelect()
@@ -38,17 +47,21 @@ def home(request):
     if request.method == 'POST':
         selected_rows = request.POST.getlist('row_select', [])
         action = request.POST.get('button_action', '')
-        for i in selected_rows:
-            ids = i.split(',')
-            verifica_id = ids[data_render.VERIFICA_ID]
-            if verifica_id != 'None':
-                _id = int(verifica_id)
-                if action == 'Apri':
-                    models.Verifica.objects.filter(id=_id).update(stato_verifica='A')
-                if action == 'Chiudi':
-                    models.Verifica.objects.filter(id=_id).update(stato_verifica='C')
-                if action == 'Sospendi':
-                    models.Verifica.objects.filter(id=_id).update(stato_verifica='S')
+        if action == 'Lettera':
+            data_to_render = database_manager.search_fullText("")
+            return generate_report(data_to_render, __getIds(selected_rows, data_render.CLIENTE_ID))
+        else:
+            for i in selected_rows:
+                ids = i.split(',')
+                verifica_id = ids[data_render.VERIFICA_ID]
+                if verifica_id != 'None':
+                    _id = int(verifica_id)
+                    if action == 'Apri':
+                        models.Verifica.objects.filter(id=_id).update(stato_verifica='A')
+                    if action == 'Chiudi':
+                        models.Verifica.objects.filter(id=_id).update(stato_verifica='C')
+                    if action == 'Sospendi':
+                        models.Verifica.objects.filter(id=_id).update(stato_verifica='S')
 
 
     if request.method == 'GET' and request.GET != {}:
@@ -64,6 +77,7 @@ def home(request):
     data_to_render = database_manager.search_inMonth(key=search_in_range,
                                 month=ref_month, year=ref_year, filter=filter_type,
                                 group_field=group_field, field_order=field_order)
+
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.menuWidget(HOME_MENU)
@@ -123,14 +137,10 @@ def maps(request):
     data = scripts.MAPS_ADD_JS
     return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})
 
-
-
 def populatedb(request):
     #data = tools.insert_csv_files(cli_on=False)
     data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
-
-
 
 def test(request, search_string):
     form = myforms.FullTextSearchForm()
@@ -147,20 +157,21 @@ import re
 def tag_replace(m, item_dict):
     k = m.group()
     k = k[1:-1].lower()
-    return item_dict.get(k, '-')
+    return str(item_dict.get(k, '-'))
 
-def check_test(request):
+def generate_report(items, id_list, file_name=None):
     block = []
     block_copy = False
     add_page = False
 
-    # items = ['uno', 'due', 'tre', 'quattro']
-    #items = ['uno','due']
+    """
     items = [
             { 'nome': 'uno', 'data': '1/2/3', 'via': 'non ce' },
             { 'nome': 'due', 'data': '1/2/4', 'via': 'non ce 0' },
             { 'nome': 'tre', 'data': '1/2/5', 'via': 'non ce 1' },
             ]
+    """
+
     with open('main/templates/out.rtf', 'w') as out:
         in_tpl = open('main/templates/lettera.rtf', 'r')
         for line in in_tpl:
@@ -181,10 +192,10 @@ def check_test(request):
                 block.append(line)
             elif add_page:
                 for item in items:
-                    for s in block:
-                        s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
-                        out.write(s)
-                        print s
+                    if item['cliente_id'] in id_list:
+                        for s in block:
+                            s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
+                            out.write(s)
 
                 add_page = False
                 block_copy = False
@@ -192,11 +203,9 @@ def check_test(request):
                 out.write(line)
         in_tpl.close()
 
+    response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
+    response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
+    return response
+
+def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
-
-    # 1000 = 1,27cm
-    #response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
-    #response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
-
-    #return response
-
