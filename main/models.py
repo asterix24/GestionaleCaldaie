@@ -17,6 +17,7 @@ class Cliente(models.Model):
     codice_fiscale = models.CharField(max_length=17, null=True, blank=True)
     via = models.CharField(max_length=300, null=True, blank=True)
     citta = models.CharField(max_length=100, null=True, blank=True, db_index=True)
+    cap = models.CharField(max_length=10, null=True, blank=True, db_index=True)
     numero_telefono = models.CharField(max_length=20, null=True, blank=True)
     numero_cellulare = models.CharField(max_length=20, null=True, blank=True)
     mail = models.EmailField(default="", null=True, blank=True)

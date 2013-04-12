@@ -27,6 +27,7 @@ main_cliente.cliente_data_inserimento,
 main_cliente.numero_telefono,
 main_cliente.mail,
 main_cliente.citta,
+main_cliente.cap,
 main_cliente.id AS cliente_id,
 main_impianto.stato_impianto,
 main_impianto.modello_caldaia,
@@ -87,6 +88,7 @@ SELECT
     main_cliente.numero_telefono,
     main_cliente.mail,
     main_cliente.citta,
+    main_cliente.cap,
     main_cliente.id AS cliente_id,
     main_impianto.stato_impianto,
     main_impianto.modello_caldaia,
@@ -125,6 +127,7 @@ QUERY_WHERE = """
     UPPER(main_cliente.numero_telefono::text) LIKE UPPER(%s) OR
     UPPER(main_cliente.mail::text) LIKE UPPER(%s) OR
     UPPER(main_cliente.citta::text) LIKE UPPER(%s) OR
+    UPPER(main_cliente.cap::text) LIKE UPPER(%s) OR
     UPPER(main_impianto.modello_caldaia::text) LIKE UPPER(%s) OR
     UPPER(main_impianto.matricola_caldaia::text) LIKE UPPER(%s) OR
     UPPER(main_impianto.combustibile::text) LIKE UPPER(%s) OR
