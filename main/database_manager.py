@@ -209,6 +209,16 @@ def search_interventoId(id):
 def query_test(test_str):
     return []
 
+def __impiantiIds(query_data):
+    l = []
+    for i in query_data:
+        id = i.get('impianto_id', None)
+        if id is None:
+            continue
+
+        l.append(str(id))
+    return ",".join(l)
+
 def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=False):
     """
     We split the query in two, one select clienti and impiato, and
@@ -217,19 +227,11 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
     query_data = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select
-    s = ""
-    count = 0
-    for i in query_data:
-        if i['impianto_id'] is None:
-            continue
-
-        s += "%d," % i['impianto_id']
-        count += 1
-
-    if count == 0:
+    s = __impiantiIds(query_data)
+    if s == "":
         return query_data
 
-    query_where = QUERY2_WHERE % s[:-1]
+    query_where = QUERY2_WHERE % s
 
     # if we want to specify a different second query we pass explict sql string
     if query_str2 is None:
@@ -292,7 +294,7 @@ def generate_query(s, group, order):
         search_key.append(s.strip())
 
     param = []
-    search_query_str = ""
+    search_query_str = []
     for i, key in enumerate(search_key):
         # If the search string is less than 3 char, we search key on
         # start string, otherwise we search as contain
@@ -303,12 +305,9 @@ def generate_query(s, group, order):
 
         # count number of param to build the list
         param += [key] * QUERY_WHERE.count("%s")
-        search_query_str += QUERY_WHERE
+        search_query_str.append(QUERY_WHERE)
 
-        if (i == 0 and len(search_key) > 1) or i < len(search_key) - 1:
-            search_query_str += " AND "
-
-    return QUERY + " WHERE ( " + search_query_str + " ) " + query_order, param
+    return QUERY + " WHERE ( " + " AND ".join(search_query_str) + " ) " + query_order, param
 
 def search_inMonth(key=None, month=None, year=None, filter=None, group_field=None, field_order=None):
     if month is None or month == "":
