@@ -27,7 +27,7 @@ def __getIds(raw_items, item_id):
     l = []
     for k in raw_items:
         ids = k.split(',')
-        l.append(int(ids[item_id]))
+        l.append(ids[item_id])
 
     return l
 
@@ -48,8 +48,9 @@ def home(request):
         selected_rows = request.POST.getlist('row_select', [])
         action = request.POST.get('button_action', '')
         if action == 'Lettera':
-            data_to_render = database_manager.search_fullText("")
-            return generate_report(data_to_render, __getIds(selected_rows, data_render.CLIENTE_ID))
+            ids = __getIds(selected_rows, data_render.CLIENTE_ID)
+            data_to_render = database_manager.search_ids('main_cliente.id', ids)
+            return generate_report(data_to_render)
         else:
             for i in selected_rows:
                 ids = i.split(',')
@@ -157,25 +158,22 @@ import re
 def tag_replace(m, item_dict):
     k = m.group()
     k = k[1:-1].lower()
-    return str(item_dict.get(k, '-'))
 
-def generate_report(items, id_list, file_name=None):
+    field = item_dict.get(k, '-')
+    if type(field) == datetime.date:
+        field = field.strftime(cfg.DATA_FIELD_STR_FORMAT)
+    return str(field)
+
+def generate_report(items, file_name=None):
     block = []
     block_copy = False
     add_page = False
-
-    """
-    items = [
-            { 'nome': 'uno', 'data': '1/2/3', 'via': 'non ce' },
-            { 'nome': 'due', 'data': '1/2/4', 'via': 'non ce 0' },
-            { 'nome': 'tre', 'data': '1/2/5', 'via': 'non ce 1' },
-            ]
-    """
+    date_str = datetime.date.today()
+    date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
 
     with open('main/templates/out.rtf', 'w') as out:
         in_tpl = open('main/templates/lettera.rtf', 'r')
         for line in in_tpl:
-
             #inizio la copia del blocco.
             if '>>START<<' in line:
                 print "Start"
@@ -192,10 +190,10 @@ def generate_report(items, id_list, file_name=None):
                 block.append(line)
             elif add_page:
                 for item in items:
-                    if item['cliente_id'] in id_list:
-                        for s in block:
-                            s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
-                            out.write(s)
+                    item['data'] = date_str
+                    for s in block:
+                        s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
+                        out.write(s)
 
                 add_page = False
                 block_copy = False

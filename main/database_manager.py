@@ -18,51 +18,11 @@ logger = logging.getLogger(__name__)
 
 #
 DB_COLUM_SEARCH_ID ="""
-main_cliente.numero_cellulare,
-main_cliente.via,
-main_cliente.nome,
-main_cliente.cognome,
-main_cliente.codice_fiscale,
-main_cliente.cliente_data_inserimento,
-main_cliente.numero_telefono,
-main_cliente.mail,
-main_cliente.citta,
-main_cliente.cap,
+*,
 main_cliente.id AS cliente_id,
-main_impianto.stato_impianto,
-main_impianto.modello_caldaia,
-main_impianto.impianto_data_inserimento,
-main_impianto.matricola_caldaia,
-main_impianto.combustibile,
-main_impianto.data_installazione,
 age(main_impianto.data_installazione) AS anzianita_impianto,
-main_impianto.data_contratto,
-main_impianto.tipo_caldaia,
-main_impianto.altro_tipo_caldaia,
-main_impianto.potenza_caldaia,
-main_impianto.altra_potenza_caldaia,
-main_impianto.marca_caldaia,
-main_impianto.codice_impianto,
 main_impianto.id AS impianto_id,
-main_intervento.note_intervento,
-main_intervento.tipo_intervento,
-main_intervento.data_intervento,
 main_intervento.id AS intervento_id,
-main_verifica.stato_verifica,
-main_verifica.data_verifica,
-main_verifica.tipo_verifica,
-main_verifica.altro_tipo_verifica,
-main_verifica.codice_id,
-main_verifica.numero_rapporto,
-main_verifica.prossima_verifica,
-main_verifica.colore_bollino,
-main_verifica.numero_bollino,
-main_verifica.valore_bollino,
-main_verifica.analisi_combustione,
-main_verifica.prossima_analisi_combustione,
-main_verifica.stato_pagamento,
-main_verifica.costo_intervento,
-main_verifica.note_verifica,
 main_verifica.id AS verifica_id
 """
 DB_FROM_JOIN = """
@@ -79,35 +39,10 @@ DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 QUERY = """
 SELECT
-    main_cliente.numero_cellulare,
-    main_cliente.via,
-    main_cliente.nome,
-    main_cliente.cognome,
-    main_cliente.codice_fiscale,
-    main_cliente.cliente_data_inserimento,
-    main_cliente.numero_telefono,
-    main_cliente.mail,
-    main_cliente.citta,
-    main_cliente.cap,
+    *,
     main_cliente.id AS cliente_id,
-    main_impianto.stato_impianto,
-    main_impianto.modello_caldaia,
-    main_impianto.impianto_data_inserimento,
-    main_impianto.matricola_caldaia,
-    main_impianto.combustibile,
-    main_impianto.data_installazione,
     age(main_impianto.data_installazione) AS anzianita_impianto,
-    main_impianto.data_contratto,
-    main_impianto.tipo_caldaia,
-    main_impianto.altro_tipo_caldaia,
-    main_impianto.potenza_caldaia,
-    main_impianto.altra_potenza_caldaia,
-    main_impianto.marca_caldaia,
-    main_impianto.codice_impianto,
     main_impianto.id AS impianto_id,
-    main_intervento.note_intervento,
-    main_intervento.tipo_intervento,
-    main_intervento.data_intervento,
     main_intervento.id AS intervento_id
 FROM
     main_cliente
@@ -144,23 +79,8 @@ QUERY_WHERE = """
 
 QUERY2 = """
 SELECT
-    main_verifica.data_verifica,
-    main_verifica.stato_verifica,
-    main_verifica.tipo_verifica,
-    main_verifica.altro_tipo_verifica,
-    main_verifica.codice_id,
-    main_verifica.numero_rapporto,
-    main_verifica.prossima_verifica,
-    main_verifica.colore_bollino,
-    main_verifica.numero_bollino,
-    main_verifica.valore_bollino,
-    main_verifica.analisi_combustione,
-    main_verifica.prossima_analisi_combustione,
-    main_verifica.stato_pagamento,
-    main_verifica.costo_intervento,
-    main_verifica.note_verifica,
-    main_verifica.id AS verifica_id,
-    main_verifica.verifica_impianto_id
+    *,
+    main_verifica.id AS verifica_id
 FROM main_verifica
 WHERE
 """
@@ -209,10 +129,10 @@ def search_interventoId(id):
 def query_test(test_str):
     return []
 
-def __impiantiIds(query_data):
+def __impiantiIds(field, query_data):
     l = []
     for i in query_data:
-        id = i.get('impianto_id', None)
+        id = i.get(field, None)
         if id is None:
             continue
 
@@ -227,7 +147,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
     query_data = search_runQuery(query_str, param)
 
     # Get the ids of all impiati select
-    s = __impiantiIds(query_data)
+    s = __impiantiIds('impianto_id', query_data)
     if s == "":
         return query_data
 
@@ -240,6 +160,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
         query_str = QUERY2 + " ( " + query_where + " AND " + query_str2 + " ) " +  QUERY2_ORDER
         param = param + param2
 
+    #print query_str
     cursor = connection.cursor()
     cursor.execute(query_str, param)
     desc = cursor.description
@@ -276,7 +197,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
             n.append(j)
     return n
 
-def generate_query(s, group, order):
+def generate_query(s=None, group=None, order=None, id_field='',ids=[]):
     query_order = QUERY_ORDER
     if group is not None and group != "":
         if order is None:
@@ -284,30 +205,38 @@ def generate_query(s, group, order):
 
         query_order = "ORDER BY " + group + " " + order + ", main_cliente.cognome ASC, main_cliente.nome ASC"
 
-    if s is None:
+
+    if s is None and ids == []:
         return QUERY + query_order, []
 
-    search_key = []
-    if " " in s:
-        search_key = s.strip().split(" ")
-    else:
-        search_key.append(s.strip())
-
     param = []
-    search_query_str = []
-    for i, key in enumerate(search_key):
-        # If the search string is less than 3 char, we search key on
-        # start string, otherwise we search as contain
-        if len(key) >= 3:
-            key = "%" + key + "%"
+    search_query = []
+    query_str = ""
+
+    if s is not None:
+        search_key = []
+        if " " in s:
+            search_key = s.strip().split(" ")
         else:
-            key = key + "%"
+            search_key.append(s.strip())
 
-        # count number of param to build the list
-        param += [key] * QUERY_WHERE.count("%s")
-        search_query_str.append(QUERY_WHERE)
+        for i, key in enumerate(search_key):
+            # If the search string is less than 3 char, we search key on
+            # start string, otherwise we search as contain
+            if len(key) >= 3:
+                key = "%" + key + "%"
+            else:
+                key = key + "%"
 
-    return QUERY + " WHERE ( " + " AND ".join(search_query_str) + " ) " + query_order, param
+            # count number of param to build the list
+            param += [key] * QUERY_WHERE.count("%s")
+            search_query.append(QUERY_WHERE)
+
+    if ids and id_field != '':
+        search_query.append("(%s IN (%s))" % (id_field, ",".join(ids)))
+
+
+    return QUERY + " WHERE ( " + " AND ".join(search_query)  + " ) " + query_order, param
 
 def search_inMonth(key=None, month=None, year=None, filter=None, group_field=None, field_order=None):
     if month is None or month == "":
@@ -359,6 +288,10 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
 
 def search_fullText(s, group_field=None, field_order=None):
     query_str, param = generate_query(s, group_field, field_order)
+    return query_table(query_str, param)
+
+def search_ids(id_field, ids):
+    query_str, param = generate_query(id_field=id_field,ids=ids)
     return query_table(query_str, param)
 
 
