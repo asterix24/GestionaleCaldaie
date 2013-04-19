@@ -9,7 +9,6 @@ from main import cfg
 
 logger = logging.getLogger(__name__)
 
-DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
 EMPTY_CELL = '<center>-</center>'
@@ -71,7 +70,7 @@ def __verifica_url(items, key, s=EMPTY_CELL):
 
     str = items[key]
     if type(str) == datetime.date:
-        str = str.strftime(DATA_FIELD_STR_FORMAT)
+        str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
@@ -81,7 +80,7 @@ def __ultima_analisi_url(items, key, s=EMPTY_CELL):
 
     str = items[key]
     if type(str) == datetime.date:
-        str = str.strftime(DATA_FIELD_STR_FORMAT)
+        str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
     return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
@@ -216,7 +215,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
                 if not isValidKey(item_dict, field_name):
                     s = default_text
                 elif type(s) == datetime.date:
-                    s = s.strftime(DATA_FIELD_STR_FORMAT)
+                    s = s.strftime(cfg.DATA_FIELD_STR_FORMAT)
         else:
             logger.error("Key not present %s" % (field_name))
 

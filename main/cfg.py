@@ -119,3 +119,6 @@ GROUP_FIELD_VIEW = {
 "tipo_caldaia"       : { "field":"main_impianto.tipo_caldaia",       "order":"asc" },
 }
 
+
+DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
+
