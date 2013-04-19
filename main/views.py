@@ -162,7 +162,7 @@ def tag_replace(m, item_dict):
     field = item_dict.get(k, '-')
     if type(field) == datetime.date:
         field = field.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return str(field)
+    return unicode(field)
 
 def generate_report(items, file_name=None):
     block = []
@@ -193,7 +193,7 @@ def generate_report(items, file_name=None):
                     item['data'] = date_str
                     for s in block:
                         s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
-                        out.write(s)
+                        out.write(s.encode('iso-8859-1'))
 
                 add_page = False
                 block_copy = False
