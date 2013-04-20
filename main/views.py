@@ -153,16 +153,14 @@ def test(request, search_string):
 
 from django.http import HttpResponse
 from functools import partial
+from main import data_render
 import re
 
 def tag_replace(m, item_dict):
     k = m.group()
-    k = k[1:-1].lower()
-
-    field = item_dict.get(k, '-')
-    if type(field) == datetime.date:
-        field = field.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return unicode(field)
+    field_name = k[1:-1].lower()
+    field = data_render.formatFields(item_dict, field_name, default_text="-")
+    return ''.join([c if ord(c) < 128 else u'\\u' + unicode(ord(c)) + u'?' for c in unicode(field)])
 
 def generate_report(items, file_name=None):
     block = []
@@ -193,7 +191,7 @@ def generate_report(items, file_name=None):
                     item['data'] = date_str
                     for s in block:
                         s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
-                        out.write(s.encode('iso-8859-1'))
+                        out.write(s)
 
                 add_page = False
                 block_copy = False
