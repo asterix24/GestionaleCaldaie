@@ -154,7 +154,9 @@ def test(request, search_string):
 from django.http import HttpResponse
 from functools import partial
 from main import data_render
+import tempfile
 import re
+import os
 
 def tag_replace(m, item_dict):
     k = m.group()
@@ -169,8 +171,8 @@ def generate_report(items, file_name=None):
     date_str = datetime.date.today()
     date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
 
-    with open('main/templates/out.rtf', 'w') as out:
-        in_tpl = open('main/templates/lettera.rtf', 'r')
+    tmp_file = tempfile.NamedTemporaryFile()
+    with open('main/templates/lettera.rtf', 'r') as in_tpl:
         for line in in_tpl:
             #inizio la copia del blocco.
             if '>>START<<' in line:
@@ -191,16 +193,17 @@ def generate_report(items, file_name=None):
                     item['data'] = date_str
                     for s in block:
                         s = re.sub('(<\w+>)', partial(tag_replace, item_dict=item), s)
-                        out.write(s)
+                        tmp_file.write(s)
 
                 add_page = False
                 block_copy = False
             else:
-                out.write(line)
-        in_tpl.close()
+                tmp_file.write(line)
 
-    response = http.HttpResponse(open('main/templates/out.rtf'), mimetype='application/rtf')
+    tmp_file.seek(0)
+    response = http.HttpResponse(tmp_file, mimetype='application/rtf')
     response['Content-Disposition'] = 'attachment; filename="lettere.rtf"'
+
     return response
 
 def check_test(request):
