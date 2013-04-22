@@ -238,18 +238,19 @@ def generate_query(s=None, group=None, order=None, id_field='',ids=[]):
 
     return QUERY + " WHERE ( " + " AND ".join(search_query)  + " ) " + query_order, param
 
-def search_inMonth(key=None, month=None, year=None, filter=None, group_field=None, field_order=None):
-    if month is None or month == "":
-        month = datetime.date.today().month
-    if year is None or year == "":
-        year = datetime.date.today().year
+def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=None, order_by_field=None, ordering=None):
 
-    if month > 12 and month < 1:
-        logger.error("Invalid month[%s]" % month)
+    if ref_month is None or ref_month == "":
+        ref_month = datetime.date.today().month
+    if ref_year is None or ref_year == "":
+        ref_year = datetime.date.today().year
+
+    if ref_month > 12 and ref_month < 1:
+        logger.error("Invalid month[%s]" % ref_month)
         return []
 
     #if group_field is not None:
-    query_str, param = generate_query(key, group_field, field_order)
+    query_str, param = generate_query(search_keys, order_by_field, ordering)
 
 
     query_year = """(
@@ -257,30 +258,30 @@ def search_inMonth(key=None, month=None, year=None, filter=None, group_field=Non
         ( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s) OR
         ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s) OR
         ( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)
-        )""" % (year, year, year, year)
+        )""" % (ref_year, ref_year, ref_year, ref_year)
 
     query_month = """(
         ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione) OR
         ( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s ) OR
         ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s ) OR
         ( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )
-        )""" % (month, month, month, month)
+        )""" % (ref_month, ref_month, ref_month, ref_month)
 
     if filter == 'fumi':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione)" % (month)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione)" % (ref_year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione)" % (ref_month)
 
     if filter == 'fumi_prossimi':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % (month)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s)" % (ref_year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % (ref_month)
 
     if filter == 'verifiche':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s )" % (month)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s)" % (ref_year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s )" % (ref_month)
 
     if filter == 'verifiche_prossima':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (month)
+        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (ref_year)
+        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (ref_month)
 
     query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
     return query_table(query_str, param, query_str2, [], verifiche_only=True)

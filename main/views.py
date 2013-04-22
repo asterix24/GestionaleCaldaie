@@ -37,12 +37,14 @@ def home(request):
     data = scripts.HOME_ADD_JS
 
     # Use default at first time when the home page is never loaded
-    search_in_range = ""
-    filter_type = None
-    ref_month = None
-    ref_year = None
-    group_field = ""
-    field_order = ""
+    form_dict = {
+            'search_keys' : "",
+            'filter_type' : None,
+            'ref_month' : None,
+            'ref_year' : None,
+            'order_by_field' : "",
+            'ordering' : "",
+    }
 
     if request.method == 'POST':
         selected_rows = request.POST.getlist('row_select', [])
@@ -68,24 +70,23 @@ def home(request):
     if request.method == 'GET' and request.GET != {}:
         form = myforms.RangeDataSelect(request.GET)
         if form.is_valid():
-            search_in_range = form.cleaned_data['search_in_range']
-            filter_type = form.cleaned_data['filter_type']
-            ref_month = form.cleaned_data['ref_month']
-            ref_year = form.cleaned_data['ref_year']
-            group_field = form.cleaned_data['group_field']
-            field_order = form.cleaned_data['field_order']
+            form_dict['search_keys'] = form.cleaned_data['search_in_range']
+            form_dict['filter_type'] = form.cleaned_data['filter_type']
+            form_dict['ref_month'] = form.cleaned_data['ref_month']
+            form_dict['ref_year'] = form.cleaned_data['ref_year']
+            form_dict['order_by_field'] = form.cleaned_data['group_field']
+            form_dict['ordering'] = form.cleaned_data['field_order']
 
-    data_to_render = database_manager.search_inMonth(key=search_in_range,
-                                month=ref_month, year=ref_year, filter=filter_type,
-                                group_field=group_field, field_order=field_order)
+    data_to_render = database_manager.search_inMonth(**form_dict)
 
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
     dr.menuWidget(HOME_MENU)
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-    dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(ref_month)) + "%s interventi in scadenza.</h2><br>")
+    dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(form_dict['ref_month'])) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()
-    dr.orderUrl('home', search_in_range, group_field, field_order)
+
+    dr.orderUrl('home', form_dict)
 
     data += dr.toTable()
     return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
@@ -94,27 +95,33 @@ def home(request):
 def exportCSV(request, detail_type=None):
     data_table = []
     filename='Elenco'
+    form_dict = {
+            'search_keys' : "",
+            'filter_type' : None,
+            'ref_month' : None,
+            'ref_year' : None,
+            'order_by_field' : "",
+            'ordering' : "",
+    }
     if detail_type is None or detail_type == "home":
 
-        search_in_range = request.GET.get('search_in_range', None)
-        filter_type = request.GET.get('filter_type', None)
-        ref_month = request.GET.get('ref_month', None)
-        ref_year = request.GET.get('ref_year', None)
-        group_field = request.GET.get('group_field', None)
-        field_order = request.GET.get('field_order', None)
+        form_dict['search_keys'] = request.GET.get('search_in_range', None)
+        form_dict['filter_type'] = request.GET.get('filter_type', None)
+        form_dict['ref_month'] = request.GET.get('ref_month', None)
+        form_dict['ref_year'] = request.GET.get('ref_year', None)
+        form_dict['order_by_field'] = request.GET.get('group_field', None)
+        form_dict['ordering'] = request.GET.get('field_order', None)
 
-        filename = myforms.monthStr(ref_month)
+        filename = myforms.monthStr(form_dict['ref_month'])
 
-        data_table = database_manager.search_inMonth(key=search_in_range,
-                                month=ref_month, year=ref_year, filter=filter_type,
-                                group_field=group_field, field_order=field_order)
+        data_table = database_manager.search_inMonth(**form_dict)
 
     elif detail_type == "anagrafe":
         filename='Anagrafe'
 
-        search_string = request.GET.get('s','')
-        group_field = request.GET.get('group_field', None)
-        field_order = request.GET.get('field_order', None)
+        form_dict['search_keys'] = request.GET.get('s','')
+        form_dict['order_by_field'] = request.GET.get('group_field', None)
+        form_dict['ordering'] = request.GET.get('field_order', None)
         data_table = database_manager.search_fullText(search_string, group_field, field_order)
 
     # Create the HttpResponse object with the appropriate CSV header.
