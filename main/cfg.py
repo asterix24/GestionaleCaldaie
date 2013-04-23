@@ -105,20 +105,28 @@ ANAGRAFE_INTERVENTI_STD_VIEW = [
 ]
 
 GROUP_FIELD_VIEW = {
-"cognome"            : { "field":"main_cliente.cognome",             "order":"asc" },
-"nome"               : { "field":"main_cliente.nome",                "order":"asc" },
-"via"                : { "field":"main_cliente.via",                 "order":"asc" },
-"citta"              : { "field":"main_cliente.citta",               "order":"asc" },
-"cap"                : { "field":"main_cliente.cap",                 "order":"asc" },
-"marca_caldaia"      : { "field":"main_impianto.marca_caldaia",      "order":"asc" },
-"modello_caldaia"    : { "field":"main_impianto.modello_caldaia",    "order":"asc" },
-"combustibile"       : { "field":"main_impianto.combustibile",       "order":"asc" },
-"data_installazione" : { "field":"main_impianto.data_installazione", "order":"asc" },
-"data_contratto"     : { "field":"main_impianto.data_contratto",     "order":"asc" },
-"potenza_caldaia"    : { "field":"main_impianto.potenza_caladaia",   "order":"asc" },
-"tipo_caldaia"       : { "field":"main_impianto.tipo_caldaia",       "order":"asc" },
+'codice_impianto'     : { "field":"main_cliente.codice_impianto",       "order":"asc" },
+'cognome'             : { "field":"main_cliente.cognome",               "order":"asc" },
+'nome'                : { "field":"main_cliente.nome",                  "order":"asc" },
+'codice_fiscale'      : { "field":"main_cliente.codice_fiscale",        "order":"asc" },
+'via'                 : { "field":"main_cliente.via",                   "order":"asc" },
+'citta'               : { "field":"main_cliente.citta",                 "order":"asc" },
+'cap'                 : { "field":"main_cliente.cap",                   "order":"asc" },
+'numero_cellulare'    : { "field":"main_cliente.numero_cellulare",      "order":"asc" },
+'numero_telefono'     : { "field":"main_cliente.numero_telefono",       "order":"asc" },
+'mail'                : { "field":"main_cliente.mail",                  "order":"asc" },
+'stato_impianto'      : { "field":"main_impianto.stato_impianto",       "order":"asc" },
+'marca_caldaia'       : { "field":"main_impianto.marca_caldaia",        "order":"asc" },
+'modello_caldaia'     : { "field":"main_impianto.modello_caldaia",      "order":"asc" },
+'matricola_caldaia'   : { "field":"main_impianto.matricola_caldaia",    "order":"asc" },
+'potenza_caldaia'     : { "field":"main_impianto.potenza_caldaia",      "order":"asc" },
+'combustibile'        : { "field":"main_impianto.combustibile",         "order":"asc" },
+'tipo_caldaia'        : { "field":"main_impianto.tipo_caldaia",         "order":"asc" },
+'data_installazione'  : { "field":"main_impianto.data_installazione",   "order":"asc" },
+'data_contratto'      : { "field":"main_impianto.data_contratto",       "order":"asc" },
 }
 
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
+
 

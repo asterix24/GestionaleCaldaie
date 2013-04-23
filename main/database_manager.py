@@ -287,8 +287,8 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
     return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
 
-def search_fullText(s, group_field=None, field_order=None):
-    query_str, param = generate_query(s, group_field, field_order)
+def search_fullText(search_keys=None, order_by_field=None, ordering=None):
+    query_str, param = generate_query(search_keys, order_by_field, ordering)
     return query_table(query_str, param)
 
 def search_ids(id_field, ids):
