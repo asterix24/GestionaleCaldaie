@@ -319,20 +319,27 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
 
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
+    data = scripts.HOME_ADD_JS
+
     search_string = ""
     data_to_render = []
-    data = scripts.HOME_ADD_JS
-    group_field = ""
-    field_order = ""
+    order_by_field = ""
+    ordering = ""
+
+    form_dict = {
+            'search_keys' : "",
+            'order_by_field' : "",
+            'ordering' : "",
+    }
 
     if request.method == 'GET' and request.GET != {}:
             form = myforms.FullTextSearchForm(request.GET)
             if form.is_valid():
-                    search_string = form.cleaned_data['s']
-                    group_field = form.cleaned_data['group_field']
-                    field_order = form.cleaned_data['field_order']
+                    form_dict['search_keys'] = form.cleaned_data['search_keys']
+                    form_dict['order_by_field'] = form.cleaned_data['order_by_field']
+                    form_dict['ordering'] = form.cleaned_data['ordering']
 
-            data_to_render = database_manager.search_fullText(search_string, group_field, field_order)
+            data_to_render = database_manager.search_fullText(**form_dict)
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
 
@@ -340,7 +347,7 @@ def anagrafe(request):
             if search_string != "":
                 dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
             dr.showStatistics()
-            dr.orderUrl('anagrafe', search_string, group_field, field_order)
+            dr.orderUrl('anagrafe', form_dict)
             data += dr.toTable()
 
     return render(request, 'anagrafe.sub', {'query_path':request.get_full_path(), 'data': data,'data_form': form})

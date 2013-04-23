@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class FullTextSearchForm(forms.Form):
-    s = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size':'40'}))
+    search_keys = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size':'40'}))
     order_by_field = forms.CharField(label="Raggruppa per ", initial='Raggruppa per..', required=False, widget=forms.Select())
     ordering = forms.CharField(label="Ordinamento", initial='A->Z', required=False, widget=forms.Select())
 
