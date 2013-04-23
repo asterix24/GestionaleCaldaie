@@ -271,23 +271,33 @@ class DataRender(object):
     def menuWidget(self, widget_list):
         self.widget_list = widget_list
 
-    def orderUrl(self, base_url, string, group_field, order):
-        # Alternate ordering
-        if group_field != "":
-            if order == 'asc':
-                order = 'desc'
-            else:
-                order = 'asc'
-
-            # Update ordering of select field
-            try:
-                _, field = group_field.split('.')
-                cfg.GROUP_FIELD_VIEW[field]['order'] = order
-            except (ValueError, KeyError), m:
-                logger.error("%s Errore nello split di %s" % (__name__, group_field))
-
+    def orderUrl(self, base_url, order_url_dict):
+        self.string = "?"
         self.base_url = base_url
-        self.string = string
+        order = 'asc'
+        for k,v in order_url_dict.items():
+            if k == 'ordering':
+                continue
+            if k == 'order_by_field':
+                if not v:
+                    continue
+
+                if order_url_dict['ordering'] == 'asc':
+                    order = 'desc'
+                else:
+                    order = 'asc'
+
+                try:
+                    _, field = v.split('.')
+                    cfg.GROUP_FIELD_VIEW[field]['order'] = order
+                except (ValueError, KeyError), m:
+                    logger.error("%s Errore nello split di %s=%s" % (__name__, k, v))
+
+                continue
+
+
+            self.string += "%s=%s&" % (k, v)
+
 
     def toTable(self):
         if self.items == []:
@@ -325,7 +335,7 @@ class DataRender(object):
                 for j in self.colums:
                     s = j.replace('_', ' ').capitalize()
                     if cfg.GROUP_FIELD_VIEW.has_key(j):
-                        s = "<a class=\"table_header_%s\" href=\"/%s/?s=%s&group_field=%s&field_order=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
+                        s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
                                 self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
                     table += "<th>%s</th>" % s
 

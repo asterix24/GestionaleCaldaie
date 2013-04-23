@@ -70,12 +70,12 @@ def home(request):
     if request.method == 'GET' and request.GET != {}:
         form = myforms.RangeDataSelect(request.GET)
         if form.is_valid():
-            form_dict['search_keys'] = form.cleaned_data['search_in_range']
+            form_dict['search_keys'] = form.cleaned_data['search_keys']
             form_dict['filter_type'] = form.cleaned_data['filter_type']
             form_dict['ref_month'] = form.cleaned_data['ref_month']
             form_dict['ref_year'] = form.cleaned_data['ref_year']
-            form_dict['order_by_field'] = form.cleaned_data['group_field']
-            form_dict['ordering'] = form.cleaned_data['field_order']
+            form_dict['order_by_field'] = form.cleaned_data['order_by_field']
+            form_dict['ordering'] = form.cleaned_data['ordering']
 
     data_to_render = database_manager.search_inMonth(**form_dict)
 
@@ -105,12 +105,12 @@ def exportCSV(request, detail_type=None):
     }
     if detail_type is None or detail_type == "home":
 
-        form_dict['search_keys'] = request.GET.get('search_in_range', None)
+        form_dict['search_keys'] = request.GET.get('search_keys', None)
         form_dict['filter_type'] = request.GET.get('filter_type', None)
         form_dict['ref_month'] = request.GET.get('ref_month', None)
         form_dict['ref_year'] = request.GET.get('ref_year', None)
-        form_dict['order_by_field'] = request.GET.get('group_field', None)
-        form_dict['ordering'] = request.GET.get('field_order', None)
+        form_dict['order_by_field'] = request.GET.gorder_by_field('order_by_field', None)
+        form_dict['ordering'] = request.GET.get('ordering', None)
 
         filename = myforms.monthStr(form_dict['ref_month'])
 
@@ -120,9 +120,9 @@ def exportCSV(request, detail_type=None):
         filename='Anagrafe'
 
         form_dict['search_keys'] = request.GET.get('s','')
-        form_dict['order_by_field'] = request.GET.get('group_field', None)
-        form_dict['ordering'] = request.GET.get('field_order', None)
-        data_table = database_manager.search_fullText(search_string, group_field, field_order)
+        form_dict['order_by_field'] = request.GET.get('order_by_field', None)
+        form_dict['ordering'] = request.GET.get('ordering', None)
+        data_table = database_manager.search_fullText(search_string, form_dict['order_by_field'], form_dict['ordering'])
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
