@@ -116,7 +116,6 @@ DB_DATA_FIELD = [
 ]
 
 GROUP_FIELD_VIEW = {
-'codice_impianto'     : { "field":"main_cliente.codice_impianto",       "order":"asc" },
 'cognome'             : { "field":"main_cliente.cognome",               "order":"asc" },
 'nome'                : { "field":"main_cliente.nome",                  "order":"asc" },
 'codice_fiscale'      : { "field":"main_cliente.codice_fiscale",        "order":"asc" },
@@ -127,6 +126,7 @@ GROUP_FIELD_VIEW = {
 'numero_telefono'     : { "field":"main_cliente.numero_telefono",       "order":"asc" },
 'mail'                : { "field":"main_cliente.mail",                  "order":"asc" },
 
+'codice_impianto'     : { "field":"main_impianto.codice_impianto",       "order":"asc" },
 'stato_impianto'      : { "field":"main_impianto.stato_impianto",       "order":"asc" },
 'marca_caldaia'       : { "field":"main_impianto.marca_caldaia",        "order":"asc" },
 'modello_caldaia'     : { "field":"main_impianto.modello_caldaia",      "order":"asc" },

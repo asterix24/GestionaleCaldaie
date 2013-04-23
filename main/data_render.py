@@ -278,6 +278,8 @@ class DataRender(object):
         self.base_url = base_url
         order = 'asc'
         for k,v in order_url_dict.items():
+            if v is None:
+                continue
             if k == 'ordering':
                 continue
             if k == 'order_by_field':
