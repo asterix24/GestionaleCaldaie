@@ -124,6 +124,7 @@ GROUP_FIELD_VIEW = {
 'tipo_caldaia'        : { "field":"main_impianto.tipo_caldaia",         "order":"asc" },
 'data_installazione'  : { "field":"main_impianto.data_installazione",   "order":"asc" },
 'data_contratto'      : { "field":"main_impianto.data_contratto",       "order":"asc" },
+'anzianita_impianto'  : { "field":"main_impianto.anzianita_impianto",   "order":"asc" },
 }
 
 

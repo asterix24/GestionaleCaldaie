@@ -243,6 +243,7 @@ class DataRender(object):
         self.unique_row = False
         self.widget_list = []
 
+        self.add_order_by_link = False
         self.base_url = ""
         self.string = ""
 
@@ -272,6 +273,7 @@ class DataRender(object):
         self.widget_list = widget_list
 
     def orderUrl(self, base_url, order_url_dict):
+        self.add_order_by_link = True
         self.string = "?"
         self.base_url = base_url
         order = 'asc'
@@ -329,14 +331,15 @@ class DataRender(object):
             if self.display_header:
                 table += "<tr>"
 
-                if self.widget_list != []:
+                if self.detail_type is not None or self.widget_list != []:
                     table += "<th></th>"
 
                 for j in self.colums:
                     s = j.replace('_', ' ').capitalize()
-                    if cfg.GROUP_FIELD_VIEW.has_key(j):
-                        s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
-                                self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
+                    if self.add_order_by_link:
+                        if cfg.GROUP_FIELD_VIEW.has_key(j):
+                            s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
+                                    self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
                     table += "<th>%s</th>" % s
 
                 table += "</tr>"
@@ -401,6 +404,7 @@ class DataRender(object):
         self.widget_list = []
         show_check = False
 
+        self.add_order_by_link = False
         self.base_url = ""
         self.string = ""
 
