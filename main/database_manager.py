@@ -12,6 +12,7 @@ from django.db import connection, transaction
 
 from models import Cliente
 from tools import *
+from main import cfg
 
 import logging
 logger = logging.getLogger(__name__)
@@ -197,28 +198,29 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
             n.append(j)
     return n
 
-def generate_query(s=None, group=None, order=None, id_field='',ids=[]):
+def generate_query(search_keys=None, order_by_field=None, ordering=None, id_field='',ids=[]):
     query_order = QUERY_ORDER
-    if group is not None and group != "":
-        if order is None:
-            order = "ASC"
 
-        query_order = "ORDER BY " + group + " " + order + ", main_cliente.cognome ASC, main_cliente.nome ASC"
+    if order_by_field is not None and order_by_field != "":
+        if ordering is None:
+            ordering = "ASC"
+        if 'main_cliente' in order_by_field or 'main_impianto' in order_by_field:
+            query_order = "ORDER BY " + order_by_field + " " + ordering + ", main_cliente.cognome ASC, main_cliente.nome ASC"
 
 
-    if s is None and ids == []:
+    if search_keys is None and ids == []:
         return QUERY + query_order, []
 
     param = []
     search_query = []
     query_str = ""
 
-    if s is not None:
+    if search_keys is not None:
         search_key = []
-        if " " in s:
-            search_key = s.strip().split(" ")
+        if " " in search_keys:
+            search_key = search_keys.strip().split(" ")
         else:
-            search_key.append(s.strip())
+            search_key.append(search_keys.strip())
 
         for i, key in enumerate(search_key):
             # If the search string is less than 3 char, we search key on
@@ -284,12 +286,37 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (ref_month)
 
     query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
-    return query_table(query_str, param, query_str2, [], verifiche_only=True)
 
+    data = query_table(query_str, param, query_str2, [], verifiche_only=True)
+    return query_sortDict(data, order_by_field, ordering)
+
+
+
+def query_sortDict(data, order_by_field, ordering):
+
+    try:
+        _, order_by_field = order_by_field.split('.')
+    except (ValueError, KeyError), m:
+        logger.error("%s Errore nello split di %s" % (__name__, order_by_field))
+
+    if ordering == 'asc':
+        ordering = False
+    else:
+        ordering = True
+
+    def __sortDict(d):
+        d = d.get(order_by_field, None)
+        if order_by_field in cfg.DB_DATA_FIELD:
+            if d is None:
+                return datetime.date(2000,1,1)
+        return d
+
+    return sorted(data, key=__sortDict, reverse=ordering)
 
 def search_fullText(search_keys=None, order_by_field=None, ordering=None):
     query_str, param = generate_query(search_keys, order_by_field, ordering)
-    return query_table(query_str, param)
+    data = query_table(query_str, param)
+    return query_sortDict(data, order_by_field, ordering)
 
 def search_ids(id_field, ids):
     query_str, param = generate_query(id_field=id_field,ids=ids)
