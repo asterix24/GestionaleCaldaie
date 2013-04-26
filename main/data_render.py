@@ -99,6 +99,21 @@ def __stato_impianto_url(items, key, s=EMPTY_CELL):
     return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
             items['cliente_id'], items['impianto_id'])
 
+def __intervento_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
+    s = items[key].strftime(cfg.DATA_FIELD_STR_FORMAT)
+    return make_url('','', s, '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
+            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+
+def __tipo_intervento_url(items, key, s=EMPTY_CELL):
+    if not isValidKey(items, key):
+        return s
+
+    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
+            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+
 def __tipo_caldaia(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
@@ -189,6 +204,8 @@ RENDER_TABLE_URL = {
     'ultima_analisi_combustione': __ultima_analisi_url,
     'stato_verifica': __stato_verifica_url,
     'stato_impianto': __stato_impianto_url,
+    'data_intervento': __intervento_url,
+    'tipo_intervento': __tipo_intervento_url,
 }
 
 RENDER_TABLE = {
