@@ -51,8 +51,8 @@ ANAGRAFE_STD_VIEW = [
  'colore_bollino',
  'valore_bollino',
  'note_verifica',
- 'tipo_intervento',
  'data_intervento',
+ 'tipo_intervento',
 ]
 
 ANAGRAFE_CLIENTE_STD_VIEW = [
