@@ -32,6 +32,7 @@ LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
 LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
 LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 """
+
 DB_FROM_JOIN_IMPIANTO = """
 main_cliente
 LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
@@ -43,14 +44,14 @@ SELECT
     *,
     main_cliente.id AS cliente_id,
     age(main_impianto.data_installazione) AS anzianita_impianto,
-    main_impianto.id AS impianto_id,
-    main_intervento.id AS intervento_id
+    main_impianto.id AS impianto_id
 FROM
     main_cliente
     LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
 """
+
 QUERY_ORDER = "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
+
 
 QUERY_WHERE = """
 (
@@ -72,13 +73,11 @@ QUERY_WHERE = """
     UPPER(main_impianto.altro_tipo_caldaia::text) LIKE UPPER(%s) OR
     UPPER(main_impianto.altra_potenza_caldaia::text) LIKE UPPER(%s) OR
     UPPER(main_impianto.marca_caldaia::text) LIKE UPPER(%s) OR
-    UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s) OR
-    UPPER(main_intervento.note_intervento::text) LIKE UPPER(%s) OR
-    UPPER(main_intervento.tipo_intervento::text) LIKE UPPER(%s)
+    UPPER(main_impianto.codice_impianto::text) LIKE UPPER(%s)
 )
 """
 
-QUERY2 = """
+QUERY_VERIFICHE = """
 SELECT
     *,
     main_verifica.id AS verifica_id
@@ -86,12 +85,30 @@ FROM main_verifica
 WHERE
 """
 
-QUERY2_WHERE ="""
+QUERY_WHERE_VERIFICHE ="""
     (
         main_verifica.verifica_impianto_id IN (%s)
     )
 """
-QUERY2_ORDER ="ORDER BY main_verifica.data_verifica DESC"
+
+QUERY_ORDER_VERIFICHE ="ORDER BY main_verifica.data_verifica DESC"
+
+QUERY_INTERVENTO = """
+SELECT
+    *,
+    main_intervento.id AS intervento_id
+FROM main_intervento
+WHERE
+(
+    main_intervento.data_intervento = (SELECT MAX(main_intervento.data_intervento) from main_intervento where intervento_impianto_id IN (%s))
+)
+ORDER BY main_intervento.data_intervento DESC
+"""
+"""
+    AND
+    main_intervento.intervento_impianto_id IN (%s)
+    main_intervento.data_intervento = (SELECT MAX(main_intervento.data_intervento) from main_intervento where intervento_impianto_id = main_intervento.id)
+"""
 
 def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
@@ -152,13 +169,14 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
     if s == "":
         return query_data
 
-    query_where = QUERY2_WHERE % s
+    query_where_verifiche = QUERY_WHERE_VERIFICHE % (s)
+    query_interventi = QUERY_INTERVENTO % (s)
 
     # if we want to specify a different second query we pass explict sql string
     if query_str2 is None:
-        query_str = QUERY2 + " ( " + query_where + " ) " +  QUERY2_ORDER
+        query_str = QUERY_VERIFICHE + " ( " + query_where_verifiche + " ) " +  QUERY_ORDER_VERIFICHE
     else:
-        query_str = QUERY2 + " ( " + query_where + " AND " + query_str2 + " ) " +  QUERY2_ORDER
+        query_str = QUERY_VERIFICHE + " ( " + query_where_verifiche + " AND " + query_str2 + " ) " +  QUERY_ORDER_VERIFICHE
         param = param + param2
 
     #print query_str
@@ -178,24 +196,56 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
         else:
             query_data2[key] = [d]
 
+    #print query_str
+    cursor = connection.cursor()
+    cursor.execute(query_interventi, param)
+    desc = cursor.description
+    l = [col[0] for col in desc]
+
+    # Get all interventi data structed as: dict of list
+    # { impianto_id : [ interventi list] }
+    query_data3 = {}
+    for row in cursor.fetchall():
+        d = dict(zip(l, row))
+        key = d['intervento_impianto_id']
+        if query_data3.has_key(key):
+            query_data3[key].append(d)
+        else:
+            query_data3[key] = [d]
+
     # Compute the last verifica and the most recent
     # analisi combustione, with its id.
     n = []
-    for j in query_data:
-        if j['impianto_id'] is not None and query_data2.has_key(j['impianto_id']):
-            verifiche_list = query_data2[j['impianto_id']]
+    for table_row in query_data:
+        interventi_row = {}
+        verifiche_row = {}
+
+        id = table_row.get('impianto_id', None)
+        if id is not None:
+            #verifiche
+            verifiche_list = query_data2.get(id, [])
             if verifiche_list:
-                row = verifiche_list[0]
-                row['data_ultima_verifica'] = row['data_verifica']
+                verifiche_row = verifiche_list[0]
+                verifiche_row['data_ultima_verifica'] = verifiche_row['data_verifica']
                 for i in verifiche_list:
                     if i['analisi_combustione']:
-                        row['ultima_analisi_combustione'] = i['data_verifica']
-                        row['ultima_analisi_combustione_id'] = i['verifica_id']
-                        row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
+                        verifiche_row['ultima_analisi_combustione'] = i['data_verifica']
+                        verifiche_row['ultima_analisi_combustione_id'] = i['verifica_id']
+                        verifiche_row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
                         break
-                n.append(dict(j.items() + row.items()))
+
+            interventi_list = query_data3.get(id, [])
+            if interventi_list:
+                interventi_row = interventi_list[0]
+
+            if verifiche_only and verifiche_list:
+                n.append(dict(table_row.items() + verifiche_row.items()))
+            elif not verifiche_only and (verifiche_list or interventi_list):
+                n.append(dict(table_row.items() + verifiche_row.items() + interventi_row.items()))
+
         elif not verifiche_only:
-            n.append(j)
+            n.append(table_raw)
+
     return n
 
 def generate_query(search_keys=None, order_by_field=None, ordering=None, id_field='',ids=[]):
