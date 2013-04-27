@@ -69,6 +69,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if data_to_render[0]['verifica_id'] != None:
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
             dr.actionWidget('verifica', ['edit','delete'])
+            dr.uniqueRow()
             data += dr.toTable()
 
         if data_to_render[0]['intervento_id'] != None:
