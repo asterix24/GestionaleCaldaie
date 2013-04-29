@@ -215,3 +215,4 @@ def generate_report(items, file_name=None):
 
 def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
+
