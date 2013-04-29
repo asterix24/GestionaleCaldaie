@@ -369,7 +369,7 @@ class DataRender(object):
             if self.unique_row:
                 key = ""
                 for i in self.colums:
-                    key += "%s" % item_dict[i]
+                    key += "%s" % item_dict.get(i,'')
                 if duplicate_row.has_key(key):
                     skip_row = True
                 else:
@@ -431,7 +431,8 @@ class DataRender(object):
 
 
 def render_toList(item_dict, show_colum, header_msg, detail_type=None):
-    table = "<table id=\"customers_detail\">"
+    table = "<table id=\"list_table\" class=\"list_table_float_left\">"
+    table += "<colgroup><col width=50%><col width=50%></colgroup>"
     return_link = ''
     if detail_type is not None:
         if detail_type == 'cliente':
@@ -450,6 +451,7 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None):
         table += "<td id=\"td_%s\">%s</td>" % (i, formatFields(item_dict, i, default_text="-"))
         table += "</tr>"
 
-    table += "</table><br>"
+    table += "</table>"
 
     return table
+

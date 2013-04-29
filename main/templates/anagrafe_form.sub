@@ -16,7 +16,8 @@
 
 <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
 
-<table id="customers_detail">
+<table id="list_table" class="list_table_float_center">
+<colgroup><col width=30%><col width=70%></colgroup>
 <tr>
 <th></th>
 <th>

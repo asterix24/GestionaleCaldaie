@@ -17,27 +17,6 @@ from main import cfg
 import logging
 logger = logging.getLogger(__name__)
 
-#
-DB_COLUM_SEARCH_ID ="""
-*,
-main_cliente.id AS cliente_id,
-age(main_impianto.data_installazione) AS anzianita_impianto,
-main_impianto.id AS impianto_id,
-main_intervento.id AS intervento_id,
-main_verifica.id AS verifica_id
-"""
-DB_FROM_JOIN = """
-main_cliente
-LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
-LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
-"""
-
-DB_FROM_JOIN_IMPIANTO = """
-main_cliente
-LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-"""
-DB_ORDER = " ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
 
 QUERY = """
 SELECT
@@ -104,11 +83,6 @@ WHERE
 )
 ORDER BY main_intervento.data_intervento DESC
 """
-"""
-    AND
-    main_intervento.intervento_impianto_id IN (%s)
-    main_intervento.data_intervento = (SELECT MAX(main_intervento.data_intervento) from main_intervento where intervento_impianto_id = main_intervento.id)
-"""
 
 def search_runQuery(query_str, param):
     #print ">> " + query_str + " <<"
@@ -124,27 +98,52 @@ def search_runQuery(query_str, param):
     return [ dict(zip(l, row))
             for row in cursor.fetchall() ]
 
+#
+DB_COLUM_SEARCH_ID ="""
+SELECT
+    *,
+    main_cliente.id AS cliente_id,
+    age(main_impianto.data_installazione) AS anzianita_impianto,
+    main_impianto.id AS impianto_id,
+    main_intervento.id AS intervento_id,
+    main_verifica.id AS verifica_id
+FROM
+    main_cliente
+    LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
+    LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
+    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
+WHERE
+"""
+
 def search_clienteId(id):
-    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
-    query_str += " WHERE main_cliente.id = %s " + DB_ORDER
+    query_str = DB_COLUM_SEARCH_ID
+    query_str += "main_cliente.id = %s "
+    query_str += "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
     return search_runQuery(query_str, [id])
 
 def search_impiantoId(id):
-    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
-    query_str += " WHERE main_impianto.id = %s " + DB_ORDER
+    query_str = DB_COLUM_SEARCH_ID
+    query_str += "main_impianto.id = %s "
+    query_str += "ORDER BY main_impianto.data_installazione DESC"
     return search_runQuery(query_str, [id])
 
 def search_verificaId(id):
-    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
-    query_str +=" WHERE main_verifica.id = %s " + DB_ORDER
+    query_str = DB_COLUM_SEARCH_ID
+    query_str +=" WHERE main_verifica.id = %s "
+    query_str += "ORDER BY main_verifica.data_verifica DESC"
     return search_runQuery(query_str, [id])
 
 def search_interventoId(id):
-    query_str = "SELECT " + DB_COLUM_SEARCH_ID + " FROM " + DB_FROM_JOIN
-    query_str += " WHERE main_intervento.id = %s " + DB_ORDER
+    query_str = DB_COLUM_SEARCH_ID
+    query_str +=" WHERE main_intervento.id = %s "
+    query_str +="ORDER BY main_intervento.data_intervento DESC"
     return search_runQuery(query_str, [id])
 
-def query_test(test_str):
+
+def query_test(id):
+    cli = Cliente.object.get(pk=id)
+
+
     return []
 
 def __impiantiIds(field, query_data):
