@@ -129,13 +129,13 @@ def search_impiantoId(id):
 
 def search_verificaId(id):
     query_str = DB_COLUM_SEARCH_ID
-    query_str +=" WHERE main_verifica.id = %s "
+    query_str +=" main_verifica.id = %s "
     query_str += "ORDER BY main_verifica.data_verifica DESC"
     return search_runQuery(query_str, [id])
 
 def search_interventoId(id):
     query_str = DB_COLUM_SEARCH_ID
-    query_str +=" WHERE main_intervento.id = %s "
+    query_str +=" main_intervento.id = %s "
     query_str +="ORDER BY main_intervento.data_intervento DESC"
     return search_runQuery(query_str, [id])
 

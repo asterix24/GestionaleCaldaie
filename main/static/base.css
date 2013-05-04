@@ -271,6 +271,7 @@ a.table_header_asc:hover
 {
     background: #FFFFFF;
     text-align: left;
+    float: left;
     padding: 20px;
     height: 1%;
 }
