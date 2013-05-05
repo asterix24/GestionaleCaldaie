@@ -9,8 +9,9 @@ import string
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.db import connection, transaction
+from django.core.exceptions import ObjectDoesNotExist
 
-from models import Cliente
+from models import Cliente, Impianto, Verifica, Intervento
 from tools import *
 from main import cfg
 
@@ -115,35 +116,112 @@ FROM
 WHERE
 """
 
+def __age(start_date, end_date=None):
+    if end_date is None:
+        end_date = datetime.date.today()
+
+    return end_date - start_date
+
+def __impiantoFixKeys(d):
+    d['cliente_id'] = d['cliente_impianto_id']
+    d['impianto_id'] = d['id']
+    del d['id']
+    d['anzianita_impianto'] = __age(d['data_installazione'])
+
+    return d
+
+
 def search_clienteId(id):
-    query_str = DB_COLUM_SEARCH_ID
-    query_str += "main_cliente.id = %s "
-    query_str += "ORDER BY main_cliente.cognome ASC, main_cliente.nome ASC"
-    return search_runQuery(query_str, [id])
+    try:
+        d = Cliente.objects.get(pk=id).__dict__
+        d['cliente_id'] = d['id']
+        del d['id']
+    except ObjectDoesNotExist:
+        return []
+
+    return [d]
+
+def search_clienteImpiantoSet(id):
+    try:
+        cli = Cliente.objects.get(pk=id)
+        imp_list = cli.impianto_set.values()
+        for i in imp_list:
+            i = __impiantoFixKeys(i)
+
+    except ObjectDoesNotExist:
+        return []
+
+    return imp_list
 
 def search_impiantoId(id):
-    query_str = DB_COLUM_SEARCH_ID
-    query_str += "main_impianto.id = %s "
-    query_str += "ORDER BY main_impianto.data_installazione DESC"
-    return search_runQuery(query_str, [id])
+    try:
+        d = Impianto.objects.get(pk=id).__dict__
+        d = __impiantoFixKeys(d)
+    except ObjectDoesNotExist:
+        return []
+
+    return [d]
+
+def search_impiantoVerificaSet(id):
+    try:
+        imp = Impianto.objects.get(pk=id)
+        l = imp.verifica_set.values()
+        for i in l:
+            i['cliente_id'] = imp.cliente_impianto_id
+            i['verifica_id'] = i['id']
+            del i['id']
+            i['impianto_id'] = i['verifica_impianto_id']
+
+    except ObjectDoesNotExist:
+        return []
+
+    return l
+
+def search_impiantoInterventoSet(id):
+    try:
+        imp = Impianto.objects.get(pk=id)
+        l = imp.intervento_set.values()
+        for i in l:
+            i['cliente_id'] = imp.cliente_impianto_id
+            i['intervento_id'] = i['id']
+            del i['id']
+            i['impianto_id'] = i['intervento_impianto_id']
+
+    except ObjectDoesNotExist:
+        return []
+
+    return l
 
 def search_verificaId(id):
-    query_str = DB_COLUM_SEARCH_ID
-    query_str +=" main_verifica.id = %s "
-    query_str += "ORDER BY main_verifica.data_verifica DESC"
-    return search_runQuery(query_str, [id])
+    try:
+        v = Verifica.objects.get(pk=id)
+        v_dict = v.__dict__
+        v_dict['cliente_id'] = v.verifica_impianto.cliente_impianto.id
+        v_dict['verifica_id'] = v_dict['id']
+        del v_dict['id']
+        v_dict['impianto_id'] = v_dict['verifica_impianto_id']
+
+    except ObjectDoesNotExist:
+        return []
+
+    return [v_dict]
 
 def search_interventoId(id):
-    query_str = DB_COLUM_SEARCH_ID
-    query_str +=" main_intervento.id = %s "
-    query_str +="ORDER BY main_intervento.data_intervento DESC"
-    return search_runQuery(query_str, [id])
+    try:
+        v = Intervento.objects.get(pk=id)
+        v_dict = v.__dict__
+        v_dict['cliente_id'] = v.intervento_impianto.cliente_impianto.id
+        v_dict['intervento_id'] = v_dict['id']
+        del v_dict['id']
+        v_dict['impianto_id'] = v_dict['intervento_impianto_id']
+
+    except ObjectDoesNotExist:
+        return []
+
+    return [v_dict]
 
 
 def query_test(id):
-    cli = Cliente.object.get(pk=id)
-
-
     return []
 
 def __impiantiIds(field, query_data):
@@ -347,7 +425,7 @@ def query_sortDict(data, order_by_field, ordering):
     try:
         _, order_by_field = order_by_field.split('.')
     except (ValueError, KeyError), m:
-        logger.error("%s Errore nello split di %s" % (__name__, order_by_field))
+        logger.error("%s Errore nello split di [%s]" % (__name__, order_by_field))
 
     if ordering == 'asc':
         ordering = False
