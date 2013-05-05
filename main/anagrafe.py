@@ -52,27 +52,32 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     if not show_cliente:
         data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>")
 
-    dr = data_render.DataRender(data_to_render)
-
+    dr = None
+    # Show cliente and its impianti
     if detail_type is None:
-        if len(data_to_render) >= 1 and data_to_render[0].get('impianto_id', None) != None:
+        data_to_render = database_manager.search_clienteImpiantoSet(cliente_id)
+        if data_to_render:
+            dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.actionWidget('impianto', ['edit','delete'])
-            dr.uniqueRow()
             data += dr.toTable()
         data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
+    # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
         data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente')
 
-        if data_to_render[0].get('verifica_id', None) != None:
+        data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
+        if data_to_render:
+            dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
             dr.actionWidget('verifica', ['edit','delete'])
-            dr.uniqueRow()
             data += dr.toTable()
 
-        if data_to_render[0].get('intervento_id', None) != None:
+        data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
+        if data_to_render:
+            dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
             dr.actionWidget('intervento', ['edit','delete'])
             data += dr.toTable()
@@ -136,6 +141,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 instance = form.save()
                 return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
                         detail_type=detail_type, sub_impianto_id=instance.id)
+
 
         if detail_type == 'intervento':
             form = models.InterventoForm(request.POST, instance=select)
