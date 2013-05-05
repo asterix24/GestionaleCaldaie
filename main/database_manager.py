@@ -117,6 +117,9 @@ WHERE
 """
 
 def __age(start_date, end_date=None):
+    if start_date is None:
+        start_date = datetime.date.today()
+
     if end_date is None:
         end_date = datetime.date.today()
 

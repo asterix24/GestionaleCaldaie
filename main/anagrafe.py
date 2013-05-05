@@ -118,30 +118,64 @@ def _impianto_cfg(cliente_id, detail_type, impianto_id):
     return data
 
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
+    """
+    return dict
+    request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message=None
+    """
+    d = {
+        'request':request,
+        'detail_type':None,
+        'cliente_id':None,
+        'impianto_id':None,
+        'sub_impianto_id':None,
+        'message':None,
+    }
+
     if cliente_id is None or detail_type is None:
         msg=None
         form = models.ClienteForm(request.POST, instance=select)
         if form.is_valid():
             cli = form.cleaned_data['cliente_id_inserito']
             if cli is not None:
-                return show_record(request, cliente_id=cli, message="<h1>Cliente gia\' inserito nel gestionale</h1>")
+                d['cliente_id'] = cli
+                d['message'] = "<h1>Cliente gia\' inserito nel gestionale</h1>"
+                return True, d
 
             instance = form.save()
-            return show_record(request, cliente_id=instance.id, message=msg)
+            d['message'] = msg
+            d['cliente_id'] = instance.id
+            return True, d
+
+        else:
+            d['form'] = form
+            return False, d
+
     else:
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)
             if form.is_valid():
                 instance = form.save()
-                return show_record(request, cliente_id=cliente_id, impianto_id=instance.id)
+                d['cliente_id'] = cliente_id
+                d['impianto_id'] = instance.id
+                return True, d
+            else:
+                d['message'] = "Errore nel form"
+                d['form'] = form
+                return False, d
 
         if detail_type == 'verifica':
             form = models.VerificaForm(request.POST, instance=select)
             if form.is_valid():
                 instance = form.save()
-                return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                        detail_type=detail_type, sub_impianto_id=instance.id)
-
+                d['cliente_id'] = cliente_id
+                d['impianto_id'] = impianto_id
+                d['sub_impianto_id'] = instance.id
+                d['detail_type'] = detail_type
+                return True, d
+            else:
+                d['form'] = form
+                d['message'] = "Errore nel form"
+                return False, d
 
         if detail_type == 'intervento':
             form = models.InterventoForm(request.POST, instance=select)
@@ -149,8 +183,15 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 instance = form.save(commit = False)
                 instance.tipo_intervento = instance.tipo_intervento.capitalize()
                 instance.save()
-                return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id,
-                        detail_type=detail_type, sub_impianto_id=instance.id)
+                d['cliente_id'] = cliente_id
+                d['impianto_id'] = impianto_id
+                d['sub_impianto_id'] = instance.id
+                d['detail_type'] = detail_type
+                return True, d
+            else:
+                d['message'] = "Errore nel form"
+                d['form'] = form
+                return False, d
 
     return _display_error(request, "Qualcosa e' andato storto..")
 
@@ -195,7 +236,12 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
 
     if request.method == 'POST':
-        return __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request)
+        ret, d = __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request)
+        if ret:
+            return show_record(**d)
+        else:
+            request = d['request']
+            form = d['form']
 
     return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
         'data':data, 'post_url':post_url, 'return_url':return_url})
@@ -240,7 +286,12 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             return _display_error(request, "Qualcosa e' andato storto..")
 
     if request.method == 'POST':
-        return __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=select)
+        ret, d = __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=select)
+        if ret:
+            return show_record(**d)
+        else:
+            request = d['request']
+            form = d['form']
 
     return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
         'data':data, 'post_url':post_url, 'return_url':return_url})
