@@ -432,7 +432,7 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
 
     toolbar_s = ''
     for t in toolbar:
-        toolbar_s += "<a id=\"toolbar\" name=\"icon_%s\" href=\"%s,%s,%s,%s\">%s</a> " % (t,cliente_id, impianto_id, verifica_id, intervento_id, t)
+        toolbar_s += "<a id=\"toolbar\" href=\"%s,%s,%s,%s\">%s</a> " % (cliente_id, impianto_id, verifica_id, intervento_id, t)
 
 
     table += "<tr><th>%s%s</th><th>%s</th></tr>" % (toolbar_s, return_link, header_msg)
