@@ -46,7 +46,26 @@ $(function() {
 SHOW_ADD_JS = """
 <script>
 $(function() {
-    $("input[type=submit], a[name=href_button], a[id=toolbar]").button();
+    $("input[type=submit], a[name=href_button]").button();
+    $("a[id=toolbar]").each(function(c) {
+        if ($(this).text() == 'delete') {
+            $(this).button({
+                icons: {
+                  primary: "ui-icon-trash"
+                },
+                text: '',
+            });
+        }
+        if ($(this).text() == 'edit') {
+            $(this).button({
+                icons: {
+                  primary: "ui-icon-pencil"
+                },
+                text: '',
+            });
+        }
+    });
+
 });
 </script>
 """
