@@ -46,7 +46,7 @@ $(function() {
 SHOW_ADD_JS = """
 <script>
 $(function() {
-    $("input[type=submit], a[name=href_button]").button();
+    $("input[type=submit], a[name=href_button], a[id=toolbar]").button();
 });
 </script>
 """

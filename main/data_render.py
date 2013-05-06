@@ -411,21 +411,31 @@ class DataRender(object):
         return table
 
 
-def render_toList(item_dict, show_colum, header_msg, detail_type=None):
+def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
     table = "<table id=\"list_table\" class=\"list_table_float_left\">"
     table += "<colgroup><col width=50%><col width=50%></colgroup>"
+
+    cliente_id = item_dict.get('cliente_id','')
+    impianto_id = item_dict.get('impianto_id', '')
+    verifica_id = item_dict.get('verifica_id', '')
+    intervento_id = item_dict.get('intervento_id', '')
+
     return_link = ''
     if detail_type is not None:
         if detail_type == 'cliente':
-            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/#cliente', cliente_id=item_dict['cliente_id'])
+            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/#cliente', cliente_id=cliente_id)
         elif detail_type == 'impianto':
             return_link += make_url('button', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/#impianto',
-                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+                    cliente_id=cliente_id, impianto_id=impianto_id)
         else:
             return_link = ''
 
+    toolbar_s = ''
+    for t in toolbar:
+        toolbar_s += "<a id=\"toolbar\" name=\"icon_%s\" href=\"%s,%s,%s,%s\">%s</a> " % (t,cliente_id, impianto_id, verifica_id, intervento_id, t)
 
-    table += "<tr><th>%s</th><th>%s</th></tr>" % (return_link, header_msg)
+
+    table += "<tr><th>%s%s</th><th>%s</th></tr>" % (toolbar_s, return_link, header_msg)
     for i in show_colum:
         table += "<tr>"
         table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
