@@ -99,23 +99,6 @@ def search_runQuery(query_str, param):
     return [ dict(zip(l, row))
             for row in cursor.fetchall() ]
 
-#
-DB_COLUM_SEARCH_ID ="""
-SELECT
-    *,
-    main_cliente.id AS cliente_id,
-    age(main_impianto.data_installazione) AS anzianita_impianto,
-    main_impianto.id AS impianto_id,
-    main_intervento.id AS intervento_id,
-    main_verifica.id AS verifica_id
-FROM
-    main_cliente
-    LEFT JOIN main_impianto ON main_impianto.cliente_impianto_id = main_cliente.id
-    LEFT JOIN main_verifica ON main_verifica.verifica_impianto_id = main_impianto.id
-    LEFT JOIN main_intervento ON main_intervento.intervento_impianto_id = main_impianto.id
-WHERE
-"""
-
 def __age(start_date, end_date=None):
     if start_date is None:
         start_date = datetime.date.today()
@@ -400,19 +383,19 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
         ( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )
         )""" % (ref_month, ref_month, ref_month, ref_month)
 
-    if filter == 'fumi':
+    if filter_type == 'fumi':
         query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione)" % (ref_year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione)" % (ref_month)
 
-    if filter == 'fumi_prossimi':
+    if filter_type == 'fumi_prossimi':
         query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s)" % (ref_year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % (ref_month)
 
-    if filter == 'verifiche':
+    if filter_type == 'verifiche':
         query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s)" % (ref_year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s )" % (ref_month)
 
-    if filter == 'verifiche_prossima':
+    if filter_type == 'verifiche_prossima':
         query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (ref_year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (ref_month)
 
