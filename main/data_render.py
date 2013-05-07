@@ -88,7 +88,7 @@ def __stato_verifica_url(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    s = models.STATO_VERIFICA.get(items[key], s)
+    s = models.STATO_VERIFICA_DICT.get(items[key], s)
     return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
             items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
@@ -134,8 +134,8 @@ def __tipo_verifica(items, key, s=EMPTY_CELL):
     if str.lower() == 'altro':
         s = items['altro_tipo_verifica']
     else:
-        if str in models.VERIFICHE_TYPE_CHOICES:
-            s = models.VERIFICHE_TYPE_CHOICES[str]
+        if str in models.VERIFICHE_TYPE_CHOICES_DICT:
+            s = models.VERIFICHE_TYPE_CHOICES_DICT[str]
 
     return s
 
@@ -147,8 +147,8 @@ def __colore_bollino(items, key, s=EMPTY_CELL):
     if str.lower() == 'altro':
         s = items['altro_colore_bollino']
     else:
-        if str in models.BOLLINO_COLOR_CHOICES:
-            s = models.BOLLINO_COLOR_CHOICES[str]
+        if str in models.BOLLINO_COLOR_CHOICES_DICT:
+            s = models.BOLLINO_COLOR_CHOICES_DICT[str]
 
     return s
 
@@ -167,7 +167,7 @@ def __stato_pagamento(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    return models.STATO_PAGAMENTO.get(items[key], s)
+    return models.STATO_PAGAMENTO_DICT.get(items[key], s)
 
 
 def __stato_impianto(items, key, s=EMPTY_CELL):
@@ -190,7 +190,7 @@ def __stato_verifica(items, key, s=EMPTY_CELL):
     if not isValidKey(items, key):
         return s
 
-    return models.STATO_VERIFICA.get(items[key], s)
+    return models.STATO_VERIFICA_DICT.get(items[key], s)
 
 RENDER_TABLE_URL = {
     'nome': __cliente_url,
