@@ -60,13 +60,15 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
             dr.actionWidget('impianto', ['edit','delete'])
+            dr.toolbar(True)
             data += dr.toTable()
         data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente', toolbar=['delete','edit'])
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente',
+                toolbar=['delete','edit','add'])
 
         data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
         if data_to_render:
