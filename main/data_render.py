@@ -259,6 +259,10 @@ class DataRender(object):
         self.url_add = None
         self.widget_list = []
 
+        self.toolbar_top = False
+        self.toolbar_left = False
+        self.toolbar_bot  = False
+
         self.add_order_by_link = False
         self.base_url = ""
         self.string = ""
@@ -284,6 +288,12 @@ class DataRender(object):
 
     def menuWidget(self, widget_list):
         self.widget_list = widget_list
+
+    def toolbar(self, pos):
+        self.toolbar_top = True
+        self.toolbar_left = True
+        self.toolbar_bot  = True
+
 
     def orderUrl(self, base_url, order_url_dict):
         self.add_order_by_link = True
@@ -312,7 +322,6 @@ class DataRender(object):
 
                 continue
 
-
             self.string += "%s=%s&" % (k, v)
 
 
@@ -322,14 +331,12 @@ class DataRender(object):
 
         # Init table string
         table = ""
+        cycle = False
 
         # Show statistics of founded records
         if self.show_statistics:
             table += self.msg_statistics % len(self.items)
             self.show_statistics = False
-
-        duplicate_row = {}
-        cycle = False
 
         show_check = False
         for widget in self.widget_list:
@@ -341,12 +348,15 @@ class DataRender(object):
                 for i in widget[WIDGET_LIST]:
                     table += "<input type=\"submit\" name=\"button_action\" value=\"%s\">" % i
 
+        if self.toolbar_top:
+            table += "toolbar_top"
+
         table += "<table id=\"customers\">"
         for item_dict in self.items:
             if self.display_header:
                 table += "<tr>"
 
-                if self.detail_type is not None or self.widget_list != []:
+                if self.detail_type is not None or self.widget_list != [] or self.toolbar_top:
                     table += "<th></th>"
 
                 for j in self.colums:
@@ -366,6 +376,9 @@ class DataRender(object):
             cycle = not cycle
 
             table += "<tr%s>" % cycle_str
+            if self.toolbar_left:
+                table += "<td>toolbarleft</td>"
+
             # Aggiustare quest blocco..
             if self.detail_type is not None or self.widget_list != []:
                 p = ''
@@ -393,8 +406,14 @@ class DataRender(object):
 
             for i in self.colums:
                 table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
-
             table += "</tr>"
+
+        if self.toolbar_bot:
+            colspan = len(self.colums)
+            if self.toolbar_left:
+                colspan += 1
+            table += "<tr><td colspan=\"%s\">toolbarbot</td></tr>" % colspan
+
         table += "</table><br>"
 
         self.url_action = []
@@ -430,12 +449,12 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
         else:
             return_link = ''
 
-    toolbar_s = ''
+    toolbar_t = ''
     for t in toolbar:
-        toolbar_s += "<a id=\"toolbar\" href=\"%s,%s,%s,%s\">%s</a> " % (cliente_id, impianto_id, verifica_id, intervento_id, t)
+        toolbar_t += "<a id=\"toolbar\" href=\"%s,%s,%s,%s\">%s</a> " % (cliente_id, impianto_id, verifica_id, intervento_id, t)
 
 
-    table += "<tr><th>%s%s</th><th>%s</th></tr>" % (toolbar_s, return_link, header_msg)
+    table += "<tr><th>%s%s</th><th>%s</th></tr>" % (toolbar_t, return_link, header_msg)
     for i in show_colum:
         table += "<tr>"
         table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()

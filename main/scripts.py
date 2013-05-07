@@ -64,6 +64,14 @@ $(function() {
                 text: '',
             });
         }
+        if ($(this).text() == 'add') {
+            $(this).button({
+                icons: {
+                  primary: "ui-icon-plusthick"
+                },
+                text: '',
+            });
+        }
     });
 
 });
