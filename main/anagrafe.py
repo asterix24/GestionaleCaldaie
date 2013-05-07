@@ -66,7 +66,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente', toolbar=['delete','edit'])
 
         data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
         if data_to_render:

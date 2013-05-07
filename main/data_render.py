@@ -257,7 +257,6 @@ class DataRender(object):
         self.url_action = []
         self.detail_type = None
         self.url_add = None
-        self.unique_row = False
         self.widget_list = []
 
         self.add_order_by_link = False
@@ -266,9 +265,6 @@ class DataRender(object):
 
     def showHeader(self, display_header):
         self.display_header = display_header
-
-    def uniqueRow(self):
-        self.unique_row = True
 
     def msgItemsEmpty(self, msg):
         self.msg_items_empty = msg
@@ -364,53 +360,39 @@ class DataRender(object):
                 table += "</tr>"
                 self.display_header = False
 
-            # To not display same row..
-            skip_row = False
-            if self.unique_row:
-                key = ""
-                for i in self.colums:
-                    key += "%s" % item_dict.get(i,'')
-                if duplicate_row.has_key(key):
-                    skip_row = True
+            cycle_str = ''
+            if cycle:
+                cycle_str = " class=\"alt\""
+            cycle = not cycle
+
+            table += "<tr%s>" % cycle_str
+            # Aggiustare quest blocco..
+            if self.detail_type is not None or self.widget_list != []:
+                p = ''
+                if show_check:
+                    cliente_id = item_dict.get('cliente_id', '')
+                    impianto_id = item_dict.get('impianto_id', '')
+                    verifica_id = item_dict.get('verifica_id', '')
+                    intervento_id = item_dict.get('intervento_id', '')
+                    p += "<input type=\"checkbox\" name=\"row_select\" value=\"%s,%s,%s,%s\">" % (cliente_id,
+                                impianto_id, verifica_id, intervento_id)
                 else:
-                    duplicate_row[key] = ""
+                    for j in self.url_action:
+                        if self.detail_type == 'cliente':
+                            p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
+                        elif self.detail_type == 'impianto':
+                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
+                                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+                        else:
+                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
+                                    cliente_id=item_dict['cliente_id'],
+                                    impianto_id=item_dict['impianto_id'],
+                                    sub_impianto_id=item_dict[self.detail_type + '_id'])
 
-            if not skip_row:
-                skip_row = False
+                table += "<td>%s</td>" % p
 
-                cycle_str = ''
-                if cycle:
-                    cycle_str = " class=\"alt\""
-                cycle = not cycle
-
-                table += "<tr%s>" % cycle_str
-                # Aggiustare quest blocco..
-                if self.detail_type is not None or self.widget_list != []:
-                    p = ''
-                    if show_check:
-                        cliente_id = item_dict.get('cliente_id', '')
-                        impianto_id = item_dict.get('impianto_id', '')
-                        verifica_id = item_dict.get('verifica_id', '')
-                        intervento_id = item_dict.get('intervento_id', '')
-                        p += "<input type=\"checkbox\" name=\"row_select\" value=\"%s,%s,%s,%s\">" % (cliente_id,
-                                    impianto_id, verifica_id, intervento_id)
-                    else:
-                        for j in self.url_action:
-                            if self.detail_type == 'cliente':
-                                p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
-                            elif self.detail_type == 'impianto':
-                                p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
-                                        cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
-                            else:
-                                p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
-                                        cliente_id=item_dict['cliente_id'],
-                                        impianto_id=item_dict['impianto_id'],
-                                        sub_impianto_id=item_dict[self.detail_type + '_id'])
-
-                    table += "<td>%s</td>" % p
-
-                for i in self.colums:
-                    table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
+            for i in self.colums:
+                table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
 
             table += "</tr>"
         table += "</table><br>"
@@ -419,7 +401,6 @@ class DataRender(object):
         self.detail_type = None
         self.colums = None
         self.display_header = True
-        self.unique_row = False
         self.widget_list = []
         show_check = False
 
@@ -430,21 +411,31 @@ class DataRender(object):
         return table
 
 
-def render_toList(item_dict, show_colum, header_msg, detail_type=None):
+def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
     table = "<table id=\"list_table\" class=\"list_table_float_left\">"
     table += "<colgroup><col width=50%><col width=50%></colgroup>"
+
+    cliente_id = item_dict.get('cliente_id','')
+    impianto_id = item_dict.get('impianto_id', '')
+    verifica_id = item_dict.get('verifica_id', '')
+    intervento_id = item_dict.get('intervento_id', '')
+
     return_link = ''
     if detail_type is not None:
         if detail_type == 'cliente':
-            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/#cliente', cliente_id=item_dict['cliente_id'])
+            return_link += make_url('button', 'cliente', 'Ritorna al Cliente', '/anagrafe/%s/#cliente', cliente_id=cliente_id)
         elif detail_type == 'impianto':
             return_link += make_url('button', 'impianto', 'Ritorna all\'impianto', '/anagrafe/%s/impianto/%s/#impianto',
-                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
+                    cliente_id=cliente_id, impianto_id=impianto_id)
         else:
             return_link = ''
 
+    toolbar_s = ''
+    for t in toolbar:
+        toolbar_s += "<a id=\"toolbar\" href=\"%s,%s,%s,%s\">%s</a> " % (cliente_id, impianto_id, verifica_id, intervento_id, t)
 
-    table += "<tr><th>%s</th><th>%s</th></tr>" % (return_link, header_msg)
+
+    table += "<tr><th>%s%s</th><th>%s</th></tr>" % (toolbar_s, return_link, header_msg)
     for i in show_colum:
         table += "<tr>"
         table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
