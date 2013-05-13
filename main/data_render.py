@@ -4,6 +4,8 @@
 import datetime
 import logging
 import models
+import re
+from functools import partial
 
 from main import cfg
 
@@ -243,8 +245,14 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
     return s
 
 
-WIDGET_KEY = 0
-WIDGET_LIST = 1
+def id_replace(m, item_dict):
+    k = m.group()
+    field_name = k[1:-1].lower()
+    print field_name
+    if field_name in ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id']:
+        return str(item_dict.get(field_name,'noid'))
+    else:
+        return 'noid'
 
 class DataRender(object):
     def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
@@ -254,14 +262,11 @@ class DataRender(object):
         self.msg_items_empty = msg_items_empty
         self.show_statistics = show_statistics
         self.msg_statistics = msg_statistics
-        self.url_action = []
-        self.detail_type = None
-        self.url_add = None
-        self.widget_list = []
 
-        self.toolbar_top = False
-        self.toolbar_left = False
-        self.toolbar_bot  = False
+        self.toolbar_top = []
+        self.toolbar_left = []
+        self.toolbar_bot  = []
+        self.toolbar_last_row = []
 
         self.add_order_by_link = False
         self.base_url = ""
@@ -282,18 +287,15 @@ class DataRender(object):
     def selectColums(self, colums):
         self.colums = colums
 
-    def actionWidget(self, detail_type, url_action):
-        self.detail_type = detail_type
-        self.url_action = url_action
-
-    def menuWidget(self, widget_list):
-        self.widget_list = widget_list
-
-    def toolbar(self, pos):
-        self.toolbar_top = True
-        self.toolbar_left = True
-        self.toolbar_bot  = True
-
+    def toolbar(self, top=[], left=[], last_row=[], bot=[]):
+        for w in top:
+            self.toolbar_top.append(w)
+        for w in left:
+            self.toolbar_left.append(w)
+        for w in bot:
+            self.toolbar_bot.append(w)
+        for w in last_row:
+            self.toolbar_last_row.append(w)
 
     def orderUrl(self, base_url, order_url_dict):
         self.add_order_by_link = True
@@ -338,25 +340,16 @@ class DataRender(object):
             table += self.msg_statistics % len(self.items)
             self.show_statistics = False
 
-        show_check = False
-        for widget in self.widget_list:
-            if widget[WIDGET_KEY] == 'check':
-                show_check = True
-                for i in widget[WIDGET_LIST]:
-                    table += "<input type=\"button\" name=\"button_check\" value=\"%s\">" % i
-            if widget[WIDGET_KEY] == 'button':
-                for i in widget[WIDGET_LIST]:
-                    table += "<input type=\"submit\" name=\"button_action\" value=\"%s\">" % i
-
         if self.toolbar_top:
-            table += "toolbar_top"
+            for t in self.toolbar_top:
+                table += "%s" % t
 
         table += "<table id=\"customers\">"
         for item_dict in self.items:
             if self.display_header:
                 table += "<tr>"
 
-                if self.detail_type is not None or self.widget_list != [] or self.toolbar_top:
+                if self.toolbar_left:
                     table += "<th></th>"
 
                 for j in self.colums:
@@ -376,52 +369,33 @@ class DataRender(object):
             cycle = not cycle
 
             table += "<tr%s>" % cycle_str
+
             if self.toolbar_left:
-                table += "<td>toolbarleft</td>"
-
-            # Aggiustare quest blocco..
-            if self.detail_type is not None or self.widget_list != []:
-                p = ''
-                if show_check:
-                    cliente_id = item_dict.get('cliente_id', '')
-                    impianto_id = item_dict.get('impianto_id', '')
-                    verifica_id = item_dict.get('verifica_id', '')
-                    intervento_id = item_dict.get('intervento_id', '')
-                    p += "<input type=\"checkbox\" name=\"row_select\" value=\"%s,%s,%s,%s\">" % (cliente_id,
-                                impianto_id, verifica_id, intervento_id)
-                else:
-                    for j in self.url_action:
-                        if self.detail_type == 'cliente':
-                            p += make_url('icon', j, '', '/anagrafe/%s/' + j + "/", cliente_id=item_dict['cliente_id'])
-                        elif self.detail_type == 'impianto':
-                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + j + "/",
-                                    cliente_id=item_dict['cliente_id'], impianto_id=item_dict['impianto_id'])
-                        else:
-                            p += make_url('icon', j, '', '/anagrafe/%s/impianto/%s/' + self.detail_type + "/%s/" + j + "/",
-                                    cliente_id=item_dict['cliente_id'],
-                                    impianto_id=item_dict['impianto_id'],
-                                    sub_impianto_id=item_dict[self.detail_type + '_id'])
-
-                table += "<td>%s</td>" % p
+                table += "<td>"
+                for t in self.toolbar_left:
+                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                table += "</td>"
 
             for i in self.colums:
                 table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
+
             table += "</tr>"
 
-        if self.toolbar_bot:
-            colspan = len(self.colums)
-            if self.toolbar_left:
-                colspan += 1
-            table += "<tr><td colspan=\"%s\">toolbarbot</td></tr>" % colspan
+        if self.toolbar_last_row:
+            colspan = len(self.colums) + 1
+            table += "<tr><td colspan=\"%s\">" % colspan
+            for t in self.toolbar_left:
+                table += t
+            table += "</td></tr>"
 
         table += "</table><br>"
+        if self.toolbar_bot:
+            for t in self.toolbar_bot:
+                table += t
 
-        self.url_action = []
-        self.detail_type = None
+
         self.colums = None
         self.display_header = True
-        self.widget_list = []
-        show_check = False
 
         self.add_order_by_link = False
         self.base_url = ""
