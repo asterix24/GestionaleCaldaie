@@ -50,7 +50,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     data = ""
     data_to_render = database_manager.search_clienteId(cliente_id)
     if not show_cliente:
-        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>")
+        toolbar = [
+            "<a id=\"toolbar\" href=\"/anagrafe/add\">add</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/edit#cliente\">edit</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/delete#cliente\">delete</a>",
+        ]
+        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>", toolbar=toolbar)
 
     dr = None
     # Show cliente and its impianti
@@ -76,8 +81,15 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
+
+        toolbar = [
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>#cliente\">cliente</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/add\">add</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\">edit</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\">delete</a>",
+        ]
         data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente',
-                toolbar=['delete','edit','add'])
+                toolbar=toolbar)
 
         data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
         if data_to_render:
@@ -119,19 +131,26 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
+
+        toolbar = [
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">verifica</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\">add</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\">edit</a>",
+            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\">delete</a>",
+        ]
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", toolbar=toolbar)
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_verificaId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>", 'impianto')
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>")
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", 'cliente')
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto")
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>", 'impianto')
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>")
     else:
         data = None
 
