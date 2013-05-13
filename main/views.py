@@ -18,11 +18,6 @@ logger = logging.getLogger(__name__)
 import csv
 import datetime
 
-HOME_MENU = [
-    ('check' , ['Seleziona Tutti']),
-    ('button', ['Lettera', 'Apri','Chiudi','Sospendi'])
-]
-
 def __getIds(raw_items, item_id):
     l = []
     for k in raw_items:
@@ -81,7 +76,20 @@ def home(request):
 
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
-    dr.menuWidget(HOME_MENU)
+
+    tb_top = [
+            "<input type=\"button\" name=\"button_action\" value=\"Seleziona Tutti\">",
+            "<input type=\"submit\" name=\"button_action\" value=\"Lettera\">",
+            "<input type=\"submit\" name=\"button_action\" value=\"Apri\">",
+            "<input type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
+            "<input type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
+    ]
+
+    tb_left = [
+            "<input type=\"checkbox\" name=\"row_select\" value=\"<cliente_id>,<impianto_id>,<verifica_id, <intervento_id>\">"
+    ]
+    dr.toolbar(top=tb_top, left=tb_left)
+
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
     dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(form_dict['ref_month'])) + "%s interventi in scadenza.</h2><br>")
     dr.showStatistics()

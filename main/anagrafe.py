@@ -59,10 +59,19 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if data_to_render:
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
-            dr.actionWidget('impianto', ['edit','delete'])
-            dr.toolbar(True)
+            # edit and delete icons with related link
+            tb_left = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\"> \
+                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\"> \
+                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+            ]
+            # button to add new Impianto
+            tb_bot = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>",
+            ]
+            dr.toolbar(left=tb_left, bot=tb_bot)
             data += dr.toTable()
-        data += data_render.make_url('button', 'add', 'Aggiungi un impianto..', '/anagrafe/%s/impianto/add', cliente_id)
 
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
@@ -74,21 +83,39 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         if data_to_render:
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
-            dr.actionWidget('verifica', ['edit','delete'])
+            # edit and delete icons with related link
+            tb_left = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\"> \
+                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\"> \
+                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+            ]
+            # button to add new Verifica
+            tb_bot = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\" name=\"href_button\">Aggiungi una verifica..</a>",
+            ]
+            dr.toolbar(left=tb_left, bot=tb_bot)
             data += dr.toTable()
 
         data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
         if data_to_render:
             dr = data_render.DataRender(data_to_render)
             dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
-            dr.actionWidget('intervento', ['edit','delete'])
+
+            # edit and delete icons with related link
+            tb_left = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\"> \
+                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\"> \
+                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+            ]
+            # button to add new Verifica
+            tb_bot = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add/#intervento\" name=\"href_button\">Aggiungi un intervento..</a>",
+            ]
+            dr.toolbar(left=tb_left, bot=tb_bot)
             data += dr.toTable()
 
-        data += data_render.make_url('button', 'add', 'Aggiungi una verifica a questo impianto..',
-                                '/anagrafe/%s/impianto/%s/verifica/add#verifica', cliente_id, impianto_id, sub_impianto_id)
-
-        data += data_render.make_url('button', 'add', 'Aggiungi un\'intervento a questo impianto..',
-                                '/anagrafe/%s/impianto/%s/intervento/add#intervento', cliente_id, impianto_id, sub_impianto_id)
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
