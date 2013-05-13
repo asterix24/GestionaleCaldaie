@@ -48,6 +48,14 @@ SHOW_ADD_JS = """
 $(function() {
     $("input[type=submit], a[name=href_button]").button();
     $("a[id=toolbar]").each(function(c) {
+        if ($.inArray($(this).text(), ['cliente','impianto','verifica','intervento']) != -1) {
+            $(this).button({
+                icons: {
+                  primary: "ui-icon-arrowreturnthick-1-w"
+                },
+                text: '',
+            });
+        }
         if ($(this).text() == 'delete') {
             $(this).button({
                 icons: {
