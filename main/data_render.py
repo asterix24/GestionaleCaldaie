@@ -341,7 +341,7 @@ class DataRender(object):
 
         if self.toolbar_top:
             for t in self.toolbar_top:
-                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
 
         table += "<table id=\"customers\">"
         if not self.items:
@@ -401,7 +401,7 @@ class DataRender(object):
                 colspan = len(self.colums) + 1
                 table += "<tr><td colspan=\"%s\">" % colspan
                 for t in self.toolbar_last_row:
-                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
 
                 table += "</td></tr>"
 
