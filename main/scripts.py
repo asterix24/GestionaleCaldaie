@@ -311,6 +311,15 @@ $(function() {
 </script>
 """
 
+__INTERVENTO_ADD_JS = """
+<script>
+%s
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+});
+</script>
+"""
+
 COMMON_FUNCTION = """
 function otherField(id_select, id_combobox, id_other) {
     if (id_select.val() == "altro") {
@@ -342,4 +351,5 @@ function deltaYear(dateText) {
 
 IMPIANTO_ADD_JS = __IMPIANTO_ADD_JS % COMMON_FUNCTION
 VERIFICA_ADD_JS = __VERIFICA_ADD_JS % COMMON_FUNCTION
+INTERVENTO_ADD_JS = __INTERVENTO_ADD_JS % COMMON_FUNCTION
 

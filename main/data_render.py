@@ -248,7 +248,6 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
 def id_replace(m, item_dict):
     k = m.group()
     field_name = k[1:-1].lower()
-    print field_name
     if field_name in ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id']:
         return str(item_dict.get(field_name,'noid'))
     else:
@@ -342,7 +341,7 @@ class DataRender(object):
 
         if self.toolbar_top:
             for t in self.toolbar_top:
-                table += "%s" % t
+                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
         table += "<table id=\"customers\">"
         for item_dict in self.items:
@@ -385,14 +384,16 @@ class DataRender(object):
             colspan = len(self.colums) + 1
             table += "<tr><td colspan=\"%s\">" % colspan
             for t in self.toolbar_left:
-                table += t
+                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+
             table += "</td></tr>"
 
-        table += "</table><br>"
+        table += "</table>"
         if self.toolbar_bot:
             for t in self.toolbar_bot:
-                table += t
+                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
+        table += "<br><br>"
 
         self.colums = None
         self.display_header = True
