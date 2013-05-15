@@ -307,7 +307,7 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
                 n.append(dict(table_row.items() + verifiche_row.items() + interventi_row.items()))
 
         elif not verifiche_only:
-            n.append(table_raw)
+            n.append(table_row)
 
     return n
 
