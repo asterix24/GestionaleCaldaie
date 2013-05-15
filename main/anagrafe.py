@@ -151,10 +151,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
                 toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
-            data_to_render = database_manager.search_verificaId(sub_impianto_id)
-
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>",
-                    toolbar=TOOLBAR_IMPIANTO)
+            if data_to_render:
+                data_to_render = database_manager.search_verificaId(sub_impianto_id)
+                data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>",
+                        toolbar=TOOLBAR_IMPIANTO)
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -163,8 +163,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>",
-                    toolbar=TOOLBAR_INTERVENTO)
+            if data_to_render:
+                data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>",
+                        toolbar=TOOLBAR_INTERVENTO)
     else:
         data = None
 

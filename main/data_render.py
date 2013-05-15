@@ -409,14 +409,20 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
     table = "<table id=\"list_table\" class=\"list_table_float_left\">"
     table += "<colgroup><col width=50%><col width=50%></colgroup>"
 
+    cycle = False
     toolbar_t = ''
     for t in toolbar:
         toolbar_t += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
     table += "<tr><th>%s</th><th>%s</th></tr>" % (toolbar_t, header_msg)
     for i in show_colum:
-        table += "<tr>"
-        table += "<td class=\"hdr\">%s</td>" % i.replace('_', ' ').capitalize()
+        cycle_str = ''
+        if cycle:
+            cycle_str = " class=\"alt\""
+        cycle = not cycle
+
+        table += "<tr %s>" % cycle_str
+        table += "<td class=\"hdr\">%s</td>" % (i.replace('_', ' ').capitalize())
         table += "<td id=\"td_%s\">%s</td>" % (i, formatFields(item_dict, i, default_text="-"))
         table += "</tr>"
 
