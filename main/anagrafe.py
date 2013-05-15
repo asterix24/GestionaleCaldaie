@@ -43,6 +43,33 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
                            'impianto_id': impianto_id,
                            'sub_impianto_id': sub_impianto_id})
 
+TOOLBAR_CLIENTE = [
+    "<a id=\"toolbar\" href=\"/anagrafe/add\">add</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/edit#cliente\">edit</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/delete#cliente\">delete</a>",
+]
+
+TOOLBAR_IMPIANTO = [
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>#cliente\">cliente</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/add\">add</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\">edit</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\">delete</a>",
+]
+
+TOOLBAR_VERIFICA = [
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\">add</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\">edit</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\">delete</a>",
+]
+
+TOOLBAR_INTERVENTO = [
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\">add</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\">edit</a>",
+    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\">delete</a>",
+]
+
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_cliente=False):
     if cliente_id == "":
             return None
@@ -50,12 +77,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     data = ""
     data_to_render = database_manager.search_clienteId(cliente_id)
     if not show_cliente:
-        toolbar = [
-            "<a id=\"toolbar\" href=\"/anagrafe/add\">add</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/edit#cliente\">edit</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/delete#cliente\">delete</a>",
-        ]
-        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>", toolbar=toolbar)
+        data = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "<a id=\"cliente\">Dettaglio Cliente</a>",
+                toolbar=TOOLBAR_CLIENTE)
 
     dr = None
     # Show cliente and its impianti
@@ -81,15 +104,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-
-        toolbar = [
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>#cliente\">cliente</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/add\">add</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\">edit</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\">delete</a>",
-        ]
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>", 'cliente',
-                toolbar=toolbar)
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>",
+                toolbar=TOOLBAR_IMPIANTO)
 
         data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
         if data_to_render:
@@ -131,33 +147,24 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto")
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+                toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_verificaId(sub_impianto_id)
 
-            toolbar = [
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\">add</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\">edit</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\">delete</a>",
-            ]
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>", toolbar=toolbar)
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>",
+                    toolbar=TOOLBAR_IMPIANTO)
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto")
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+                    toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
-
-            toolbar = [
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\">add</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\">edit</a>",
-                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\">delete</a>",
-            ]
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>", toolbar=toolbar)
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>",
+                    toolbar=TOOLBAR_INTERVENTO)
     else:
         data = None
 
