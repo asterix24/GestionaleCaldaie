@@ -96,10 +96,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         # button to add new Impianto
         if data_to_render:
-            tb_bot = [
+            tb_last = [
                 "<a href=\"/anagrafe/<cliente_id>/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>",
             ]
-            dr.toolbar(left=tb_left, bot=tb_bot)
+            dr.toolbar(left=tb_left, last_row=tb_last)
         else:
             tb_last_row = [
                   "<a href=\"/anagrafe/%s/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>" % (cliente_id)
@@ -126,10 +126,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         ]
         # button to add new Verifica
         if data_to_render:
-            tb_bot = [
+            tb_last = [
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\" name=\"href_button\">Aggiungi una verifica..</a>",
             ]
-            dr.toolbar(left=tb_left, bot=tb_bot)
+            dr.toolbar(left=tb_left, last_row=tb_last)
         else:
             tb_last_row = [
                   "<a href=\"/anagrafe/%s/impianto/%s/verifica/add#verifica\" name=\"href_button\">Aggiungi una verifica..</a>" % (cliente_id, impianto_id)
@@ -152,10 +152,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         ]
         # button to add new Verifica
         if data_to_render:
-            tb_bot = [
+            tb_last = [
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\" name=\"href_button\">Aggiungi un intervento..</a>",
             ]
-            dr.toolbar(left=tb_left, bot=tb_bot)
+            dr.toolbar(left=tb_left, last_row=tb_last)
         else:
             tb_last_row = [
                   "<a href=\"/anagrafe/%s/impianto/%s/intervento/add#intervento\" name=\"href_button\">Aggiungi un intervento..</a>" % (cliente_id, impianto_id)
