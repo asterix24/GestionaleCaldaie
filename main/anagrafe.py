@@ -123,7 +123,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             ]
             # button to add new Verifica
             tb_bot = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add/#intervento\" name=\"href_button\">Aggiungi un intervento..</a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\" name=\"href_button\">Aggiungi un intervento..</a>",
             ]
             dr.toolbar(left=tb_left, bot=tb_bot)
             data += dr.toTable()
@@ -131,18 +131,18 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-
-        toolbar = [
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">verifica</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\">add</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\">edit</a>",
-            "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\">delete</a>",
-        ]
-        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto", toolbar=toolbar)
+        data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto")
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_verificaId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>")
+
+            toolbar = [
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\">add</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\">edit</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\">delete</a>",
+            ]
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "<a id=\"verifica\">Dettaglio Verifica e Manutenzioni</a>", toolbar=toolbar)
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
@@ -150,10 +150,22 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
-            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>")
+
+            toolbar = [
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>#impianto\">impianto</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\">add</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\">edit</a>",
+                "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\">delete</a>",
+            ]
+            data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "<a id=\"intervento\">Dettaglio Intervento</a>", toolbar=toolbar)
     else:
         data = None
 
+    return data
+
+def _intervento_cfg(cliente_id, detail_type, impianto_id):
+    data = scripts.INTERVENTO_ADD_JS
+    data += view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
     return data
 
 def _verifica_cfg(cliente_id, detail_type, impianto_id):
@@ -269,6 +281,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             return _display_error(request, "Qualcosa e' andato storto..")
 
     if request.method == 'GET':
+        print '....detail_type:', detail_type
         if cliente_id is None:
             form = models.ClienteForm()
         else:
@@ -282,6 +295,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
+                data = _intervento_cfg(cliente_id, detail_type, impianto_id)
 
     if request.method == 'POST':
         ret, d = __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request)
