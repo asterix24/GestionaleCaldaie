@@ -84,22 +84,28 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     # Show cliente and its impianti
     if detail_type is None:
         data_to_render = database_manager.search_clienteImpiantoSet(cliente_id)
+        dr = data_render.DataRender(data_to_render)
+        dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
+        # edit and delete icons with related link
+        tb_left = [
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\"> \
+                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\"> \
+                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+        ]
+
+        # button to add new Impianto
         if data_to_render:
-            dr = data_render.DataRender(data_to_render)
-            dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
-            # edit and delete icons with related link
-            tb_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit#impianto\"> \
-                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete#impianto\"> \
-                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
-            ]
-            # button to add new Impianto
             tb_bot = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>",
+                "<a href=\"/anagrafe/<cliente_id>/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>",
             ]
             dr.toolbar(left=tb_left, bot=tb_bot)
-            data += dr.toTable()
+        else:
+            tb_last_row = [
+                  "<a href=\"/anagrafe/%s/impianto/add\" name=\"href_button\">Aggiungi un impianto..</a>" % (cliente_id)
+            ]
+            dr.toolbar(last_row=tb_last_row)
+        data += dr.toTable()
 
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
@@ -107,42 +113,55 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         data += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "<a id=\"impianto\">Dettaglio Impianto</a>",
                 toolbar=TOOLBAR_IMPIANTO)
 
+        # Display all verifiche related to this impianto
         data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
+        dr = data_render.DataRender(data_to_render)
+        dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
+        # edit and delete icons with related link
+        tb_left = [
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\"> \
+                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\"> \
+                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+        ]
+        # button to add new Verifica
         if data_to_render:
-            dr = data_render.DataRender(data_to_render)
-            dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
-            # edit and delete icons with related link
-            tb_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit#verifica\"> \
-                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete#verifica\"> \
-                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
-            ]
-            # button to add new Verifica
             tb_bot = [
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add#verifica\" name=\"href_button\">Aggiungi una verifica..</a>",
             ]
             dr.toolbar(left=tb_left, bot=tb_bot)
-            data += dr.toTable()
-
-        data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
-        if data_to_render:
-            dr = data_render.DataRender(data_to_render)
-            dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
-
-            # edit and delete icons with related link
-            tb_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\"> \
-                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\"> \
-                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+        else:
+            tb_last_row = [
+                  "<a href=\"/anagrafe/%s/impianto/%s/verifica/add#verifica\" name=\"href_button\">Aggiungi una verifica..</a>" % (cliente_id, impianto_id)
             ]
-            # button to add new Verifica
+            dr.toolbar(last_row=tb_last_row)
+        data += dr.toTable()
+
+
+        # Display all intervento related to this impianto
+        data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
+        dr = data_render.DataRender(data_to_render)
+        dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
+
+        # edit and delete icons with related link
+        tb_left = [
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit#intervento\"> \
+                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento\"> \
+                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+        ]
+        # button to add new Verifica
+        if data_to_render:
             tb_bot = [
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add#intervento\" name=\"href_button\">Aggiungi un intervento..</a>",
             ]
             dr.toolbar(left=tb_left, bot=tb_bot)
-            data += dr.toTable()
+        else:
+            tb_last_row = [
+                  "<a href=\"/anagrafe/%s/impianto/%s/intervento/add#intervento\" name=\"href_button\">Aggiungi un intervento..</a>" % (cliente_id, impianto_id)
+            ]
+            dr.toolbar(last_row=tb_last_row)
+        data += dr.toTable()
 
 
     elif detail_type == "verifica":

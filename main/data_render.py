@@ -344,49 +344,66 @@ class DataRender(object):
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
         table += "<table id=\"customers\">"
-        for item_dict in self.items:
-            if self.display_header:
-                table += "<tr>"
-
-                if self.toolbar_left:
-                    table += "<th></th>"
-
-                for j in self.colums:
-                    s = j.replace('_', ' ').capitalize()
-                    if self.add_order_by_link:
-                        if cfg.GROUP_FIELD_VIEW.has_key(j):
-                            s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
-                                    self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
-                    table += "<th>%s</th>" % s
-
-                table += "</tr>"
-                self.display_header = False
-
-            cycle_str = ''
-            if cycle:
-                cycle_str = " class=\"alt\""
-            cycle = not cycle
-
-            table += "<tr%s>" % cycle_str
-
-            if self.toolbar_left:
-                table += "<td>"
-                for t in self.toolbar_left:
-                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
-                table += "</td>"
-
-            for i in self.colums:
-                table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
-
+        if not self.items:
+            table += "<tr>"
+            for j in self.colums:
+                s = j.replace('_', ' ').capitalize()
+                table += "<th>%s</th>" % s
             table += "</tr>"
 
-        if self.toolbar_last_row:
+            table += "</td></tr>"
+
             colspan = len(self.colums) + 1
             table += "<tr><td colspan=\"%s\">" % colspan
-            for t in self.toolbar_left:
-                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
-
+            for t in self.toolbar_last_row:
+                table += t
             table += "</td></tr>"
+
+
+        else:
+            for item_dict in self.items:
+                if self.display_header:
+                    table += "<tr>"
+
+                    if self.toolbar_left:
+                        table += "<th></th>"
+
+                    for j in self.colums:
+                        s = j.replace('_', ' ').capitalize()
+                        if self.add_order_by_link:
+                            if cfg.GROUP_FIELD_VIEW.has_key(j):
+                                s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
+                                        self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
+                        table += "<th>%s</th>" % s
+
+                    table += "</tr>"
+                    self.display_header = False
+
+                cycle_str = ''
+                if cycle:
+                    cycle_str = " class=\"alt\""
+                cycle = not cycle
+
+                table += "<tr%s>" % cycle_str
+
+                if self.toolbar_left:
+                    table += "<td>"
+                    for t in self.toolbar_left:
+                        table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                    table += "</td>"
+
+                for i in self.colums:
+                    table += "<td>%s</td>" % formatFields(item_dict, i, with_url=True)
+
+                table += "</tr>"
+
+            if self.toolbar_last_row:
+                colspan = len(self.colums) + 1
+                table += "<tr><td colspan=\"%s\">" % colspan
+                for t in self.toolbar_last_row:
+                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+
+                table += "</td></tr>"
 
         table += "</table>"
         if self.toolbar_bot:
