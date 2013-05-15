@@ -308,7 +308,6 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             return _display_error(request, "Qualcosa e' andato storto..")
 
     if request.method == 'GET':
-        print '....detail_type:', detail_type
         if cliente_id is None:
             form = models.ClienteForm()
         else:
