@@ -43,10 +43,7 @@ $(function() {
 </script>
 """
 
-SHOW_ADD_JS = """
-<script>
-$(function() {
-    $("input[type=submit], a[name=href_button]").button();
+TOOLBAR_JS = """
     $("a[id=toolbar]").each(function(c) {
         if ($.inArray($(this).text(), ['cliente','impianto','verifica','intervento']) != -1) {
             $(this).button({
@@ -81,34 +78,43 @@ $(function() {
             });
         }
     });
+"""
 
+SHOW_ADD_JS = """
+<script>
+$(function() {
+    $("input[type=submit], a[name=href_button]").button();
+    %s
 });
 </script>
-"""
+""" % TOOLBAR_JS
 
 RECORDADD_ADD_JS = """
 <script>
 $(function() {
     $("input[type=submit], a[name=href_button]").button();
+    %s
 });
 </script>
-"""
+""" % TOOLBAR_JS
 
 EDIT_ADD_JS = """
 <script>
 $(function() {
     $("input[type=submit], a[name=href_button]").button();
+    %s
 });
 </script>
-"""
+""" % TOOLBAR_JS
 
 DELETE_ADD_JS = """
 <script>
 $(function() {
     $("input[type=submit], a[name=href_button]").button();
+    %s
 });
 </script>
-"""
+""" % TOOLBAR_JS
 
 __IMPIANTO_ADD_JS = """
 <script>
