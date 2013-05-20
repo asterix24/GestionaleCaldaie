@@ -18,15 +18,14 @@
 
 <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
 
-{% autoescape off %}
-    {{ data }}
-{% endautoescape %}
-<br>
-<input class=navigation_buttons type="submit" value={% autoescape off %} {{action}} {% endautoescape %} />
-    </form>
+    {% autoescape off %}
+        {{ data }}
+    {% endautoescape %}
+    <br>
+    <input class=navigation_buttons type="submit" value={% autoescape off %} {{action}} {% endautoescape %} />
 
-<form action="{% url anagrafe %}{{return_url}}" method="post">{% csrf_token %}
-<input class=navigation_buttons type="submit" value="Annulla"/>
 </form>
+
+<input class=navigation_buttons type="button" value="Annulla" onClick="javascript:history.back()">
 
 {% endblock %}
