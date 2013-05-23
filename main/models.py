@@ -290,19 +290,28 @@ class VerificaForm(forms.ModelForm):
                   'prossima_analisi_combustione','costo_intervento', 'stato_pagamento',
                   'note_verifica')
 
+INTERVENTO_TYPE_CHOICES = (
+    ('Straordinaria'   , 'Straordinaria'),
+	('Riparazione'     , 'Riparazione'),
+	('Taratura'        , 'Taratura'),
+	('Altro'           , 'Altro..'),
+)
+INTERVENTO_TYPE_CHOICES_DICT = dict(INTERVENTO_TYPE_CHOICES)
+
 class Intervento(models.Model):
-	data_intervento = models.DateField(default=datetime.date.today())
-	intervento_impianto = models.ForeignKey(Impianto)
-	tipo_intervento = models.CharField(max_length=80, null=True, blank=True)
-	note_intervento = models.TextField(null=True, blank=True)
+    data_intervento = models.DateField(default=datetime.date.today())
+    intervento_impianto = models.ForeignKey(Impianto)
+    tipo_intervento = models.CharField(max_length=80, null=True, blank=False, choices=INTERVENTO_TYPE_CHOICES)
+    note_intervento = models.TextField(null=True, blank=True)
 
-	class Meta:
-		ordering = ['-data_intervento'] # Ordina per data in modo decrescente
+    class Meta:
+        ordering = ['-data_intervento'] # Ordina per data in modo decrescente
 
-	def __unicode__(self):
-		return self.tipo_intervento
+    def __unicode__(self):
+        return self.tipo_intervento
 
 class InterventoForm(forms.ModelForm):
-	class Meta:
-		model = Intervento
+    tipo_intervento = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=INTERVENTO_TYPE_CHOICES))
+    class Meta:
+        model = Intervento
 
