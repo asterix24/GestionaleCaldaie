@@ -38,8 +38,6 @@
 <input class=navigation_buttons type="submit" value="Salva"/>
 </form>
 
-<form action="{{return_url}}" method="post">{% csrf_token %}
-<input class=navigation_buttons type="submit" value="Annulla"/>
-</form>
+<input class=navigation_buttons type="button" value="Annulla" onClick="javascript:history.back()">
 
 {% endblock %}
