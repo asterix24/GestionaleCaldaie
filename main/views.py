@@ -27,6 +27,9 @@ def __getIds(raw_items, item_id):
     return l
 
 
+def login(request):
+    return render(request, 'login.html',{})
+
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
