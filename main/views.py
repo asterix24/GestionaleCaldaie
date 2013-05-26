@@ -3,6 +3,8 @@
 
 from django import http
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import logout_then_login, logout, login
 
 from main import models
 from main import myforms
@@ -26,10 +28,16 @@ def __getIds(raw_items, item_id):
 
     return l
 
+def auth_logout(request):
+    return logout_then_login(request)
 
-def login(request):
-    return render(request, 'login.html',{})
+def auth_login(request):
+    if not request.user.is_authenticated():
+        return login(request)
 
+    return logout(request)
+
+@login_required
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
