@@ -4,6 +4,7 @@
 from django import http
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 from main import models
 from main import myforms
@@ -451,6 +452,7 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
     return show_record(request, cliente_id, detail_type, impianto_id, sub_impianto_id)
 
 
+@login_required
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
     data = scripts.HOME_ADD_JS
