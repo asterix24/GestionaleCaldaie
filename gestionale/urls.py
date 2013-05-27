@@ -6,10 +6,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # login
-    #url(r'^logout/$', 'main.views.auth_logout', name='auth_logout'),
-    #url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
-    url(r'^login/$', 'main.views.auth_login', name='auth_login'),
-    url(r'^login/\w+/$', 'main.views.auth_login', name='auth_login'),
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url':'/login/'}),
 
 	url(r'^$', 'main.views.home', name='home'),
 	url(r'^home/$', 'main.views.home', name='home'),
