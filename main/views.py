@@ -3,7 +3,6 @@
 
 from django import http
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 
 from main import models
 from main import myforms
@@ -27,7 +26,6 @@ def __getIds(raw_items, item_id):
 
     return l
 
-@login_required
 def home(request):
     form = myforms.RangeDataSelect()
     data = scripts.HOME_ADD_JS
