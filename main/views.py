@@ -126,10 +126,10 @@ def exportCSV(request, detail_type=None):
     elif detail_type == "anagrafe":
         filename='Anagrafe'
 
-        form_dict['search_keys'] = request.GET.get('s','')
+        form_dict['search_keys'] = request.GET.get('search_keys','')
         form_dict['order_by_field'] = request.GET.get('order_by_field', None)
         form_dict['ordering'] = request.GET.get('ordering', None)
-        data_table = database_manager.search_fullText(search_string, form_dict['order_by_field'], form_dict['ordering'])
+        data_table = database_manager.search_fullText(form_dict['search_keys'], form_dict['order_by_field'], form_dict['ordering'])
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
