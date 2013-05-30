@@ -138,10 +138,10 @@ def exportCSV(request, detail_type=None):
     elif detail_type == "anagrafe":
         filename='Anagrafe'
 
-        form_dict['search_keys'] = request.GET.get('s','')
+        form_dict['search_keys'] = request.GET.get('search_keys','')
         form_dict['order_by_field'] = request.GET.get('order_by_field', None)
         form_dict['ordering'] = request.GET.get('ordering', None)
-        data_table = database_manager.search_fullText(search_string, form_dict['order_by_field'], form_dict['ordering'])
+        data_table = database_manager.search_fullText(form_dict['search_keys'], form_dict['order_by_field'], form_dict['ordering'])
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
@@ -182,7 +182,8 @@ from functools import partial
 from main import data_render
 import tempfile
 import re
-import os
+import os,sys
+import gestionale.local_settings
 
 def tag_replace(m, item_dict):
     k = m.group()
@@ -198,7 +199,8 @@ def generate_report(items, file_name=None):
     date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
 
     tmp_file = tempfile.NamedTemporaryFile()
-    with open('main/templates/lettera.rtf', 'r') as in_tpl:
+
+    with open(gestionale.local_settings.LOCAL_PATH + 'main/templates/lettera.rtf', 'r') as in_tpl:
         for line in in_tpl:
             #inizio la copia del blocco.
             if '>>START<<' in line:
