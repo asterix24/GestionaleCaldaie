@@ -1,6 +1,5 @@
 # Django settings for gestionale project.
 
-DEBUG = True
 
 from local_settings import *
 
@@ -67,8 +66,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f78u*ma*y7wb'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
