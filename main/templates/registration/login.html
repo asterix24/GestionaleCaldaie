@@ -8,44 +8,22 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}login_style.css" />
 <link rel="icon" type="image/png" href="{{ STATIC_URL }}logo.ico" />
 
-<script type="text/javascript" src="{{ STATIC_URL }}placeholder.js"></script>
-
 <head>
 <body>
 
 {% block content %}
-
+<form id="slick-login" method="post" action="{% load url from future %}"> {% csrf_token %}
+<img src="{{ STATIC_URL }}logo.png" alt="Besalba impianti logo" align="bottom" height="100">
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<div class=errormsg>Il nome Utente o la Password sono sbagliate.<br>Controllale e riprova.</div>
 {% endif %}
-
-<form method="post" action="{% load url from future %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="login" />
+<input type="text" name="username" class="placeholder" placeholder="Nome utente">
+<input type="password" name="password" class="placeholder" placeholder="Password">
+<input type="submit" value="Entra">
 <input type="hidden" name="next" value="/" />
-XXXXXXX {{ request.path }}
 </form>
-
 {% endblock %}
 
-
-<form id="slick-login">
-<img src="{{ STATIC_URL }}logo.png" alt="Besalba impianti logo" align="bottom" height="100">
-<label for="username">username</label><input type="text" name="username" class="placeholder" placeholder="Nome utente">
-<label for="password">password</label><input type="password" name="password" class="placeholder" placeholder="Password">
-<input type="submit" value="Entra">
-</form>
 </body>
 </html>
 
