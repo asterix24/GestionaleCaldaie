@@ -48,8 +48,11 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-#
+# Session and login settings
 LOGIN_URL = '/login/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# Idle time before the session expire in seconds.
+SESSION_IDLE_TIMEOUT = 3600
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -81,6 +84,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'main.middleware.LoginRequiredMiddleware',
+    'main.middleware.SessionIdleTimeout',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )

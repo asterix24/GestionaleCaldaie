@@ -17,6 +17,11 @@
 {% if form.errors %}
 <div class=errormsg>Il nome Utente o la Password sono sbagliate.<br>Controllale e riprova.</div>
 {% endif %}
+{% if messages %}
+	{% for message in messages %}
+		<div class=errormsg>{{ message }} </div>
+	{% endfor %}
+{% endif %}
 <input type="text" name="username" class="placeholder" placeholder="Nome utente">
 <input type="password" name="password" class="placeholder" placeholder="Password">
 <input type="submit" value="Entra">
