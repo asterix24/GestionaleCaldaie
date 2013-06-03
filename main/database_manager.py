@@ -409,7 +409,7 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
 def query_sortDict(data, order_by_field, ordering):
 
     # We return unshorted list if the user not specify the order key value
-    if order_by_field is None:
+    if order_by_field is None or order_by_field == "":
         return data
 
     try:

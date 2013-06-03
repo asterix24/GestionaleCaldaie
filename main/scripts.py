@@ -175,7 +175,7 @@ $(function() {
     %s
     $("div[id=radio_fmt]").buttonset();
 
-    if (!$("#id_analisi_combustione").is(':checked')) {
+    if($("#id_tipo_verifica").val() != "provafumi") {
         $("#tr_colore_bollino").hide();
         $("#tr_numero_bollino").hide();
         $("#tr_valore_bollino").hide();
@@ -280,14 +280,12 @@ $(function() {
         } else {
             $("#id_altro_colore_bollino").hide();
         }
-
         $("#id_scadenza_fumi_tra").val(scadenza_mesi);
         $('#id_prossima_analisi_combustione').val(addMonth($("#id_data_verifica").val(), scadenza_mesi));
     });
 
-
-    $("#id_analisi_combustione").click( function() {
-        if ($(this).is(':checked')) {
+    $("#id_tipo_verifica").change( function() {
+        if ($(this).val() == "provafumi") {
             $("#tr_colore_bollino").show("slow");
             $("#tr_numero_bollino").show("slow");
             $("#tr_valore_bollino").show("slow");
