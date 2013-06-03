@@ -246,9 +246,9 @@ class Verifica(models.Model):
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.CharField(label='Stato verifica', initial='A', required=False,
              widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
+    analisi_combustione = forms.BooleanField(initial=False, required=False, widget=forms.HiddenInput())
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    analisi_combustione = forms.BooleanField(initial=False, required=False)
     stato_pagamento = forms.BooleanField(label="Stato pagamento", initial=False, required=False,
              widget=forms.RadioSelect(choices=STATO_PAGAMENTO, renderer=myforms.CustomRadioSelect))
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
@@ -262,11 +262,7 @@ class VerificaForm(forms.ModelForm):
         _colore_bollino = cleaned_data.get("colore_bollino")
         _altro_colore_bollino = cleaned_data.get("altro_colore_bollino")
 
-        if _tipo_verifica == 'altro':
-            if _altro_tipo_verifica == '':
-                # The table row is hide, so when we reply the error it is hide..
-                self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di Manutenzione."])
-                cleaned_data["altro_tipo_verifica"] = _altro_tipo_verifica.capitalize()
+
 
         if _colore_bollino == 'altro':
             if _altro_colore_bollino == '':
@@ -274,8 +270,20 @@ class VerificaForm(forms.ModelForm):
                 self._errors["colore_bollino"] = self.error_class(["Specificare un altro tipo di Bollino."])
                 cleaned_data["altro_colore_bollino"] = _altro_colore_bollino.capitalize()
 
-        if not cleaned_data.get("analisi_combustione"):
+        if _tipo_verifica == 'altro':
+            if _altro_tipo_verifica == '':
+                # The table row is hide, so when we reply the error it is hide..
+                self._errors["tipo_verifica"] = self.error_class(["Specificare un altro tipo di Manutenzione."])
+                cleaned_data["altro_tipo_verifica"] = _altro_tipo_verifica.capitalize()
+
+        if _tipo_verifica == 'provafumi':
+            cleaned_data['analisi_combustione'] = True
+        else:
             cleaned_data['prossima_analisi_combustione'] = None
+            cleaned_data['analisi_combustione'] = False
+            cleaned_data['valore_bollino'] = None
+            cleaned_data['numero_bollino'] = None
+            cleaned_data['colore_bollino'] = None
 
         return cleaned_data
 
@@ -284,7 +292,7 @@ class VerificaForm(forms.ModelForm):
         fields = ('stato_verifica', 'verifica_impianto', 'tipo_verifica',
                   'data_verifica', 'scadenza_verifica_tra','prossima_verifica',
                   'altro_tipo_verifica', 'codice_id',
-                  'numero_rapporto', 'analisi_combustione',
+                  'numero_rapporto','analisi_combustione',
                   'colore_bollino','altro_colore_bollino',
                   'numero_bollino', 'valore_bollino', 'scadenza_fumi_tra',
                   'prossima_analisi_combustione','costo_intervento', 'stato_pagamento',
