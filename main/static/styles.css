@@ -1,0 +1,27 @@
+.form-font
+{
+    font-size:1em;
+    font-style:bold;
+    color:DarkBlue;
+    padding: 5px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.info-font
+{
+    font-size:1.5em;
+    font-style:bold;
+    text-align:middle;
+    line-height:100%;
+    float: left;
+    padding:1px;
+    color:DarkGreen;
+}
+
+.toolbar_menu
+{
+    font-size:2em;
+}
+
