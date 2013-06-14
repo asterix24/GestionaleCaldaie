@@ -57,6 +57,9 @@
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">Username</a>
             </p>
+            <p class="navbar-text pull-right">
+            {% now "d F Y H:i" %}
+            </p>
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#about">About</a></li>
@@ -68,6 +71,17 @@
     </div>
 
     <div class="container-fluid">
+        <div class="row-fluid">
+        <div class="span4">
+            <img src="{{ STATIC_URL }}logo.png" alt="besalba impianti logo" align="bottom" height="100px" width="200px">
+        </div>
+        <div class="span4">
+            <form action="/anagrafe/" method="get">
+            <input id="id_s" maxlength="200" type="text" name="search_keys" size="40" />
+            <input type="submit" id="id_cerca" value="Cerca"/>
+            </form>
+        </div>
+        </div>
       <div class="row-fluid">
         <div class="span12">
           <div class="hero-unit">
