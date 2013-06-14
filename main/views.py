@@ -226,5 +226,5 @@ def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
 
 def check_layout(request):
-    return render(request, 'layout.html', {})
+    return render(request, 'fluid.html', {})
 
