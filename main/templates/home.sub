@@ -10,35 +10,28 @@
 
 {% block center_block %}
 
-<form action="{% url home %}" method="GET">
-<table>
-<tr>
-    <td>{{data_form.search_keys.label}}</td>
-    <td>{{data_form.search_keys}}</td>
-    <td>{{data_form.filter_type.label}}</td>
-    <td>{{data_form.filter_type}}</td>
-
-</tr>
-<tr>
-    <td>{{data_form.ref_month.label}}</td>
-    <td>{{data_form.ref_month}}</td>
-    <td>{{data_form.ref_year.label}}</td>
-    <td>{{data_form.ref_year}}</td>
-    <td><input type="submit" value="Aggiorna"/></td>
-</table>
-</form>
-
+<div class="row-fluid">
+    <div class="form-horizontal">
+    <form action="{% url home %}" method="GET">
+        {{data_form.search_keys}}
+        {{data_form.filter_type}}
+        {{data_form.ref_month}}
+        {{data_form.ref_year}}
+        <input class="btn" type="submit" value="Aggiorna"/>
+    </form>
+    </div>
+</div>
 
 <form action={% url home %} method="POST" id="home_act">{% csrf_token %}
-{% autoescape off %}
-    {{ data }}
-{% endautoescape %}
+    {% autoescape off %}
+        {{ data }}
+    {% endautoescape %}
 </form>
 
 {% block scripts %}
-{% autoescape off %}
-    {{ scripts }}
-{% endautoescape %}
+    {% autoescape off %}
+        {{ scripts }}
+    {% endautoescape %}
 {% endblock %}
 
 {% endblock %}
