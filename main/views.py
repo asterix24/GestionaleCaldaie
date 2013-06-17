@@ -28,7 +28,7 @@ def __getIds(raw_items, item_id):
 
 def home(request):
     form = myforms.RangeDataSelect()
-    data = scripts.HOME_ADD_JS
+    data = ''
 
     # Use default at first time when the home page is never loaded
     form_dict = {
@@ -96,7 +96,11 @@ def home(request):
     dr.orderUrl('home', form_dict)
 
     data += dr.toTable()
-    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
+    return render(request, 'home.sub',{'query_path':request.get_full_path(),
+                                       'data': data,
+                                       'data_form': form,
+                                       'scripts': scripts.HOME_ADD_JS,
+                                       })
 
 
 def exportCSV(request, detail_type=None):

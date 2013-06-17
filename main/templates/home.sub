@@ -35,4 +35,10 @@
 {% endautoescape %}
 </form>
 
+{% block scripts %}
+{% autoescape off %}
+    {{ scripts }}
+{% endautoescape %}
+{% endblock %}
+
 {% endblock %}
