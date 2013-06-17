@@ -270,6 +270,7 @@ class DataRender(object):
         self.add_order_by_link = False
         self.base_url = ""
         self.string = ""
+        self.selected_order_field = ""
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -300,7 +301,6 @@ class DataRender(object):
         self.add_order_by_link = True
         self.string = "?"
         self.base_url = base_url
-        order = 'asc'
         for k,v in order_url_dict.items():
             if v is None:
                 continue
@@ -310,14 +310,10 @@ class DataRender(object):
                 if not v:
                     continue
 
-                if order_url_dict['ordering'] == 'asc':
-                    order = 'desc'
-                else:
-                    order = 'asc'
-
                 try:
                     _, field = v.split('.')
-                    cfg.GROUP_FIELD_VIEW[field]['order'] = order
+                    cfg.GROUP_FIELD_VIEW[field]['order'] = order_url_dict['ordering']
+                    self.selected_order_field = field
                 except (ValueError, KeyError), m:
                     logger.error("%s Errore nello split di %s=%s" % (__name__, k, v))
 
@@ -331,8 +327,7 @@ class DataRender(object):
             return self.msg_items_empty
 
         # Init table string
-        table = ""
-        cycle = False
+        table = "<div>"
 
         # Show statistics of founded records
         if self.show_statistics:
@@ -343,13 +338,13 @@ class DataRender(object):
             for t in self.toolbar_top:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
 
-        table += "<table id=\"customers\">"
+        table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed\">"
         if not self.items:
-            table += "<tr>"
+            table += "<thead><tr>"
             for j in self.colums:
                 s = j.replace('_', ' ').capitalize()
                 table += "<th>%s</th>" % s
-            table += "</tr>"
+            table += "</thead></tr>"
 
             table += "</td></tr>"
 
@@ -363,28 +358,49 @@ class DataRender(object):
         else:
             for item_dict in self.items:
                 if self.display_header:
-                    table += "<tr>"
+                    table += "<thead><tr>"
 
                     if self.toolbar_left:
                         table += "<th></th>"
 
                     for j in self.colums:
-                        s = j.replace('_', ' ').capitalize()
-                        if self.add_order_by_link:
-                            if cfg.GROUP_FIELD_VIEW.has_key(j):
-                                s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
-                                        self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
-                        table += "<th>%s</th>" % s
+                        table += "<th>%s<th>" % j.replace('_', ' ').capitalize()
 
                     table += "</tr>"
+
+                    if self.toolbar_left:
+                        table += "<th></th>"
+
+                    for j in self.colums:
+                        if self.add_order_by_link:
+                            if cfg.GROUP_FIELD_VIEW.has_key(j):
+                                order_link_asc = "/%s/%sorder_by_field=%s&ordering=asc" % (self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'])
+                                order_link_desc = "/%s/%sorder_by_field=%s&ordering=desc" % (self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'])
+                                btn_state_asc = 'info'
+                                btn_state_desc = 'info'
+                                if j == self.selected_order_field:
+                                    if cfg.GROUP_FIELD_VIEW[j]['order'] == 'asc':
+                                        btn_state_asc = 'warning'
+                                        btn_state_desc = 'info'
+                                    else:
+                                        btn_state_asc = 'info'
+                                        btn_state_desc = 'warning'
+
+                                table += """
+                                    <th>
+                                    <div class="btn-group">
+                                    <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-up icon-white"></i></a>
+                                    <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-down icon-white"></i></a>
+                                    </div>
+                                    </th>
+                                    """ % (btn_state_asc, order_link_asc, btn_state_desc, order_link_desc)
+
+
+                    table += "</tr></thead> <tbody>"
                     self.display_header = False
 
-                cycle_str = ''
-                if cycle:
-                    cycle_str = " class=\"alt\""
-                cycle = not cycle
 
-                table += "<tr%s>" % cycle_str
+                table += "<tr>"
 
                 if self.toolbar_left:
                     table += "<td>"
@@ -405,12 +421,12 @@ class DataRender(object):
 
                 table += "</td></tr>"
 
-        table += "</table>"
+        table += "</tbody></table>"
         if self.toolbar_bot:
             for t in self.toolbar_bot:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
-        table += "<br><br>"
+        table += "</div>"
 
         self.colums = None
         self.display_header = True

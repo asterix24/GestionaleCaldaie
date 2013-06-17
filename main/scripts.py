@@ -3,20 +3,15 @@
 
 HOME_ADD_JS = """
 <script>
-$(function() {
-    $("input[type=submit], a[name=href_button], input[type=button]").button();
-
-    $("input[type=button]").click( function() {
-        var button_action = $(this).val();
-        if (button_action == 'Seleziona Tutti') {
-            $("input[name=row_select]").attr('checked', true);
-            $(this).val('Deseleziona Tutti');
-        } else if (button_action == 'Deseleziona Tutti') {
-            $("input[name=row_select]").attr('checked', false);
-            $(this).val('Seleziona Tutti');
-        }
-
-    });
+$("input[type=button]").click( function() {
+    var button_action = $(this).val();
+    if (button_action == 'Seleziona Tutti') {
+        $("input[name=row_select]").attr('checked', true);
+        $(this).val('Deseleziona Tutti');
+    } else if (button_action == 'Deseleziona Tutti') {
+        $("input[name=row_select]").attr('checked', false);
+        $(this).val('Seleziona Tutti');
+    }
 });
 </script>
 """
