@@ -28,10 +28,11 @@
     {% endautoescape %}
 </form>
 
+
+{% endblock %}
+
 {% block scripts %}
     {% autoescape off %}
         {{ scripts }}
     {% endautoescape %}
-{% endblock %}
-
 {% endblock %}
