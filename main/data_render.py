@@ -364,9 +364,9 @@ class DataRender(object):
                         table += "<th></th>"
 
                     for j in self.colums:
-                        table += "<th>%s<th>" % j.replace('_', ' ').capitalize()
+                        table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
 
-                    table += "</tr>"
+                    table += "</tr><tr>"
 
                     if self.toolbar_left:
                         table += "<th></th>"
