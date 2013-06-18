@@ -452,10 +452,9 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
     return show_record(request, cliente_id, detail_type, impianto_id, sub_impianto_id)
 
 
-@login_required
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
-    data = scripts.HOME_ADD_JS
+    data = ''
 
     search_string = ""
     data_to_render = []
