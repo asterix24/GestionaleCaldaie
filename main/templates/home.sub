@@ -11,7 +11,7 @@
 {% block center_block %}
 
 <div class="row-fluid">
-    <div class="form-horizontal">
+    <div class="form-search">
     <form action="{% url home %}" method="GET">
         {{data_form.search_keys}}
         {{data_form.filter_type}}
