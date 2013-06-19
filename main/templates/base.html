@@ -103,7 +103,9 @@
 	<hr>
 
 	<ul class="breadcrumb">
-	<li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><button class="btn btn-info btn-small" type="button" onClick="javascript:history.back()">Indietro</button></li>
+        {% block breadcrumb %}
+        {% endblock %}
 	</ul>
 
       <div class="row-fluid">
