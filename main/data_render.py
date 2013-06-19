@@ -335,8 +335,10 @@ class DataRender(object):
             self.show_statistics = False
 
         if self.toolbar_top:
+            table += "<div class=\"btn-group\">"
             for t in self.toolbar_top:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
+            table += "</div>"
 
         table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed\">"
         if not self.items:
@@ -386,14 +388,7 @@ class DataRender(object):
                                         btn_state_asc = 'info'
                                         btn_state_desc = 'warning'
 
-                                table += """
-                                    <th>
-                                    <div class="btn-group">
-                                    <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-up icon-white"></i></a>
-                                    <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-down icon-white"></i></a>
-                                    </div>
-                                    </th>
-                                    """ % (btn_state_asc, order_link_asc, btn_state_desc, order_link_desc)
+                                table += """ <th> <div class="btn-group"> <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-up icon-white"></i></a> <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-down icon-white"></i></a> </div> </th> """ % (btn_state_asc, order_link_asc, btn_state_desc, order_link_desc)
 
 
                     table += "</tr></thead> <tbody>"
