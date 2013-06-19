@@ -38,91 +38,39 @@ $(function() {
 </script>
 """
 
-BUTTONS_JS = """
-    $("input[type=submit], input[type=button], a[name=href_button]").button();
-    $("input[type=button]").button();
-"""
-
-TOOLBAR_JS = """
-    $("a[id=toolbar]").each(function(c) {
-        if ($.inArray($(this).text(), ['cliente','impianto','verifica','intervento']) != -1) {
-            $(this).button({
-                icons: {
-                  primary: "ui-icon-arrowreturnthick-1-w"
-                },
-                text: '',
-            });
-        }
-        if ($(this).text() == 'delete') {
-            $(this).button({
-                icons: {
-                  primary: "ui-icon-trash"
-                },
-                text: '',
-            });
-        }
-        if ($(this).text() == 'edit') {
-            $(this).button({
-                icons: {
-                  primary: "ui-icon-pencil"
-                },
-                text: '',
-            });
-        }
-        if ($(this).text() == 'add') {
-            $(this).button({
-                icons: {
-                  primary: "ui-icon-plusthick"
-                },
-                text: '',
-            });
-        }
-    });
-"""
-
 SHOW_ADD_JS = """
 <script>
 $(function() {
-    %s
-    %s
 });
 </script>
-""" % (BUTTONS_JS, TOOLBAR_JS)
+"""
 
 RECORDADD_ADD_JS = """
 <script>
 $(function() {
-    %s
-    %s
 });
 </script>
-""" % (BUTTONS_JS, TOOLBAR_JS)
+"""
 
 EDIT_ADD_JS = """
 <script>
 $(function() {
-    %s
-    %s
 });
 </script>
-""" % (BUTTONS_JS, TOOLBAR_JS)
+"""
 
 DELETE_ADD_JS = """
 <script>
 $(function() {
-    %s
-    %s
 });
 </script>
-""" % (BUTTONS_JS, TOOLBAR_JS)
+"""
 
 
 __IMPIANTO_ADD_JS = """
 <script>
 %s
 $(function() {
-    %s
-    %s
 
     $("#tr_altra_potenza_caldaia").hide();
     otherField($("#id_potenza_caldaia option:selected"), $("#id_potenza_caldaia"), $("#id_altra_potenza_caldaia"));
@@ -166,8 +114,6 @@ __VERIFICA_ADD_JS = """
 <script>
 %s
 $(function() {
-    %s
-    %s
     $("div[id=radio_fmt]").buttonset();
 
     if($("#id_tipo_verifica").val() != "provafumi") {
@@ -322,8 +268,6 @@ __INTERVENTO_ADD_JS = """
 <script>
 %s
 $(function() {
-    %s
-    %s
 });
 </script>
 """
@@ -357,7 +301,7 @@ function deltaYear(dateText) {
 }
 """
 
-IMPIANTO_ADD_JS = __IMPIANTO_ADD_JS % (COMMON_FUNCTION, BUTTONS_JS, TOOLBAR_JS)
-VERIFICA_ADD_JS = __VERIFICA_ADD_JS % (COMMON_FUNCTION, BUTTONS_JS, TOOLBAR_JS)
-INTERVENTO_ADD_JS = __INTERVENTO_ADD_JS % (COMMON_FUNCTION, BUTTONS_JS, TOOLBAR_JS)
+IMPIANTO_ADD_JS = __IMPIANTO_ADD_JS % (COMMON_FUNCTION)
+VERIFICA_ADD_JS = __VERIFICA_ADD_JS % (COMMON_FUNCTION)
+INTERVENTO_ADD_JS = __INTERVENTO_ADD_JS % (COMMON_FUNCTION)
 

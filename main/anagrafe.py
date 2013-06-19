@@ -31,7 +31,7 @@ def _display_ok(request, msg):
 
 
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message=None):
-    data = scripts.SHOW_ADD_JS
+    data = ""
     data += view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
 
     if data is None:
@@ -45,9 +45,9 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
                            'sub_impianto_id': sub_impianto_id})
 
 TOOLBAR_CLIENTE = [
-    "<a id=\"toolbar\" href=\"/anagrafe/add\">add</a>",
-    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/edit#cliente\">edit</a>",
-    "<a id=\"toolbar\" href=\"/anagrafe/<cliente_id>/delete#cliente\">delete</a>",
+    " <a class=\"btn btn-mini\" id=\"toolbar\" href=\"/anagrafe/add\"><i class=\"icon-plus\"></i> Nuovo</a>",
+    " <a class=\"btn btn-mini\" id=\"toolbar\" href=\"/anagrafe/<cliente_id>/edit#cliente\"><i class=\"icon-pencil\"></i> Modifica</a>",
+    " <a class=\"btn btn-mini\" id=\"toolbar\" href=\"/anagrafe/<cliente_id>/delete#cliente\"><i class=\"icon-trash\"></i> Cancella</a>",
 ]
 
 TOOLBAR_IMPIANTO = [
@@ -485,5 +485,9 @@ def anagrafe(request):
             dr.orderUrl('anagrafe', form_dict)
             data += dr.toTable()
 
-    return render(request, 'anagrafe.sub', {'query_path':request.get_full_path(), 'data': data,'data_form': form})
+    return render(request, 'anagrafe.sub',{'query_path':request.get_full_path(),
+                                           'data': data,
+                                           'data_form': form,
+                                           'scripts': '',
+                                           })
 
