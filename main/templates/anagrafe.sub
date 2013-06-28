@@ -2,6 +2,19 @@
 
 {% block center_block %}
 
+{%if top_message != None %}
+    {% autoescape off %}
+        {{top_message}}
+    {% endautoescape %}
+{% endif %}
+
+<div class="well well-small">
+<dl class="dl-horizontal">
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+</div>
+
 {% autoescape off %}
     {{ data }}
 {% endautoescape %}
