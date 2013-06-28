@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
-EMPTY_CELL = '<center>-</center>'
+EMPTY_CELL = '-'
 ACTION_DICT = {
         'add':'plus.jpg',
         'delete':'minus.jpg',
@@ -253,6 +253,10 @@ def id_replace(m, item_dict):
     else:
         return 'noid'
 
+HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
+HDR_STYLE = "<div style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
+TITLE_STYLE = "<div style=\"font-size:1.5em\"><strong>%s</strong></div><hr>"
+
 class DataRender(object):
     def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
         self.items = items
@@ -271,6 +275,11 @@ class DataRender(object):
         self.base_url = ""
         self.string = ""
         self.selected_order_field = ""
+
+        self.show_title = False
+
+    def showTitle(self, show_title):
+        self.show_title = show_title
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -328,6 +337,8 @@ class DataRender(object):
 
         # Init table string
         table = "<div>"
+        if self.show_title:
+            table += TITLE_STYLE % self.show_title
 
         # Show statistics of founded records
         if self.show_statistics:
@@ -344,8 +355,7 @@ class DataRender(object):
         if not self.items:
             table += "<thead><tr>"
             for j in self.colums:
-                s = j.replace('_', ' ').capitalize()
-                table += "<th>%s</th>" % s
+                table += "<th>"+ (HDR_STYLE % j.replace('_', ' ').capitalize()) + " </th>"
             table += "</thead></tr>"
 
             table += "</td></tr>"
@@ -363,10 +373,10 @@ class DataRender(object):
                     table += "<thead><tr>"
 
                     if self.toolbar_left:
-                        table += "<th></th>"
+                        table += "<th>#</th>"
 
                     for j in self.colums:
-                        table += "<th>%s</th>" % j.replace('_', ' ').capitalize()
+                        table += "<th>"+ (HDR_STYLE % j.replace('_', ' ').capitalize()) + " </th>"
 
                     table += "</tr><tr>"
 
@@ -430,12 +440,14 @@ class DataRender(object):
         self.base_url = ""
         self.string = ""
 
+        self.show_title
+
         return table
 
 def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
     l = "<li>"
     l += "<div class=\"well well-small\">"
-    l += "<div class=\"text-center\" style=\"font-size:1.2em\"><strong>%s</strong></div>" % header_msg
+    l += HDR_STYLE_CENTER % header_msg
 
     l += "<dl class=\"dl-horizontal text-overflow\">"
     for i in show_colum:
