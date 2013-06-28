@@ -435,26 +435,22 @@ class DataRender(object):
 def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
     l = "<li>"
     l += "<div class=\"well well-small\">"
+    l += "<div class=\"text-center\" style=\"font-size:1.2em\"><strong>%s</strong></div>" % header_msg
 
-    if toolbar:
-        l += "<div class=\"btn-group\">"
-        for t in toolbar:
-            l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
-        l += "</div>"
-
-    l += "<dl class=\"dl-horizontal\">"
-
-    l += "<dt></dt>"
-    l += "<dd>"
-    l += "<div style=\"font-size:1.2em\"><strong>%s</strong></div>" % header_msg
-    l += "</dd>"
-
+    l += "<dl class=\"dl-horizontal text-overflow\">"
     for i in show_colum:
         l += "<dt>%s</dt>" % (i.replace('_', ' ').capitalize())
         l += "<dd id=\"td_%s\">%s</dd>" % (i, formatFields(item_dict, i, default_text="-"))
+    l += "</dt>"
 
-    l += "<dt>"
+    if toolbar:
+        l += "<br><div class=\"text-center\"><div class=\"btn-group\">"
+        for t in toolbar:
+            l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+        l += "</div></div>"
+
     l += "</div>"
     l += "</li>"
+
 
     return l
