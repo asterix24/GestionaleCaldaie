@@ -140,7 +140,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.toolbar(left=tb_left, last_row=tb_last)
         else:
             tb_last_row = [
-                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un impianto"),
+                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un verifica.."),
             ]
             dr.toolbar(last_row=tb_last_row)
         data += dr.toTable()
@@ -162,12 +162,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         # button to add new Verifica
         if data_to_render:
             tb_last = [
-                TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add", "icon-plus", "Aggiungi un impianto.."),
+                TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add", "icon-plus", "Aggiungi un intervento.."),
             ]
             dr.toolbar(left=tb_left, last_row=tb_last)
         else:
             tb_last_row = [
-                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un impianto.."),
+                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un intervento.."),
             ]
             dr.toolbar(last_row=tb_last_row)
         data += dr.toTable()
