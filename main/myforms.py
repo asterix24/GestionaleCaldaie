@@ -62,7 +62,7 @@ def monthStr(ref_month):
 
 
 class RangeDataSelect(forms.Form):
-    search_keys = forms.CharField(label="Cerca tra le scadenze ", required=False, initial='Cerca tra le scadenze..',
+    search_keys = forms.CharField(label="Cerca tra le scadenze ", required=False, initial='',
             widget=forms.TextInput(attrs={'class':'input-xlarge', 'placeholder':'Cerca tra le scadenze..'}))
     filter_type = forms.CharField(label="Tipo scadenza", initial='all', required=False,
                 widget=forms.Select(choices=FILTER_TYPES, attrs={}))

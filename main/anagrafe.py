@@ -45,7 +45,7 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
                            'sub_impianto_id': sub_impianto_id})
 
 # TOOLBAR_BTN(url, ico, label)
-TOOLBAR_BTN = "<a class=\"btn btn-mini btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
+TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 
 TOOLBAR_CLIENTE = [
     TOOLBAR_BTN % ("/anagrafe/add",                         "icon-plus",   "Nuovo"),
