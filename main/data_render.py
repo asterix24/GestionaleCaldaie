@@ -436,9 +436,10 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
     l = "<li>"
     l += "<div class=\"well well-small\">"
 
-    for t in toolbar:
+    if toolbar:
         l += "<div class=\"btn-group\">"
-        l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+        for t in toolbar:
+            l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
         l += "</div>"
 
     l += "<dl class=\"dl-horizontal\">"
