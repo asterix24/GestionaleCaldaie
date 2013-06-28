@@ -14,18 +14,8 @@ logger = logging.getLogger(__name__)
 MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
 MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
 EMPTY_CELL = '-'
-ACTION_DICT = {
-        'add':'plus.jpg',
-        'delete':'minus.jpg',
-        'edit':'edit.jpg'
-        }
 
-CLIENTE_ID = 0
-IMPIANTO_ID = 1
-VERIFICA_ID = 2
-INTERVENTO_ID = 3
-
-def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
+def make_url(message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     url = "<a href=\""
     if path.count('%s') == 3:
@@ -37,15 +27,8 @@ def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub
     else:
         return "errore!"
 
-    if type == 'icon':
-        url += "\">"
-        data += "<img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/> " % (ACTION_DICT[action], action, action)
-    elif type == 'button':
-        url += "\" name=\"href_button\">"
-    else:
-        url += "\">"
-
     data += "%s"  % message
+    url += "\">"
     return url + data + "</a>"
 
 def isValidKey(items, key):
@@ -53,70 +36,94 @@ def isValidKey(items, key):
         return False
     return True
 
-def __cliente_url(items, key, s=EMPTY_CELL):
+def __cliente(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/#cliente', items['cliente_id'])
+    if with_url:
+        return make_url(items[key], '/anagrafe/%s/', items['cliente_id'])
 
-def __impianto_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
-            items['cliente_id'], items['impianto_id'])
+    if with_url:
+        return make_url( items[key], '/anagrafe/%s/impianto/%s/',
+                items['cliente_id'], items['impianto_id'])
 
-def __verifica_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "Nessuna verifica"
 
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
-def __ultima_analisi_url(items, key, s=EMPTY_CELL):
+    if with_url:
+        return make_url( str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['verifica_id'])
+
+    return str
+
+def __ultima_analisi(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Fumi"
 
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
+    if with_url:
+        return make_url(str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
-def __stato_verifica_url(items, key, s=EMPTY_CELL):
+    return str
+
+def __stato_verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     s = models.STATO_VERIFICA_DICT.get(items[key], s)
-    return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['verifica_id'])
+    if with_url:
+        return make_url(s, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
-def __stato_impianto_url(items, key, s=EMPTY_CELL):
+    return s
+
+def __stato_impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
-            items['cliente_id'], items['impianto_id'])
+    if with_url:
+        return make_url(items[key], '/anagrafe/%s/impianto/%s/',
+                items['cliente_id'], items['impianto_id'])
 
-def __intervento_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __intervento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     s = items[key].strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', s, '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
-            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    if with_url:
+        return make_url(s, '/anagrafe/%s/impianto/%s/intervento/%s/',
+                items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    return s
 
-def __tipo_intervento_url(items, key, s=EMPTY_CELL):
+def __tipo_intervento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
-            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    if with_url:
+        return make_url( items[key], '/anagrafe/%s/impianto/%s/intervento/%s/',
+                items['cliente_id'], items['impianto_id'], items['intervento_id'])
 
-def __tipo_caldaia(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __tipo_caldaia(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
@@ -128,7 +135,7 @@ def __tipo_caldaia(items, key, s=EMPTY_CELL):
 
     return s
 
-def __tipo_verifica(items, key, s=EMPTY_CELL):
+def __tipo_verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Manutezioni"
 
@@ -141,7 +148,7 @@ def __tipo_verifica(items, key, s=EMPTY_CELL):
 
     return s
 
-def __colore_bollino(items, key, s=EMPTY_CELL):
+def __colore_bollino(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
@@ -154,7 +161,7 @@ def __colore_bollino(items, key, s=EMPTY_CELL):
 
     return s
 
-def __analisi_combustione(items, key, s=EMPTY_CELL):
+def __analisi_combustione(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Fumi"
 
@@ -165,70 +172,52 @@ def __analisi_combustione(items, key, s=EMPTY_CELL):
     return s
 
 
-def __stato_pagamento(items, key, s=EMPTY_CELL):
+def __stato_pagamento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     return models.STATO_PAGAMENTO_DICT.get(items[key], s)
 
-
-def __stato_impianto(items, key, s=EMPTY_CELL):
-    if not isValidKey(items, key):
-        return s
-
-    return items[key]
-
-def __anzianita_impianto(items, key, s=EMPTY_CELL):
+def __anzianita_impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     d = items[key]
     y = d.days / 365
     m = (d.days - (y * 365)) / 31
-    d = (d.days - (y * 365)) - m * 31
-    return "%s anni, %s mesi, %s giorni" % (y, m, d)
+    #d = (d.days - (y * 365)) - m * 31
+    #return "%s anni, %s mesi, %s giorni" % (y, m, d)
+    return "%s anni, %s mesi" % (y, m)
 
-def __stato_verifica(items, key, s=EMPTY_CELL):
-    if not isValidKey(items, key):
-        return s
-
-    return models.STATO_VERIFICA_DICT.get(items[key], s)
-
-RENDER_TABLE_URL = {
-    'nome': __cliente_url,
-    'cognome': __cliente_url,
-    'codice_impianto': __impianto_url,
-    'matricola_caldaia': __impianto_url,
-    'modello_caldaia': __impianto_url,
-    'marca_caldaia': __impianto_url,
-    'data_verifica': __verifica_url,
-    'data_ultima_verifica': __verifica_url,
-    'ultima_analisi_combustione': __ultima_analisi_url,
-    'stato_verifica': __stato_verifica_url,
-    'stato_impianto': __stato_impianto_url,
-    'data_intervento': __intervento_url,
-    'tipo_intervento': __tipo_intervento_url,
-}
 
 RENDER_TABLE = {
+    'nome': __cliente,
+    'cognome': __cliente,
+    'codice_impianto': __impianto,
+    'matricola_caldaia': __impianto,
+    'modello_caldaia': __impianto,
+    'marca_caldaia': __impianto,
+    'data_verifica': __verifica,
+    'data_ultima_verifica': __verifica,
+    'ultima_analisi_combustione': __ultima_analisi,
+    'stato_verifica': __stato_verifica,
+    'stato_impianto': __stato_impianto,
+    'data_intervento': __intervento,
+    'tipo_intervento': __tipo_intervento,
     'tipo_caldaia': __tipo_caldaia,
     'tipo_verifica': __tipo_verifica,
     'colore_bollino': __colore_bollino,
     'analisi_combustione': __analisi_combustione,
     'stato_pagamento': __stato_pagamento,
-    'stato_impianto': __stato_impianto,
     'anzianita_impianto': __anzianita_impianto,
-    'stato_verifica': __stato_verifica,
 }
 
 def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
     try:
         s = default_text
         if item_dict.has_key(field_name):
-            if with_url == False and field_name in RENDER_TABLE:
-                s = RENDER_TABLE[field_name](item_dict, field_name, default_text)
-            elif with_url and field_name in RENDER_TABLE_URL:
-                s = RENDER_TABLE_URL[field_name](item_dict, field_name, default_text)
+            if RENDER_TABLE.has_key(field_name):
+                s = RENDER_TABLE[field_name](item_dict, field_name, default_text, with_url)
             else:
                 s  = item_dict[field_name]
                 if not isValidKey(item_dict, field_name):
@@ -242,6 +231,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
         logger.error("%s Errore nel render di (%s) s=%s {%s}" % (__name__, m, s, item_dict))
         s = default_text
 
+    print
     return s
 
 
