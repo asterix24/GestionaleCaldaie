@@ -432,34 +432,28 @@ class DataRender(object):
 
         return table
 
-
 def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
-    table = ""
-    table += "<div class=\"row-fluid\">"
+    l = "<li>"
+    l += "<div class=\"well well-small\">"
 
-    table += "<div class=\"span6\">"
-    table += "<table class=\"table table-striped table-hover table-condensed\">"
-
-    table += "<tr><th>"
     for t in toolbar:
-        table += "<div class=\"btn-group\">"
-        table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
-        table += "</div>"
-    table += "</th>"
-    table += "<th>"
-    table += "<div style=\"font-size:1.2em\"><strong>%s</strong></div>" % header_msg
-    table += "</th></tr>"
+        l += "<div class=\"btn-group\">"
+        l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+        l += "</div>"
+
+    l += "<dl class=\"dl-horizontal\">"
+
+    l += "<dt></dt>"
+    l += "<dd>"
+    l += "<div style=\"font-size:1.2em\"><strong>%s</strong></div>" % header_msg
+    l += "</dd>"
 
     for i in show_colum:
-        table += "<th>%s</th>" % (i.replace('_', ' ').capitalize())
-        table += "<td id=\"td_%s\">%s</td>" % (i, formatFields(item_dict, i, default_text="-"))
-        table += "</tr>"
-    table += "</table>"
-    table += "</div>"
-    table += "<div class=\"span6\">"
-    table += "</div>"
+        l += "<dt>%s</dt>" % (i.replace('_', ' ').capitalize())
+        l += "<dd id=\"td_%s\">%s</dd>" % (i, formatFields(item_dict, i, default_text="-"))
 
-    table += "</div>"
+    l += "<dt>"
+    l += "</div>"
+    l += "</li>"
 
-    return table
-
+    return l
