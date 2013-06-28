@@ -2,6 +2,18 @@
 
 {% block center_block %}
 
+{%if top_message != None %}
+    {% autoescape off %}
+        {{top_message}}
+    {% endautoescape %}
+{% endif %}
+
+<ul class="thumbnails">
+{% autoescape off %}
+    {{ data_list }}
+{% endautoescape %}
+</ul>
+
 {% autoescape off %}
     {{ data }}
 {% endautoescape %}
