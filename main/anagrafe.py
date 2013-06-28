@@ -74,7 +74,7 @@ TOOLBAR_INTERVENTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete#intervento","icon-trash",  "Cancella"),
 ]
 
-def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_cliente=False):
+def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_title=False, show_cliente=False):
     if cliente_id == "":
             return None
 
