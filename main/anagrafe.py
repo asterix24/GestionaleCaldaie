@@ -201,19 +201,22 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     return data, data_list
 
 def _intervento_cfg(cliente_id, detail_type, impianto_id):
-    data = scripts.INTERVENTO_ADD_JS
+    #data = scripts.INTERVENTO_ADD_JS
+    data = ""
     d, l = view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
     data += d
     return data
 
 def _verifica_cfg(cliente_id, detail_type, impianto_id):
-    data = scripts.VERIFICA_ADD_JS
+    #data = scripts.VERIFICA_ADD_JS
+    data = ""
     d, l = view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
     data += d
     return data
 
 def _impianto_cfg(cliente_id, detail_type, impianto_id):
-    data = scripts.IMPIANTO_ADD_JS
+    #data = scripts.IMPIANTO_ADD_JS
+    data = ""
     return data
 
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
