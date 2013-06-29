@@ -11,18 +11,19 @@ from main import cfg
 
 logger = logging.getLogger(__name__)
 
-MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
-MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
+MSG_ITEMS_EMPTY = "<br><h2>La ricerca non ha prodotto risultati</h2><br>"
+MSG_STATISTICS = "<br><h3>Records trovati: %s</h3><br>"
 EMPTY_CELL = '-'
 
 def make_url(message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     url = "<a href=\""
-    if path.count('%s') == 3:
+    count = path.count('%s')
+    if count == 3:
         url += path % (cliente_id, impianto_id, sub_impianto_id)
-    elif path.count('%s') == 2:
+    elif count == 2:
         url += path % (cliente_id, impianto_id)
-    elif path.count('%s') == 1:
+    elif count == 1:
         url += path % (cliente_id)
     else:
         return "errore!"
@@ -355,7 +356,6 @@ class DataRender(object):
             for t in self.toolbar_last_row:
                 table += t
             table += "</td></tr>"
-
 
         else:
             for item_dict in self.items:

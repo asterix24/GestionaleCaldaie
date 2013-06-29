@@ -1,12 +1,5 @@
 {% extends "base.html" %}
 
-{% block navigation_search_block_top %}
-<li><a href="javascript:history.back()">Indietro</a></li>
-{% endblock %}
-
-{% block navigation_search_block_bot %}
-<li><a href="javascript:history.back()">Indietro</a></li>
-{% endblock %}
 
 {% block center_block %}
 
@@ -14,30 +7,29 @@
     {{ data }}
 {% endautoescape %}
 
-<form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
-
-<table id="list_table" class="list_table_float_center">
-<colgroup><col width=30%><col width=70%></colgroup>
-<tr>
-<th></th>
-<th>
 {% autoescape off %}
     {{header_msg}}
 {% endautoescape %}
-</th>
-</tr>
 
-{% for form in data_forms %}
-<tr id="tr_{{ form.name}}">
-    <td class="hdr"> {{ form.label }}</td>
-    <td>{{form}}{{form.errors}}</td>
-</tr>
-{% endfor %}
-</table>
+<ul class="thumbnails">
+<li>
+    <div class="well well-small">
+        <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
+        <dl class="dl-horizontal text-overflow">
 
-<input class=navigation_buttons type="submit" value="Salva"/>
-</form>
+        {% for form in data_forms %}
+            <dt id="tr_{{ form.name}}"> {{ form.label }}</dt>
+            <dd>{{form}}{{form.errors}}</dd>
+        {% endfor %}
 
-<input class=navigation_buttons type="button" value="Annulla" onClick="javascript:history.back()">
+        </dl>
+        <div class="text-center">
+        <input class="btn btn-success btn-large" type="submit" value="Salva"/>
+        <input class="btn btn-danger btn-large" type="button" value="Annulla" onClick="javascript:history.back()">
+        </div>
+        </form>
+    </div>
+</li>
+</ul>
 
 {% endblock %}
