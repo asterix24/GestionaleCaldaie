@@ -4,12 +4,13 @@
 {% block center_block %}
 
 {% autoescape off %}
-    {{ data }}
+    {{header_msg}}
 {% endautoescape %}
 
 {% autoescape off %}
-    {{header_msg}}
+    {{ data }}
 {% endautoescape %}
+
 
 <ul class="thumbnails">
 <li class="span4">
@@ -39,4 +40,10 @@
 </li>
 </ul>
 
+{% endblock %}
+
+{% block scripts %}
+	{% autoescape off %}
+	    {{ scripts }}
+	{% endautoescape %}
 {% endblock %}
