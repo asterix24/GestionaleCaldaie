@@ -406,22 +406,22 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
     data = scripts.DELETE_ADD_JS
     try:
         if detail_type is None:
-            header_msg = '<h1>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h1>'
+            header_msg = '<h2>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h2>'
             action = '\"Cancella Cliente\"'
             post_url = "%s/delete/" % cliente_id
         else:
             if detail_type == 'impianto':
-                header_msg = '<h1>Attenzione! stai cancellanodo l\'impianto selezionato.</h1>'
+                header_msg = '<h1>Attenzione! stai cancellando l\'impianto selezionato.</h2>'
                 action = '\"Cancella Impianto\"'
                 post_url = "%s/impianto/%s/delete/" % (cliente_id, impianto_id)
 
             if detail_type == 'verifica':
-                header_msg = '<h1>Attenzione! stai cancellanodo la verifica dell\'impianto.</h1>'
+                header_msg = '<h2>Attenzione! stai cancellando la verifica dell\'impianto.</h2>'
                 action = '\"Cancella Verifica\"'
                 post_url = "%s/impianto/%s/verifica/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
 
             if detail_type == 'intervento':
-                header_msg = '<h1>Attenzione! stai cancellanodo l\'intervento dell\'impianto.</h1>'
+                header_msg = '<h2>Attenzione! stai cancellando l\'intervento dell\'impianto.</h2>'
                 action = '\"Cancella Intervento\"'
                 post_url = "%s/impianto/%s/intervento/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
 
