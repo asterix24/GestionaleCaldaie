@@ -35,14 +35,14 @@ class ClienteForm(forms.ModelForm):
 
         cleaned_data['cliente_id_inserito'] = None
 
-        _nome = cleaned_data.get("nome")
-        _cognome = cleaned_data.get("cognome")
-        _codice_fiscale = cleaned_data.get("codice_fiscale")
-        _via = cleaned_data.get("via")
-        _citta = cleaned_data.get("citta")
-        _numero_telefono = cleaned_data.get("numero_telefono")
-        _numero_cellulare = cleaned_data.get("numero_cellulare")
-        _mail =cleaned_data.get("mail")
+        _nome = cleaned_data.get("nome", '')
+        _cognome = cleaned_data.get("cognome", '')
+        _codice_fiscale = cleaned_data.get("codice_fiscale", '')
+        _via = cleaned_data.get("via", '')
+        _citta = cleaned_data.get("citta", '')
+        _numero_telefono = cleaned_data.get("numero_telefono", '')
+        _numero_cellulare = cleaned_data.get("numero_cellulare", '')
+        _mail =cleaned_data.get("mail", '')
 
         cli = Cliente.objects.filter(models.Q(nome__iexact=_nome) &
                                models.Q(cognome__iexact=_cognome) &
@@ -68,6 +68,7 @@ class ClienteForm(forms.ModelForm):
         if _citta is not None:
             cleaned_data['citta'] = _citta.capitalize()
 
+        print "4"
         # Always return the full collection of cleaned data.
         return cleaned_data
 

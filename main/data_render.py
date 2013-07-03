@@ -247,6 +247,7 @@ def id_replace(m, item_dict):
 HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
 HDR_STYLE = "<div style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
 TITLE_STYLE = "<div style=\"font-size:1.5em\"><strong>%s</strong></div><hr>"
+TITLE_STYLE_FORM = "<h2 class=\"text-center\">%s</h2>"
 
 class DataRender(object):
     def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
