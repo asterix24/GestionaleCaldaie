@@ -219,6 +219,17 @@ def _impianto_cfg(cliente_id, detail_type, impianto_id):
     data = ""
     return data
 
+CLIENTE_INSERITO = """<div class=\"alert alert-block\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+<h4>Attenzione!</h4>
+Cliente gia\' inserito nel gestionale..
+</div>"""
+
+FORM_ERROR = """<div class=\"alert alert-error\">
+<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+<h4>Errore!</h4>
+Errore nel form..
+</div>"""
+
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
     """
     return dict
@@ -234,13 +245,13 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
     }
 
     if cliente_id is None or detail_type is None:
-        msg=None
+        msg = None
         form = models.ClienteForm(request.POST, instance=select)
         if form.is_valid():
             cli = form.cleaned_data['cliente_id_inserito']
             if cli is not None:
                 d['cliente_id'] = cli
-                d['message'] = "<h1>Cliente gia\' inserito nel gestionale</h1>"
+                d['message'] = CLIENTE_INSERITO
                 return True, d
 
             instance = form.save()
@@ -261,7 +272,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 d['impianto_id'] = instance.id
                 return True, d
             else:
-                d['message'] = "Errore nel form"
+                d['message'] = FORM_ERROR
                 d['form'] = form
                 return False, d
 
@@ -276,7 +287,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 return True, d
             else:
                 d['form'] = form
-                d['message'] = "Errore nel form"
+                d['message'] = FORM_ERROR
                 return False, d
 
         if detail_type == 'intervento':
@@ -291,7 +302,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 d['detail_type'] = detail_type
                 return True, d
             else:
-                d['message'] = "Errore nel form"
+                d['message'] = FORM_ERROR
                 d['form'] = form
                 return False, d
 
@@ -304,15 +315,15 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
         post_url = "add/"
     else:
         if detail_type == 'impianto':
-            header_msg = "<a id=\"impianto\">Aggiungi Nuovo Impianto</a>"
+            header_msg = "Aggiungi Nuovo Impianto"
             post_url = "%s/impianto/add/" % cliente_id
 
         if detail_type == 'verifica':
-            header_msg = "<a id=\"verifica\">Aggiungi Nuova Verifica e Manutenzione</a>"
+            header_msg = "Aggiungi Nuova Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/add/" % (cliente_id, impianto_id)
 
         if detail_type == 'intervento':
-            header_msg = "<a id=\"intervento\">Aggiungi Nuovo Intervento</a>"
+            header_msg = "Aggiungi Nuovo Intervento"
             post_url = "%s/impianto/%s/intervento/add/" % (cliente_id, impianto_id)
 
         if detail_type is None:
@@ -342,7 +353,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             request = d['request']
             form = d['form']
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
+    return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
         'data':data, 'post_url':post_url})
 
 
@@ -361,20 +372,20 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         if detail_type == 'impianto':
             select = models.Impianto.objects.get(pk=impianto_id)
             form = models.ImpiantoForm(instance=select)
-            header_msg = "<a id=\"impianto\">Modifica Impianto</a>"
+            header_msg = "Modifica Impianto"
             post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
 
         if detail_type == 'verifica':
             select = models.Verifica.objects.get(pk=sub_impianto_id)
             form = models.VerificaForm(instance=select)
-            header_msg = "<a id=\"verifica\">Modifica Verifica e Manutenzione</a>"
+            header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
             data = _verifica_cfg(cliente_id, detail_type, impianto_id)
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)
             form = models.InterventoForm(instance=select)
-            header_msg = "<a id=\"intervento\">Modifica Intervento</a>"
+            header_msg = "Modifica Intervento"
             post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
 
         if detail_type is None:
@@ -388,7 +399,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             request = d['request']
             form = d['form']
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': header_msg, 'data_forms': form,
+    return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
         'data':data, 'post_url':post_url})
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):

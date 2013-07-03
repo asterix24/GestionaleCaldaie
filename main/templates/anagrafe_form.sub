@@ -12,6 +12,8 @@
 {% endautoescape %}
 
 <ul class="thumbnails">
+<li class="span4">
+</li>
 <li>
     <div class="well well-small">
         <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
@@ -19,16 +21,21 @@
 
         {% for form in data_forms %}
             <dt id="tr_{{ form.name}}"> {{ form.label }}</dt>
-            <dd>{{form}}{{form.errors}}</dd>
+            <dd>{{form}}
+            {% if form.errors %}
+                <div class="alert alert-error"> {{form.errors}} </div>
+            {% endif %}
+            </dd>
+
         {% endfor %}
 
         </dl>
-        <div class="text-center">
-        <input class="btn btn-success btn-large" type="submit" value="Salva"/>
-        <input class="btn btn-danger btn-large" type="button" value="Annulla" onClick="javascript:history.back()">
-        </div>
-        </form>
     </div>
+    <div class="form-actions text-center">
+    <input class="btn btn-success btn-large" type="submit" value="Salva"/>
+    <input class="btn btn-danger btn-large" type="button" value="Annulla" onClick="javascript:history.back()">
+    </div>
+        </form>
 </li>
 </ul>
 
