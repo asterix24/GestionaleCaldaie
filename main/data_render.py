@@ -244,8 +244,12 @@ def id_replace(m, item_dict):
     else:
         return 'noid'
 
-HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
-HDR_STYLE = "<div style=\"font-size:1.2em;color:#0088cc\"><strong>%s</strong></div>"
+HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.1em;color:#0088cc\"><strong>%s</strong></div>"
+HDR_STYLE = "style=\"background-color: #5993A5;\
+vertical-align: middle; \
+color: #F8F8F8; text-align:center;\
+font-size:1.1;font-weight:600; \""
+
 TITLE_STYLE = "<div style=\"font-size:1.5em\"><strong>%s</strong></div><hr>"
 TITLE_STYLE_FORM = "<h2 class=\"text-center\">%s</h2>"
 
@@ -341,13 +345,13 @@ class DataRender(object):
             table += "<div class=\"btn-group\">"
             for t in self.toolbar_top:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
-            table += "</div>"
+            table += "</div><p></p>"
 
-        table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed\">"
+        table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed table-bordered\">"
         if not self.items:
             table += "<thead><tr>"
             for j in self.colums:
-                table += "<th>"+ (HDR_STYLE % j.replace('_', ' ').capitalize()) + " </th>"
+                table += "<th %s >" % HDR_STYLE + (j.replace('_', ' ').capitalize()) + " </th>"
             table += "</thead></tr>"
 
             table += "</td></tr>"
@@ -364,10 +368,10 @@ class DataRender(object):
                     table += "<thead><tr>"
 
                     if self.toolbar_left:
-                        table += "<th>#</th>"
+                        table += "<th %s>#</th>" % HDR_STYLE
 
                     for j in self.colums:
-                        table += "<th>"+ (HDR_STYLE % j.replace('_', ' ').capitalize()) + " </th>"
+                        table += "<th %s >" % HDR_STYLE + (j.replace('_', ' ').capitalize()) + " </th>"
 
                     table += "</tr><tr>"
 

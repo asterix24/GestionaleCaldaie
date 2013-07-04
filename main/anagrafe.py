@@ -86,7 +86,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     data = ""
     data_list = ""
     data_to_render = database_manager.search_clienteId(cliente_id)
-    if not show_cliente:
+    if not show_cliente and data_to_render:
         data_list = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente",
                 toolbar=TOOLBAR_CLIENTE)
 
