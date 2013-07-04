@@ -75,8 +75,13 @@ TOOLBAR_INTERVENTO = [
 ]
 
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_title=False, show_cliente=False):
+    """
+    Data: record table format
+    Data_list: record in list format
+    Return data, data_list
+    """
     if cliente_id == "":
-            return None
+            return None, None
 
     data = ""
     data_list = ""
@@ -117,60 +122,61 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     # Show impianto and its verifiche/interventi
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
-                toolbar=TOOLBAR_IMPIANTO)
-
-        # Display all verifiche related to this impianto
-        data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
-        dr = data_render.DataRender(data_to_render)
-        dr.showTitle("Elenco verifiche")
-        dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
-        # edit and delete icons with related link
-        tb_left = [
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit\"> \
-                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete\"> \
-                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
-        ]
-        # button to add new Verifica
         if data_to_render:
-            tb_last = [
-                    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add", "icon-plus", "Aggiungi una verifica.."),
+            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+                    toolbar=TOOLBAR_IMPIANTO)
+
+            # Display all verifiche related to this impianto
+            data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
+            dr = data_render.DataRender(data_to_render)
+            dr.showTitle("Elenco verifiche")
+            dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
+            # edit and delete icons with related link
+            tb_left = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit\"> \
+                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete\"> \
+                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
             ]
-            dr.toolbar(left=tb_left, last_row=tb_last)
-        else:
-            tb_last_row = [
-                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un verifica.."),
-            ]
-            dr.toolbar(last_row=tb_last_row)
-        data += dr.toTable()
+            # button to add new Verifica
+            if data_to_render:
+                tb_last = [
+                        TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add", "icon-plus", "Aggiungi una verifica.."),
+                ]
+                dr.toolbar(left=tb_left, last_row=tb_last)
+            else:
+                tb_last_row = [
+                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un verifica.."),
+                ]
+                dr.toolbar(last_row=tb_last_row)
+            data += dr.toTable()
 
 
-        # Display all intervento related to this impianto
-        data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
-        dr = data_render.DataRender(data_to_render)
-        dr.showTitle("Elenco interventi")
-        dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
+            # Display all intervento related to this impianto
+            data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
+            dr = data_render.DataRender(data_to_render)
+            dr.showTitle("Elenco interventi")
+            dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
 
-        # edit and delete icons with related link
-        tb_left = [
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit\"> \
-                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete\"> \
-                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
-        ]
-        # button to add new Verifica
-        if data_to_render:
-            tb_last = [
-                TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add", "icon-plus", "Aggiungi un intervento.."),
+            # edit and delete icons with related link
+            tb_left = [
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit\"> \
+                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete\"> \
+                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
             ]
-            dr.toolbar(left=tb_left, last_row=tb_last)
-        else:
-            tb_last_row = [
-                TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un intervento.."),
-            ]
-            dr.toolbar(last_row=tb_last_row)
-        data += dr.toTable()
+            # button to add new Verifica
+            if data_to_render:
+                tb_last = [
+                    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add", "icon-plus", "Aggiungi un intervento.."),
+                ]
+                dr.toolbar(left=tb_left, last_row=tb_last)
+            else:
+                tb_last_row = [
+                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un intervento.."),
+                ]
+                dr.toolbar(last_row=tb_last_row)
+            data += dr.toTable()
 
 
     elif detail_type == "verifica":
@@ -200,24 +206,6 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     return data, data_list
 
-def _intervento_cfg(cliente_id, detail_type, impianto_id):
-    #data = scripts.INTERVENTO_ADD_JS
-    data = ""
-    d, l = view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
-    data += d
-    return data
-
-def _verifica_cfg(cliente_id, detail_type, impianto_id):
-    #data = scripts.VERIFICA_ADD_JS
-    data = ""
-    d, l = view_record(cliente_id, detail_type, impianto_id, show_cliente=True)
-    data += d
-    return data
-
-def _impianto_cfg(cliente_id, detail_type, impianto_id):
-    #data = scripts.IMPIANTO_ADD_JS
-    data = ""
-    return data
 
 CLIENTE_INSERITO = """<div class=\"alert alert-block\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
 <h4>Attenzione!</h4>
@@ -309,7 +297,9 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
     return _display_error(request, "Qualcosa e' andato storto..")
 
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
-    data = scripts.RECORDADD_ADD_JS
+    script = ""
+    data = ""
+    data_list = ""
     if cliente_id is None:
         header_msg = "Aggiungi Nuovo Cliente"
         post_url = "add/"
@@ -335,15 +325,18 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
         else:
             if detail_type == 'impianto':
                 form = models.ImpiantoForm(initial={'cliente_impianto': models.Cliente.objects.get(pk=cliente_id)})
-                data = _impianto_cfg(cliente_id, detail_type, impianto_id)
+                script = scripts.IMPIANTO_ADD_JS
+                data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
             if detail_type == 'verifica':
                 form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
-                data = _verifica_cfg(cliente_id, detail_type, impianto_id)
+                script = scripts.VERIFICA_ADD_JS
+                data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
-                data = _intervento_cfg(cliente_id, detail_type, impianto_id)
+                script = scripts.INTERVENTO_ADD_JS
+                data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
     if request.method == 'POST':
         ret, d = __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request)
@@ -354,7 +347,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             form = d['form']
 
     return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
-        'data':data, 'post_url':post_url})
+        'data':data, 'scripts': script, 'post_url':post_url})
 
 
 def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
@@ -362,7 +355,9 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         return _display_error(request, "Qualcosa e' andato storto..")
 
     select = None
-    data = scripts.EDIT_ADD_JS
+    data = ""
+    data_list = ""
+    script = ""
     if detail_type is None:
         select = models.Cliente.objects.get(pk=cliente_id)
         form = models.ClienteForm(instance=select)
@@ -380,7 +375,8 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = models.VerificaForm(instance=select)
             header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            data = _verifica_cfg(cliente_id, detail_type, impianto_id)
+            script = scripts.VERIFICA_EDIT_JS
+            data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
         if detail_type == 'intervento':
             select = models.Intervento.objects.get(pk=sub_impianto_id)
@@ -400,7 +396,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = d['form']
 
     return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
-        'data':data, 'post_url':post_url})
+        'data':data, 'scripts': script, 'post_url':post_url})
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = scripts.DELETE_ADD_JS
