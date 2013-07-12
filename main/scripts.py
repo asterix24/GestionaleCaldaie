@@ -49,11 +49,6 @@ EDIT_ADD_JS = """
 </script>
 """
 
-DELETE_ADD_JS = """
-<script>
-
-</script>
-"""
 
 
 __IMPIANTO_ADD_JS = """
