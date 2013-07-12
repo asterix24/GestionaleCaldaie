@@ -36,21 +36,38 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
 
+    alert = """
+<div id="alert" class="modal hide fade">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h3>Modal header</h3>
+</div>
+<div class="modal-body">
+<p id="alert_body">One fine body…</p>
+</div>
+<div class="modal-footer">
+<a id=action href="#" class="btn btn-primary">Save changes</a>
+<button class="btn" data-dismiss="modal" aria-hidden="true">Annulla</button>
+</div>
+</div>
+"""
+
     return render(request, 'anagrafe.sub', {'data': data,
                            'data_list': data_list,
                            'top_message': message,
-                           'cliente_id': cliente_id,
-                           'detail_type': detail_type,
-                           'impianto_id': impianto_id,
-                           'sub_impianto_id': sub_impianto_id})
+                           'alert': alert,
+                           'scripts':scripts.ANAGRAFE_JS
+                           })
 
 # TOOLBAR_BTN(url, ico, label)
 TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
+TOOLBAR_BTNN = "<a class=\"btn btn-small btn-info\" name=\"Cancella Impianto\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 
 TOOLBAR_CLIENTE = [
     TOOLBAR_BTN % ("/anagrafe/add",                         "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/edit",   "icon-pencil", "Modifica"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/delete", "icon-trash",  "Cancella"),
+    TOOLBAR_BTNN % ("cancella", "/anagrafe/<cliente_id>/delete",  "icon-trash",  "Cancella"),
+    #"<button class=\"btn btn-small btn-info\" id=\"toolbar-cancella\"><i class=\"icon-trash\"></i> Cancella</button>"
 ]
 
 TOOLBAR_IMPIANTO = [

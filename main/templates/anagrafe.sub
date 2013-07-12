@@ -2,6 +2,12 @@
 
 {% block center_block %}
 
+{%if alert %}
+    {% autoescape off %}
+        {{alert}}
+    {% endautoescape %}
+{% endif %}
+
 {%if top_message != None %}
     {% autoescape off %}
         {{top_message}}
@@ -18,4 +24,10 @@
     {{ data }}
 {% endautoescape %}
 
+{% endblock %}
+
+{% block scripts %}
+	{% autoescape off %}
+	    {{ scripts }}
+	{% endautoescape %}
 {% endblock %}

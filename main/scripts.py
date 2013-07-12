@@ -42,13 +42,25 @@ SHOW_ADD_JS = """
 </script>
 """
 
-
 EDIT_ADD_JS = """
 <script>
 
 </script>
 """
 
+ANAGRAFE_JS = """
+<script>
+$("#toolbar_cancella").click(function(event) {
+    event.preventDefault();
+    $("#action").text('Cancella Cliente');
+    $("#action").attr('href', $(this).attr('href'));
+    $("#alert_body").text('Attenzione stai cancellando tutto!');
+    $("#alert").modal('show');
+});
+
+
+</script>
+"""
 
 
 __IMPIANTO_ADD_JS = """
