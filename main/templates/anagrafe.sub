@@ -2,9 +2,9 @@
 
 {% block center_block %}
 
-{%if alert %}
+{%if notification_area %}
     {% autoescape off %}
-        {{alert}}
+        {{notification_area}}
     {% endautoescape %}
 {% endif %}
 

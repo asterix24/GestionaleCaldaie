@@ -50,15 +50,14 @@ EDIT_ADD_JS = """
 
 ANAGRAFE_JS = """
 <script>
-$("#toolbar_cancella").click(function(event) {
+$("a[id=toolbar_delete]").click(function(event) {
     event.preventDefault();
-    $("#action").text('Cancella Cliente');
-    $("#action").attr('href', $(this).attr('href'));
-    $("#alert_body").text('Attenzione stai cancellando tutto!');
-    $("#alert").modal('show');
+    $("#notification_hdr").text('Attenzione!');
+    $("#notification_body").text($(this).attr('value'));
+    $("#notification_btn").text('Cancella ' + $(this).attr('name'));
+    $("#notification_btn").attr('href', $(this).attr('href'));
+    $("#notification_area").modal('show');
 });
-
-
 </script>
 """
 

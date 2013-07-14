@@ -11,6 +11,23 @@ from main import cfg
 
 logger = logging.getLogger(__name__)
 
+NOTIFICATION_AREA = """
+<div id="notification_area" class="modal hide">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h3 id="notification_hdr">Message Hdr</h3>
+</div>
+<div class="modal-body">
+<p id="notification_body">One fine body…</p>
+<h4>Sei sicuro di voler continuare?</h4>
+</div>
+<div class="modal-footer">
+<a id="notification_btn" href="#" class="btn btn-danger">Save changes</a>
+<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Annulla</button>
+</div>
+</div>
+"""
+
 MSG_ITEMS_EMPTY = "<br><h2>La ricerca non ha prodotto risultati</h2><br>"
 MSG_STATISTICS = "<br><h3>Records trovati: %s</h3><br>"
 EMPTY_CELL = '-'
