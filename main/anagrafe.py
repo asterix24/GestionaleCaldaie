@@ -36,59 +36,46 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
 
-    alert = """
-<div id="alert" class="modal hide fade">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<h3>Modal header</h3>
-</div>
-<div class="modal-body">
-<p id="alert_body">One fine body…</p>
-</div>
-<div class="modal-footer">
-<a id=action href="#" class="btn btn-primary">Save changes</a>
-<button class="btn" data-dismiss="modal" aria-hidden="true">Annulla</button>
-</div>
-</div>
-"""
-
     return render(request, 'anagrafe.sub', {'data': data,
                            'data_list': data_list,
                            'top_message': message,
-                           'alert': alert,
+                           'notification_area': data_render.NOTIFICATION_AREA,
                            'scripts':scripts.ANAGRAFE_JS
                            })
 
 # TOOLBAR_BTN(url, ico, label)
 TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
-TOOLBAR_BTNN = "<a class=\"btn btn-small btn-info\" name=\"Cancella Impianto\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
+TOOLBAR_BTN_NAME = "<a class=\"btn btn-small btn-info\" name=\"%s\" value=\"%s\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 
 TOOLBAR_CLIENTE = [
     TOOLBAR_BTN % ("/anagrafe/add",                         "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/edit",   "icon-pencil", "Modifica"),
-    TOOLBAR_BTNN % ("cancella", "/anagrafe/<cliente_id>/delete",  "icon-trash",  "Cancella"),
-    #"<button class=\"btn btn-small btn-info\" id=\"toolbar-cancella\"><i class=\"icon-trash\"></i> Cancella</button>"
+    TOOLBAR_BTN_NAME % ("Cliente", "Stai cancellando il cliente, e anche tutti gli impianti, verifiche e interventi relativi.",
+            "delete", "/anagrafe/<cliente_id>/delete", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_IMPIANTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>",                                "icon-arrow-left", "Ritorna"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/add",                           "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/edit",   "icon-pencil", "Modifica"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/delete", "icon-trash",  "Cancella"),
+    TOOLBAR_BTN_NAME % ("Impianto", "Stai cancellando l'impianto selezionato, e anche tutte le verifiche e interventi relativi.",
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_VERIFICA = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>",                              "icon-arrow-left", "Ritorna"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add",                 "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit",  "icon-pencil", "Modifica"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete","icon-trash",  "Cancella"),
+    TOOLBAR_BTN_NAME % ("Verifica", "Stai cancellando la verifica selezionata.",
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_INTERVENTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>",                                    "icon-arrow-left", "Ritorna"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add",                   "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit",  "icon-pencil", "Modifica"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete","icon-trash",  "Cancella"),
+    TOOLBAR_BTN_NAME % ("Verifica", "Stai cancellando l'intervento selezionata.",
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete", "icon-trash", "Cancella"),
 ]
 
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_title=False, show_cliente=False, show_toolbar=True):
@@ -206,8 +193,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
-                toolbar=TOOLBAR_IMPIANTO)
+        if data_to_render:
+            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+                    toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             if data_to_render:
@@ -217,8 +205,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
-        data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
-                    toolbar=TOOLBAR_IMPIANTO)
+        if data_to_render:
+            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+                        toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
