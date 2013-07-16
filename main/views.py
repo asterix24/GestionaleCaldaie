@@ -26,7 +26,7 @@ def __getIds(raw_items, item_id):
 
     return l
 
-def home(request):
+def home(request, msg=""):
     form = myforms.RangeDataSelect()
     data = ''
 
@@ -97,6 +97,8 @@ def home(request):
 
     data += dr.toTable()
     return render(request, 'home.sub',{'query_path':request.get_full_path(),
+                                       'notification_hdr':'',
+                                       'notification_msg': msg,
                                        'data': data,
                                        'data_form': form,
                                        'scripts': scripts.HOME_ADD_JS,

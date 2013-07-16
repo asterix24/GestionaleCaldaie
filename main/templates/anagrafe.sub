@@ -19,16 +19,12 @@
     </div>
 </div>
 
-{%if notification_area %}
-    {% autoescape off %}
-        {{notification_area}}
-    {% endautoescape %}
-{% endif %}
-
-{%if top_message != None %}
-    {% autoescape off %}
-        {{top_message}}
-    {% endautoescape %}
+{%if notification_msg %}
+<div class="alert alert-block alert-success">
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+<h4 class="alert-heading">{{ notification_hdr }}</h4>
+<p>{{ notification_msg }}</p>
+</div>
 {% endif %}
 
 <ul class="thumbnails">
