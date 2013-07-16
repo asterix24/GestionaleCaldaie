@@ -2,6 +2,23 @@
 
 {% block center_block %}
 
+<div id="notification_area" class="modal hide">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="notification_hdr">header</h3>
+    </div>
+    <div class="modal-body">
+    <p id="notification_body">body</p>
+    <h4>Sei sicuro di voler continuare?</h4>
+    </div>
+    <div class="modal-footer">
+    <form id="notification_act" action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
+        <button id="notification_btn" class="btn btn-danger" type=submit>Ok</button>
+        <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Annulla</button>
+    </form>
+    </div>
+</div>
+
 {%if notification_area %}
     {% autoescape off %}
         {{notification_area}}

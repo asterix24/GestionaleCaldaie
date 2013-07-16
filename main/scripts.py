@@ -55,7 +55,7 @@ $("a[id=toolbar_delete]").click(function(event) {
     $("#notification_hdr").text('Attenzione!');
     $("#notification_body").text($(this).attr('value'));
     $("#notification_btn").text('Cancella ' + $(this).attr('name'));
-    $("#notification_btn").attr('href', $(this).attr('href'));
+    $("#notification_act").attr('action', $(this).attr('href'));
     $("#notification_area").modal('show');
 });
 </script>
