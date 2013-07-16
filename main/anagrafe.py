@@ -13,6 +13,7 @@ from main import tools
 from main import data_render
 from main import database_manager
 from main import scripts
+from main import views
 
 import logging
 logger = logging.getLogger(__name__)
@@ -23,14 +24,7 @@ def _display_error(request, msg):
             { 'msg_hdr':'Error!',
               'msg_body': msg })
 
-def _display_ok(request, msg):
-    logger.info("%s" % msg)
-    return render(request, 'messages.sub',
-            { 'msg_hdr':'Ok!',
-              'msg_body': msg})
-
-
-def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message=None):
+def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, hdr_message='', message=''):
     data, data_list = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
 
     if data is None:
@@ -38,14 +32,16 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
 
     return render(request, 'anagrafe.sub', {'data': data,
                            'data_list': data_list,
-                           'top_message': message,
-                           'notification_area': '',
+                           'notification_hdr': hdr_message,
+                           'notification_msg': message,
                            'scripts':scripts.ANAGRAFE_JS
                            })
 
 # TOOLBAR_BTN(url, ico, label)
 TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 TOOLBAR_BTN_NAME = "<a class=\"btn btn-small btn-info\" name=\"%s\" value=\"%s\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
+TOOLBAR_ICO_DELETE = "<a name=\"%s\" value=\"%s\" id=\"toolbar_delete\" href=\"%s\"> \
+                        <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>"
 
 TOOLBAR_CLIENTE = [
     TOOLBAR_BTN % ("/anagrafe/add/",                         "icon-plus",   "Nuovo"),
@@ -74,7 +70,7 @@ TOOLBAR_INTERVENTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>",                                    "icon-arrow-left", "Ritorna"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add/",                   "icon-plus",   "Nuovo"),
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit/",  "icon-pencil", "Modifica"),
-    TOOLBAR_BTN_NAME % ("Verifica", "Stai cancellando l'intervento selezionata.",
+    TOOLBAR_BTN_NAME % ("Intervento", "Stai cancellando l'intervento selezionata.",
             "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/", "icon-trash", "Cancella"),
 ]
 
@@ -105,13 +101,12 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         dr.showTitle("Elenco impianti")
         dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
 
-        toolbar_left = ""
         # edit and delete icons with related link
-        toolbar_lef = [
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit\"> \
+        toolbar_left = [
+              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit/\"> \
                 <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/delete\"> \
-                <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+              TOOLBAR_ICO_DELETE % ("Impianto", "Stai cancellando l'impianto selezionato, e anche tutte le verifiche e interventi relativi.",
+                  "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete/"),
         ]
 
         # button to add new Impianto
@@ -144,10 +139,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
             # edit and delete icons with related link
             toolbar_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit\"> \
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit/\"> \
                     <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete\"> \
-                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+                    TOOLBAR_ICO_DELETE % ("Verifica", "Stai cancellando l'intervento selezionata.",
+                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete/")
             ]
             # button to add new Verifica
             if data_to_render:
@@ -172,10 +167,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
             # edit and delete icons with related link
             toolbar_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit\"> \
+                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit/\"> \
                     <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete\"> \
-                    <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>",
+                    TOOLBAR_ICO_DELETE % ("Intervento", "Stai cancellando l'intervento selezionata.",
+                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/")
             ]
             # button to add new Verifica
             if data_to_render:
@@ -418,37 +413,6 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
     d = ''
     data_list = ''
     try:
-        if detail_type is None:
-            header_msg = '<h2>Attenzione! stai per cancellare tutti i dati del seguente cliente.</h2>'
-            action = '\"Cancella Cliente\"'
-            post_url = "%s/delete/" % cliente_id
-            d, data_list = view_record(cliente_id, detail_type, None, None, show_toolbar=False)
-        else:
-            if detail_type == 'impianto':
-                header_msg = '<h1>Attenzione! stai cancellando l\'impianto selezionato.</h2>'
-                action = '\"Cancella Impianto\"'
-                post_url = "%s/impianto/%s/delete/" % (cliente_id, impianto_id)
-                d, data_list = view_record(None, detail_type, impianto_id, None)
-
-            if detail_type == 'verifica':
-                header_msg = '<h2>Attenzione! stai cancellando la verifica dell\'impianto.</h2>'
-                action = '\"Cancella Verifica\"'
-                post_url = "%s/impianto/%s/verifica/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
-                d, data_list = view_record(None, detail_type, None, sub_impianto_id)
-
-            if detail_type == 'intervento':
-                header_msg = '<h2>Attenzione! stai cancellando l\'intervento dell\'impianto.</h2>'
-                action = '\"Cancella Intervento\"'
-                post_url = "%s/impianto/%s/intervento/%s/delete/" % (cliente_id, impianto_id, sub_impianto_id)
-                d, data_list = view_record(None, detail_type, None, sub_impianto_id)
-
-        #d, data_list = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
-        #data += d
-
-        if request.method == 'GET':
-            return render(request, 'anagrafe_manager.sub', {'header_msg': header_msg,
-                'data': data, 'data_list':data_list, 'action': action, 'post_url':post_url})
-
         if request.method == 'POST':
             if detail_type is None:
                 cli = models.Cliente.objects.get(pk=cliente_id)
@@ -457,7 +421,7 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
                 cli.delete()
                 s = "Cliente: %s %s Rimosso correttamente." % (nome, cognome)
 
-                return _display_ok(request, s)
+                return views.home(request, s)
 
             else:
                 if detail_type == 'impianto':
@@ -465,23 +429,21 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
                     s = "%s" % imp
                     imp.delete()
                     s = "Impianto: %s rimosso correttamente." % s
-                    return show_record(request, cliente_id=cliente_id, message=s)
+                    return show_record(request, cliente_id=cliente_id, hdr_message="Ok!", message=s)
 
                 if detail_type == 'verifica':
                     ver = models.Verifica.objects.get(pk=sub_impianto_id)
                     s = "%s" % ver
                     ver.delete()
                     s = "Verifica e Manutezione: %s rimosso correttamente." % s
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, message=s)
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, hdr_message="Ok!", message=s)
 
                 if detail_type == 'intervento':
                     interv = models.Intervento.objects.get(pk=sub_impianto_id)
                     s = "%s" % interv
                     interv.delete()
                     s = "Verifica e Manutezione: %s rimosso correttamente." % s
-                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, message=s)
-
-            return _display_ok(request, s)
+                    return show_record(request, cliente_id=cliente_id, impianto_id=impianto_id, hdr_message="Ok!", message=s)
 
     except ObjectDoesNotExist, m:
         return _display_error(request, "Qualcosa e' andato storto..(%s)" % m)
