@@ -39,7 +39,7 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     return render(request, 'anagrafe.sub', {'data': data,
                            'data_list': data_list,
                            'top_message': message,
-                           'notification_area': data_render.NOTIFICATION_AREA,
+                           'notification_area': '',
                            'scripts':scripts.ANAGRAFE_JS
                            })
 
@@ -48,34 +48,34 @@ TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i
 TOOLBAR_BTN_NAME = "<a class=\"btn btn-small btn-info\" name=\"%s\" value=\"%s\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 
 TOOLBAR_CLIENTE = [
-    TOOLBAR_BTN % ("/anagrafe/add",                         "icon-plus",   "Nuovo"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/edit",   "icon-pencil", "Modifica"),
+    TOOLBAR_BTN % ("/anagrafe/add/",                         "icon-plus",   "Nuovo"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/edit/",   "icon-pencil", "Modifica"),
     TOOLBAR_BTN_NAME % ("Cliente", "Stai cancellando il cliente, e anche tutti gli impianti, verifiche e interventi relativi.",
-            "delete", "/anagrafe/<cliente_id>/delete", "icon-trash", "Cancella"),
+            "delete", "/anagrafe/<cliente_id>/delete/", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_IMPIANTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>",                                "icon-arrow-left", "Ritorna"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/add",                           "icon-plus",   "Nuovo"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/edit",   "icon-pencil", "Modifica"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/add/",                           "icon-plus",   "Nuovo"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/edit/",   "icon-pencil", "Modifica"),
     TOOLBAR_BTN_NAME % ("Impianto", "Stai cancellando l'impianto selezionato, e anche tutte le verifiche e interventi relativi.",
-            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete", "icon-trash", "Cancella"),
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete/", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_VERIFICA = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>",                              "icon-arrow-left", "Ritorna"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add",                 "icon-plus",   "Nuovo"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit",  "icon-pencil", "Modifica"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add/",                 "icon-plus",   "Nuovo"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit/",  "icon-pencil", "Modifica"),
     TOOLBAR_BTN_NAME % ("Verifica", "Stai cancellando la verifica selezionata.",
-            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete", "icon-trash", "Cancella"),
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete/", "icon-trash", "Cancella"),
 ]
 
 TOOLBAR_INTERVENTO = [
     TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>",                                    "icon-arrow-left", "Ritorna"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add",                   "icon-plus",   "Nuovo"),
-    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit",  "icon-pencil", "Modifica"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add/",                   "icon-plus",   "Nuovo"),
+    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit/",  "icon-pencil", "Modifica"),
     TOOLBAR_BTN_NAME % ("Verifica", "Stai cancellando l'intervento selezionata.",
-            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete", "icon-trash", "Cancella"),
+            "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/", "icon-trash", "Cancella"),
 ]
 
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_title=False, show_cliente=False, show_toolbar=True):
@@ -117,11 +117,11 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         # button to add new Impianto
         if data_to_render:
             toolbar_last = [
-                TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/add", "icon-plus", "Aggiungi un impianto"),
+                TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/add/", "icon-plus", "Aggiungi un impianto"),
             ]
         else:
             toolbar_last = [
-                TOOLBAR_BTN % ("/anagrafe/%s/impianto/add" % (cliente_id), "icon-plus", "Aggiungi un impianto"),
+                TOOLBAR_BTN % ("/anagrafe/%s/impianto/add/" % (cliente_id), "icon-plus", "Aggiungi un impianto"),
 
             ]
 
@@ -152,11 +152,11 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             # button to add new Verifica
             if data_to_render:
                 toolbar_last = [
-                        TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add", "icon-plus", "Aggiungi una verifica.."),
+                        TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/add/", "icon-plus", "Aggiungi una verifica.."),
                 ]
             else:
                 toolbar_last = [
-                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un verifica.."),
+                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/verifica/add/" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un verifica.."),
                 ]
 
             if show_toolbar:
@@ -171,7 +171,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
 
             # edit and delete icons with related link
-            tb_left = [
+            toolbar_left = [
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit\"> \
                     <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
                   "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete\"> \
@@ -179,17 +179,18 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             ]
             # button to add new Verifica
             if data_to_render:
-                tb_last = [
-                    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add", "icon-plus", "Aggiungi un intervento.."),
+                toolbar_last = [
+                    TOOLBAR_BTN % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/add/", "icon-plus", "Aggiungi un intervento.."),
                 ]
-                dr.toolbar(left=tb_left, last_row=tb_last)
             else:
-                tb_last_row = [
-                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un intervento.."),
+                toolbar_last = [
+                    TOOLBAR_BTN % ("/anagrafe/%s/impianto/%s/intervento/add/" % (cliente_id, impianto_id), "icon-plus", "Aggiungi un intervento.."),
                 ]
-                dr.toolbar(last_row=tb_last_row)
-            data += dr.toTable()
 
+            if show_toolbar:
+                dr.toolbar(left=toolbar_left, last_row=toolbar_last)
+
+            data += dr.toTable()
 
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
