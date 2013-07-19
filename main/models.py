@@ -246,7 +246,7 @@ class Verifica(models.Model):
 
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.CharField(label='Stato verifica', initial='A', required=False,
-             widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
+            widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
     analisi_combustione = forms.BooleanField(initial=False, required=False, widget=forms.HiddenInput())
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
     altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
