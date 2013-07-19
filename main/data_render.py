@@ -177,7 +177,7 @@ def __stato_pagamento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return models.STATO_PAGAMENTO_DICT.get(items[key], s)
+    return models.STATO_PAGAMENTO_DICT.get(str(items[key]), s)
 
 def __anzianita_impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
