@@ -385,7 +385,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = models.VerificaForm(instance=select)
             header_msg = "Modifica Verifica e Manutenzione"
             post_url = "%s/impianto/%s/verifica/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
-            script = scripts.VERIFICA_EDIT_JS
+            script = scripts.VERIFICA_JS
             data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
         if detail_type == 'intervento':

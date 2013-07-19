@@ -104,7 +104,7 @@ $("#id_data_contratto").datepicker({
 </script>
 """
 
-__VERIFICA_ADD_JS = """
+__VERIFICA_JS = """
 <script>
 %s
 $("div[id=radio_fmt]").buttonset();
@@ -292,6 +292,6 @@ function deltaYear(dateText) {
 """
 
 IMPIANTO_ADD_JS = __IMPIANTO_ADD_JS % (COMMON_FUNCTION)
-VERIFICA_ADD_JS = __VERIFICA_ADD_JS % (COMMON_FUNCTION)
+VERIFICA_JS = __VERIFICA_JS % (COMMON_FUNCTION)
 INTERVENTO_ADD_JS = __INTERVENTO_ADD_JS % (COMMON_FUNCTION)
 
