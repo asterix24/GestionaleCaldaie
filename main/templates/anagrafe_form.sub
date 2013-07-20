@@ -12,31 +12,32 @@
 {% endautoescape %}
 
 
+
+
 <ul class="thumbnails">
 <li class="span4">
 </li>
 <li>
-    <div class="well well-small">
-        <form action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
-        <dl class="dl-horizontal text-overflow">
-
+<div>
+    <form class="form-horizontal" action="{% url anagrafe %}{{post_url}}" method="post">{% csrf_token %}
+        <div class="well well-small">
         {% for form in data_forms %}
-            <dt id="tr_{{ form.name}}"> {{ form.label }}</dt>
-            <dd>{{form}}
-            {% if form.errors %}
-                <div class="alert alert-error"> {{form.errors}} </div>
-            {% endif %}
-            </dd>
-
+		<div id="row_{{form.name}}" class="control-group">
+		    <label class="control-label">{{ form.label }}</label>
+		    <div class="controls">
+                {{ form }}
+		    </div>
+		</div>
+        {% if form.errors %} <div class="alert alert-error">{{form.errors}}</div> {% endif %}
         {% endfor %}
 
-        </dl>
-    </div>
-    <div class="form-actions text-center">
-    <input class="btn btn-success btn-large" type="submit" value="Salva"/>
-    <input class="btn btn-danger btn-large" type="button" value="Annulla" onClick="javascript:history.back()">
-    </div>
-        </form>
+        <div class="form-actions">
+            <input class="btn btn-success btn-large" type="submit" value="Salva"/>
+            <input class="btn btn-danger btn-large" type="button" value="Annulla" onClick="javascript:history.back()">
+        </div>
+        </div>
+    </form>
+</div>
 </li>
 </ul>
 

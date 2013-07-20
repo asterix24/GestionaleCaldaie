@@ -80,10 +80,10 @@ from django.utils.safestring import mark_safe
 
 class CustomRadioSelect(RadioFieldRenderer):
     def render(self):
-        s = u"<p id=\"radio_fmt\">"
+        s = u"<span>"
         for i in self:
             sub = unicode(i)
             s += sub.replace("<label", "<label class=\"checkbox inline\" ")
-        s += u"</p>"
+        s += u"</>"
         return mark_safe(s)
 
