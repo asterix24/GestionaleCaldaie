@@ -285,7 +285,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 return True, d
             else:
                 d['form'] = form
-                d['message'] = FORM_ERROR
+                d['message'] = ERROR_FORM
                 return False, d
 
         if detail_type == 'intervento':
@@ -300,7 +300,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 d['detail_type'] = detail_type
                 return True, d
             else:
-                d['message'] = FORM_ERROR
+                d['message'] = ERROR_FORM
                 d['form'] = form
                 return False, d
 
@@ -335,17 +335,17 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
         else:
             if detail_type == 'impianto':
                 form = models.ImpiantoForm(initial={'cliente_impianto': models.Cliente.objects.get(pk=cliente_id)})
-                script = scripts.IMPIANTO_ADD_JS
+                script = scripts.IMPIANTO_JS
                 data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
             if detail_type == 'verifica':
                 form = models.VerificaForm(initial={'verifica_impianto': models.Impianto.objects.get(pk=impianto_id)})
-                script = scripts.VERIFICA_ADD_JS
+                script = scripts.VERIFICA_JS
                 data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
             if detail_type == 'intervento':
                 form = models.InterventoForm(initial={'intervento_impianto': models.Impianto.objects.get(pk=impianto_id)})
-                script = scripts.INTERVENTO_ADD_JS
+                script = scripts.INTERVENTO_JS
                 data, data_list = view_record(cliente_id, detail_type, impianto_id)
 
     if request.method == 'POST':

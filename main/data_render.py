@@ -446,8 +446,8 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
 
     l += "<dl class=\"dl-horizontal text-overflow\">"
     for i in show_colum:
-        l += "<dt>%s</dt>" % (i.replace('_', ' ').capitalize())
-        l += "<dd id=\"td_%s\">%s</dd>" % (i, formatFields(item_dict, i, default_text="-"))
+        l += "<dt id=\"row_%s\">%s</dt>" % (i, i.replace('_', ' ').capitalize())
+        l += "<dd id=\"row_%s\">%s</dd>" % (i, formatFields(item_dict, i, default_text="-"))
     l += "</dt>"
 
     if toolbar:

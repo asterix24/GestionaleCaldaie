@@ -62,7 +62,7 @@ $("a[id=toolbar_delete]").click(function(event) {
 """
 
 
-__IMPIANTO_ADD_JS = """
+__IMPIANTO_JS = """
 <script>
 %s
 
@@ -107,21 +107,21 @@ $("#id_data_contratto").datepicker({
 __VERIFICA_JS = """
 <script>
 %s
-$("div[id=radio_fmt]").buttonset();
 
 if($("#id_tipo_verifica").val() != "provafumi") {
-    $("#tr_colore_bollino").hide();
-    $("#tr_numero_bollino").hide();
-    $("#tr_valore_bollino").hide();
-    $("#tr_prossima_analisi_combustione").hide();
-    $("#tr_scadenza_fumi_tra").hide();
+    $("[id=row_colore_bollino]").hide();
+    $("[id=row_numero_bollino]").hide();
+    $("[id=row_valore_bollino]").hide();
+    $("[id=row_prossima_analisi_combustione]").hide();
+    $("[id=row_scadenza_fumi_tra]").hide();
 }
 
-$("#tr_altro_tipo_verifica").hide();
+$("[id=row_altro_tipo_verifica]").hide();
+$("[id=row_analisi_combustione]").hide();
 otherField($("#id_tipo_verifica option:selected"), $("#id_tipo_verifica"), $("#id_altro_tipo_verifica"));
 
 
-var potenza_caldaia = $("#td_potenza_caldaia").text();
+var potenza_caldaia = $("#row_potenza_caldaia").text();
 var colore_bollino = "Blu";
 
 if (potenza_caldaia == "C1") {
@@ -138,7 +138,7 @@ $("#id_colore_bollino option").each(function() {
     }
 });
 
-$("#tr_altro_colore_bollino").hide();
+$("#row_altro_colore_bollino").hide();
 otherField($("#id_colore_bollino option:selected"), $("#id_colore_bollino"), $("#id_altro_colore_bollino"));
 
 $("#id_data_verifica").datepicker({
@@ -220,17 +220,17 @@ $("#id_colore_bollino").change(function () {
 
 $("#id_tipo_verifica").change( function() {
     if ($(this).val() == "provafumi") {
-        $("#tr_colore_bollino").show("slow");
-        $("#tr_numero_bollino").show("slow");
-        $("#tr_valore_bollino").show("slow");
-        $("#tr_prossima_analisi_combustione").show("slow");
-        $("#tr_scadenza_fumi_tra").show("slow");
+        $("[id=row_colore_bollinoi]").show("slow");
+        $("[id=row_numero_bollino]").show("slow");
+        $("[id=row_valore_bollino]").show("slow");
+        $("[id=row_prossima_analisi_combustione]").show("slow");
+        $("[id=row_scadenza_fumi_tra]").show("slow");
     } else {
-        $("#tr_valore_bollino").slideUp();
-        $("#tr_numero_bollino").slideUp();
-        $("#tr_colore_bollino").slideUp();
-        $("#tr_prossima_analisi_combustione").slideUp();
-        $("#tr_scadenza_fumi_tra").slideUp();
+        $("[id=row_valore_bollino]").slideUp();
+        $("[id=row_numero_bollino]").slideUp();
+        $("[id=row_colore_bollino]").slideUp();
+        $("[id=row_prossima_analisi_combustione]").slideUp();
+        $("[id=row_scadenza_fumi_tra]").slideUp();
     }
 });
 
@@ -256,7 +256,7 @@ $("#id_scadenza_fumi_tra").keyup(function () {
 </script>
 """
 
-__INTERVENTO_ADD_JS = """
+__INTERVENTO_JS = """
 <script>
 %s
 </script>
@@ -291,7 +291,7 @@ function deltaYear(dateText) {
 }
 """
 
-IMPIANTO_ADD_JS = __IMPIANTO_ADD_JS % (COMMON_FUNCTION)
+IMPIANTO_JS = __IMPIANTO_JS % (COMMON_FUNCTION)
 VERIFICA_JS = __VERIFICA_JS % (COMMON_FUNCTION)
-INTERVENTO_ADD_JS = __INTERVENTO_ADD_JS % (COMMON_FUNCTION)
+INTERVENTO_JS = __INTERVENTO_JS % (COMMON_FUNCTION)
 

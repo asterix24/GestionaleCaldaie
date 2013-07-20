@@ -92,10 +92,9 @@ TIPO_CALDAIA = (
 TIPO_CALDAIA_DICT =  dict(TIPO_CALDAIA)
 
 STATO_CALDAIA = (
-    ('Attivo'  , 'Attivo'),
-    ('Scaduto' , 'Scaduto'),
-    ('Dismesso', 'Dismesso'),
-    (None , '')
+    ('A'  , 'Attivo'),
+    ('S' , 'Scaduto'),
+    ('D', 'Dismesso'),
 )
 STATO_CALDAIA_DICT = dict(STATO_CALDAIA)
 
@@ -126,6 +125,8 @@ class Impianto(models.Model):
 class ImpiantoForm(forms.ModelForm):
     altra_potenza_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     altro_tipo_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    stato_impianto = forms.CharField(label='Stato impianto', initial='A', required=False,
+            widget=forms.RadioSelect(choices=STATO_CALDAIA, renderer=myforms.CustomRadioSelect))
 
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
