@@ -24,17 +24,33 @@ def _display_error(request, msg):
             { 'msg_hdr':'Error!',
               'msg_body': msg })
 
+BREADCRUMB_ELEMENT = "<li><a href=\"%s\">uno</a><span class=\"divider\">></span></li>"
+BREADCRUMB_ELEMENT_ACTIVE = "<li class=\"active\"><a href=\"%s\">uno</a></li>"
+
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, hdr_message='', message=''):
     data, data_list = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+    b = ""
+
+    print request.path
+    if request.path not in cfg.BREADCRUMB:
+        cfg.BREADCRUMB.append(request.path)
+
+    for i in cfg.BREADCRUMB[:-1]:
+        b += BREADCRUMB_ELEMENT % i
+        if request.path == cfg.BREADCRUMB:
+            break
+
+    b += BREADCRUMB_ELEMENT_ACTIVE % cfg.BREADCRUMB[-1]
 
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
 
-    return render(request, 'anagrafe.sub', {'data': data,
+    return render(request, 'anagrafe.sub', { 'data': data,
                            'data_list': data_list,
                            'notification_hdr': hdr_message,
                            'notification_msg': message,
-                           'scripts':scripts.ANAGRAFE_JS
+                           'scripts':scripts.ANAGRAFE_JS,
+                           'breadcrumb': b,
                            })
 
 # TOOLBAR_BTN(url, ico, label)
@@ -117,7 +133,6 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         else:
             toolbar_last = [
                 TOOLBAR_BTN % ("/anagrafe/%s/impianto/add/" % (cliente_id), "icon-plus", "Aggiungi un impianto"),
-
             ]
 
         if show_toolbar:

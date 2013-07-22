@@ -164,5 +164,5 @@ GROUP_FIELD_VIEW = {
 }
 
 DATA_FIELD_STR_FORMAT = "%d/%m/%Y"
-
+BREADCRUMB = []
 
