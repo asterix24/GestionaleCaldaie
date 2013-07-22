@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block breadcrumb %}
+{% autoescape off %}
+    {{ breadcrumb }}
+{% endautoescape %}
+{% endblock %}
+
 {% block center_block %}
 
 <div id="notification_area" class="modal hide">
