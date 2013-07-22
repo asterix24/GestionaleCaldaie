@@ -12,8 +12,6 @@
 {% endautoescape %}
 
 
-
-
 <ul class="thumbnails">
 <li class="span4">
 </li>
