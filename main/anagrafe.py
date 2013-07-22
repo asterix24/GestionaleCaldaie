@@ -379,6 +379,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = models.ImpiantoForm(instance=select)
             header_msg = "Modifica Impianto"
             post_url = "%s/impianto/%s/edit/" % (cliente_id, impianto_id)
+            script = scripts.IMPIANTO_JS
 
         if detail_type == 'verifica':
             select = models.Verifica.objects.get(pk=sub_impianto_id)
@@ -393,6 +394,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = models.InterventoForm(instance=select)
             header_msg = "Modifica Intervento"
             post_url = "%s/impianto/%s/intervento/%s/edit/" % (cliente_id, impianto_id, sub_impianto_id)
+            script = scripts.INTERVENTO_JS
 
         if detail_type is None:
             return _display_error(request, "Qualcosa e' andato storto..")

@@ -123,8 +123,8 @@ class Impianto(models.Model):
         return (u"[%s] %s: %s-%s" % (self.codice_impianto, self.cliente_impianto, self.marca_caldaia, self.modello_caldaia))
 
 class ImpiantoForm(forms.ModelForm):
-    altra_potenza_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    altro_tipo_caldaia = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altra_potenza_caldaia = forms.CharField(label='Altro', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altro_tipo_caldaia = forms.CharField(label='Altro', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
     stato_impianto = forms.CharField(label='Stato impianto', initial='A', required=False,
             widget=forms.RadioSelect(choices=STATO_CALDAIA, renderer=myforms.CustomRadioSelect))
 
@@ -248,9 +248,10 @@ class Verifica(models.Model):
 class VerificaForm(forms.ModelForm):
     stato_verifica = forms.CharField(label='Stato verifica', initial='A', required=False,
             widget=forms.RadioSelect(choices=STATO_VERIFICA, renderer=myforms.CustomRadioSelect))
-    analisi_combustione = forms.BooleanField(initial=False, required=False, widget=forms.HiddenInput())
+    analisi_combustione = forms.BooleanField(initial=False, required=False)
     tipo_verifica = forms.CharField(label='Motivo dell\'intervento', widget=forms.Select(choices=VERIFICHE_TYPE_CHOICES))
-    altro_tipo_verifica = forms.CharField(label='', max_length=100, required=False, widget=forms.TextInput(attrs={'size':'30'}))
+    altro_tipo_verifica = forms.CharField(label='Altro', max_length=100, required=False, widget=forms.TextInput())
+    altro_colore_bollino = forms.CharField(label='Altro', max_length=100, required=False, widget=forms.TextInput())
     stato_pagamento = forms.BooleanField(label="Stato pagamento", initial=False, required=False,
              widget=forms.RadioSelect(choices=STATO_PAGAMENTO, renderer=myforms.CustomRadioSelect))
     scadenza_verifica_tra = forms.IntegerField(label='Prossima verifica tra mesi', initial="12", required=False)
@@ -291,10 +292,9 @@ class VerificaForm(forms.ModelForm):
 
     class Meta:
         model = Verifica
-        fields = ('stato_verifica', 'verifica_impianto', 'tipo_verifica',
+        fields = ('stato_verifica', 'verifica_impianto', 'tipo_verifica','altro_tipo_verifica',
                   'data_verifica', 'scadenza_verifica_tra','prossima_verifica',
-                  'altro_tipo_verifica', 'codice_id',
-                  'numero_rapporto','analisi_combustione',
+                  'codice_id', 'numero_rapporto','analisi_combustione',
                   'colore_bollino','altro_colore_bollino',
                   'numero_bollino', 'valore_bollino', 'scadenza_fumi_tra',
                   'prossima_analisi_combustione','costo_intervento', 'stato_pagamento',
