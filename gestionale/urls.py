@@ -51,6 +51,6 @@ urlpatterns = patterns('',
 
 	#url(r'^dev/populatedb/$', 'main.views.populatedb', name='populat_db'),
 	#url(r'^test/(?P<search_string>\w+)/$', 'main.views.test', name='test'),
-	url(r'^check_test/$', 'main.views.check_test', name='check_test'),
-	url(r'^layout/$', 'main.views.check_layout', name='check_layout'),
+	#url(r'^check_test/$', 'main.views.check_test', name='check_test'),
+	#url(r'^layout/$', 'main.views.check_layout', name='check_layout'),
 )
