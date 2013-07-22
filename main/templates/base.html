@@ -57,8 +57,8 @@
                 <a class="btn btn-primary btn-danger" href="/logout/"><i class="icon-user icon-white"></i> Esci</a>
             </div>
             <ul class="nav">
-                <li><a href="{% url home %}">Home</a></li>
-                <li><a href="/anagrafe/add/#cliente">Nuovo Cliente</a></li>
+		    <li><a href="{% url home %}"><strong>Home</strong></a></li>
+		    <li><a href="/anagrafe/add/#cliente"><strong>Nuovo Cliente</strong></a></li>
                 {% block navigation_menu_block_top %}
                 {% endblock %}
            </ul>
@@ -100,13 +100,12 @@
             <div class="span3">
             </div>
         </div>
-
 	<hr>
-
 	<ul class="breadcrumb">
-        <li><button class="btn btn-info btn-small" type="button" onClick="javascript:history.back()">Indietro</button></li>
-        {% block breadcrumb %}
-        {% endblock %}
+	<li><a class="btn btn-info btn-mini" href="/"><i class="icon-home icon-white"></i></a></li>
+	<li><button class="btn btn-info btn-mini" type="button" onClick="javascript:history.back()">Indietro</button></li>
+	{% block breadcrumb %}
+	{% endblock %}
 	</ul>
 
       <div class="row-fluid">
