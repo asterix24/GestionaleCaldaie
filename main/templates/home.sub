@@ -1,38 +1,37 @@
 {% extends "base.html" %}
 
-{% block navigation_menu_block_top %}
-<li><a href="/export{{query_path}}">Esporta CSV</a></li>
-{% endblock %}
-
-{% block navigation_menu_block_bot %}
-<li><a href="/export{{query_path}}">Esporta CSV</a></li>
-{% endblock %}
-
 {% block center_block %}
 
-<form action="{% url home %}" method="GET">
-<table>
-<tr>
-    <td>{{data_form.search_keys.label}}</td>
-    <td>{{data_form.search_keys}}</td>
-    <td>{{data_form.filter_type.label}}</td>
-    <td>{{data_form.filter_type}}</td>
+{%if notification_msg %}
+<div class="alert alert-block alert-success">
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+<h4 class="alert-heading">{{notification_hdr}}</h4>
+<p>{{ notification_msg}}</p>
+</div>
+{% endif %}
 
-</tr>
-<tr>
-    <td>{{data_form.ref_month.label}}</td>
-    <td>{{data_form.ref_month}}</td>
-    <td>{{data_form.ref_year.label}}</td>
-    <td>{{data_form.ref_year}}</td>
-    <td><input type="submit" value="Aggiorna"/></td>
-</table>
-</form>
-
+<div class="row-fluid">
+    <div class="form-search">
+    <form action="{% url home %}" method="GET">
+        {{data_form.search_keys}}
+        {{data_form.filter_type}}
+        {{data_form.ref_month}}
+        {{data_form.ref_year}}
+        <input class="btn" type="submit" value="Aggiorna"/>
+    </form>
+    </div>
+</div>
 
 <form action={% url home %} method="POST" id="home_act">{% csrf_token %}
-{% autoescape off %}
-    {{ data }}
-{% endautoescape %}
+    {% autoescape off %}
+        {{ data }}
+    {% endautoescape %}
 </form>
 
+{% endblock %}
+
+{% block scripts %}
+    {% autoescape off %}
+        {{ scripts }}
+    {% endautoescape %}
 {% endblock %}

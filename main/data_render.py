@@ -11,41 +11,25 @@ from main import cfg
 
 logger = logging.getLogger(__name__)
 
-MSG_ITEMS_EMPTY = "<br><tr><h2>La ricerca non ha prodotto risultati</h2></tr><br>"
-MSG_STATISTICS = "<br><tr><h2>Records trovati: %s</h2></tr><br>"
-EMPTY_CELL = '<center>-</center>'
-ACTION_DICT = {
-        'add':'plus.jpg',
-        'delete':'minus.jpg',
-        'edit':'edit.jpg'
-        }
+MSG_ITEMS_EMPTY = "<br><h2>La ricerca non ha prodotto risultati</h2><br>"
+MSG_STATISTICS = "<br><h3>Records trovati: %s</h3><br>"
+EMPTY_CELL = '-'
 
-CLIENTE_ID = 0
-IMPIANTO_ID = 1
-VERIFICA_ID = 2
-INTERVENTO_ID = 3
-
-def make_url(type, action, message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
+def make_url(message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     url = "<a href=\""
-    if path.count('%s') == 3:
+    count = path.count('%s')
+    if count == 3:
         url += path % (cliente_id, impianto_id, sub_impianto_id)
-    elif path.count('%s') == 2:
+    elif count == 2:
         url += path % (cliente_id, impianto_id)
-    elif path.count('%s') == 1:
+    elif count == 1:
         url += path % (cliente_id)
     else:
         return "errore!"
 
-    if type == 'icon':
-        url += "\">"
-        data += "<img src=\"/static/%s\" alt=\"%s..\" title=\"%s..\" width=\"16\" height=\"16\"/> " % (ACTION_DICT[action], action, action)
-    elif type == 'button':
-        url += "\" name=\"href_button\">"
-    else:
-        url += "\">"
-
     data += "%s"  % message
+    url += "\">"
     return url + data + "</a>"
 
 def isValidKey(items, key):
@@ -53,70 +37,94 @@ def isValidKey(items, key):
         return False
     return True
 
-def __cliente_url(items, key, s=EMPTY_CELL):
+def __cliente(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/#cliente', items['cliente_id'])
+    if with_url:
+        return make_url(items[key], '/anagrafe/%s/', items['cliente_id'])
 
-def __impianto_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
-            items['cliente_id'], items['impianto_id'])
+    if with_url:
+        return make_url( items[key], '/anagrafe/%s/impianto/%s/',
+                items['cliente_id'], items['impianto_id'])
 
-def __verifica_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "Nessuna verifica"
 
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
-def __ultima_analisi_url(items, key, s=EMPTY_CELL):
+    if with_url:
+        return make_url( str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['verifica_id'])
+
+    return str
+
+def __ultima_analisi(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Fumi"
 
     str = items[key]
     if type(str) == datetime.date:
         str = str.strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', str, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
+    if with_url:
+        return make_url(str, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['ultima_analisi_combustione_id'])
 
-def __stato_verifica_url(items, key, s=EMPTY_CELL):
+    return str
+
+def __stato_verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     s = models.STATO_VERIFICA_DICT.get(items[key], s)
-    return make_url('','', s, '/anagrafe/%s/impianto/%s/verifica/%s/#verifica',
-            items['cliente_id'], items['impianto_id'], items['verifica_id'])
+    if with_url:
+        return make_url(s, '/anagrafe/%s/impianto/%s/verifica/%s/',
+                items['cliente_id'], items['impianto_id'], items['verifica_id'])
 
-def __stato_impianto_url(items, key, s=EMPTY_CELL):
+    return s
+
+def __stato_impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/#impianto',
-            items['cliente_id'], items['impianto_id'])
+    if with_url:
+        return make_url(items[key], '/anagrafe/%s/impianto/%s/',
+                items['cliente_id'], items['impianto_id'])
 
-def __intervento_url(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __intervento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     s = items[key].strftime(cfg.DATA_FIELD_STR_FORMAT)
-    return make_url('','', s, '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
-            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    if with_url:
+        return make_url(s, '/anagrafe/%s/impianto/%s/intervento/%s/',
+                items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    return s
 
-def __tipo_intervento_url(items, key, s=EMPTY_CELL):
+def __tipo_intervento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return make_url('','', items[key], '/anagrafe/%s/impianto/%s/intervento/%s/#intervento',
-            items['cliente_id'], items['impianto_id'], items['intervento_id'])
+    if with_url:
+        return make_url( items[key], '/anagrafe/%s/impianto/%s/intervento/%s/',
+                items['cliente_id'], items['impianto_id'], items['intervento_id'])
 
-def __tipo_caldaia(items, key, s=EMPTY_CELL):
+    return items[key]
+
+def __tipo_caldaia(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
@@ -128,7 +136,7 @@ def __tipo_caldaia(items, key, s=EMPTY_CELL):
 
     return s
 
-def __tipo_verifica(items, key, s=EMPTY_CELL):
+def __tipo_verifica(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Manutezioni"
 
@@ -141,7 +149,7 @@ def __tipo_verifica(items, key, s=EMPTY_CELL):
 
     return s
 
-def __colore_bollino(items, key, s=EMPTY_CELL):
+def __colore_bollino(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
@@ -154,7 +162,7 @@ def __colore_bollino(items, key, s=EMPTY_CELL):
 
     return s
 
-def __analisi_combustione(items, key, s=EMPTY_CELL):
+def __analisi_combustione(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return "No Fumi"
 
@@ -165,70 +173,52 @@ def __analisi_combustione(items, key, s=EMPTY_CELL):
     return s
 
 
-def __stato_pagamento(items, key, s=EMPTY_CELL):
+def __stato_pagamento(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
-    return models.STATO_PAGAMENTO_DICT.get(items[key], s)
+    return models.STATO_PAGAMENTO_DICT.get(str(items[key]), s)
 
-
-def __stato_impianto(items, key, s=EMPTY_CELL):
-    if not isValidKey(items, key):
-        return s
-
-    return items[key]
-
-def __anzianita_impianto(items, key, s=EMPTY_CELL):
+def __anzianita_impianto(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
         return s
 
     d = items[key]
     y = d.days / 365
     m = (d.days - (y * 365)) / 31
-    d = (d.days - (y * 365)) - m * 31
-    return "%s anni, %s mesi, %s giorni" % (y, m, d)
+    #d = (d.days - (y * 365)) - m * 31
+    #return "%s anni, %s mesi, %s giorni" % (y, m, d)
+    return "%s anni, %s mesi" % (y, m)
 
-def __stato_verifica(items, key, s=EMPTY_CELL):
-    if not isValidKey(items, key):
-        return s
-
-    return models.STATO_VERIFICA_DICT.get(items[key], s)
-
-RENDER_TABLE_URL = {
-    'nome': __cliente_url,
-    'cognome': __cliente_url,
-    'codice_impianto': __impianto_url,
-    'matricola_caldaia': __impianto_url,
-    'modello_caldaia': __impianto_url,
-    'marca_caldaia': __impianto_url,
-    'data_verifica': __verifica_url,
-    'data_ultima_verifica': __verifica_url,
-    'ultima_analisi_combustione': __ultima_analisi_url,
-    'stato_verifica': __stato_verifica_url,
-    'stato_impianto': __stato_impianto_url,
-    'data_intervento': __intervento_url,
-    'tipo_intervento': __tipo_intervento_url,
-}
 
 RENDER_TABLE = {
+    'nome': __cliente,
+    'cognome': __cliente,
+    'codice_impianto': __impianto,
+    'matricola_caldaia': __impianto,
+    'modello_caldaia': __impianto,
+    'marca_caldaia': __impianto,
+    'data_verifica': __verifica,
+    'data_ultima_verifica': __verifica,
+    'ultima_analisi_combustione': __ultima_analisi,
+    'stato_verifica': __stato_verifica,
+    'stato_impianto': __stato_impianto,
+    'data_intervento': __intervento,
+    'tipo_intervento': __tipo_intervento,
     'tipo_caldaia': __tipo_caldaia,
     'tipo_verifica': __tipo_verifica,
     'colore_bollino': __colore_bollino,
     'analisi_combustione': __analisi_combustione,
     'stato_pagamento': __stato_pagamento,
-    'stato_impianto': __stato_impianto,
     'anzianita_impianto': __anzianita_impianto,
-    'stato_verifica': __stato_verifica,
 }
 
 def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL):
     try:
         s = default_text
         if item_dict.has_key(field_name):
-            if with_url == False and field_name in RENDER_TABLE:
-                s = RENDER_TABLE[field_name](item_dict, field_name, default_text)
-            elif with_url and field_name in RENDER_TABLE_URL:
-                s = RENDER_TABLE_URL[field_name](item_dict, field_name, default_text)
+            if RENDER_TABLE.has_key(field_name):
+                s = RENDER_TABLE[field_name](item_dict, field_name, default_text, with_url)
             else:
                 s  = item_dict[field_name]
                 if not isValidKey(item_dict, field_name):
@@ -242,6 +232,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
         logger.error("%s Errore nel render di (%s) s=%s {%s}" % (__name__, m, s, item_dict))
         s = default_text
 
+    print
     return s
 
 
@@ -252,6 +243,15 @@ def id_replace(m, item_dict):
         return str(item_dict.get(field_name,'noid'))
     else:
         return 'noid'
+
+HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.1em;color:#0088cc\"><strong>%s</strong></div>"
+HDR_STYLE = "style=\"background-color: #5993A5;\
+vertical-align: middle; \
+color: #F8F8F8; text-align:center;\
+font-size:1.1;font-weight:600; \""
+
+TITLE_STYLE = "<div style=\"font-size:1.5em\"><strong>%s</strong></div><hr>"
+TITLE_STYLE_FORM = "<h2 class=\"text-center\">%s</h2>"
 
 class DataRender(object):
     def __init__(self, items, msg_items_empty=MSG_ITEMS_EMPTY, show_statistics=False, msg_statistics=MSG_STATISTICS):
@@ -270,6 +270,12 @@ class DataRender(object):
         self.add_order_by_link = False
         self.base_url = ""
         self.string = ""
+        self.selected_order_field = ""
+
+        self.show_title = False
+
+    def showTitle(self, show_title):
+        self.show_title = show_title
 
     def showHeader(self, display_header):
         self.display_header = display_header
@@ -300,7 +306,6 @@ class DataRender(object):
         self.add_order_by_link = True
         self.string = "?"
         self.base_url = base_url
-        order = 'asc'
         for k,v in order_url_dict.items():
             if v is None:
                 continue
@@ -310,14 +315,10 @@ class DataRender(object):
                 if not v:
                     continue
 
-                if order_url_dict['ordering'] == 'asc':
-                    order = 'desc'
-                else:
-                    order = 'asc'
-
                 try:
                     _, field = v.split('.')
-                    cfg.GROUP_FIELD_VIEW[field]['order'] = order
+                    cfg.GROUP_FIELD_VIEW[field]['order'] = order_url_dict['ordering']
+                    self.selected_order_field = field
                 except (ValueError, KeyError), m:
                     logger.error("%s Errore nello split di %s=%s" % (__name__, k, v))
 
@@ -331,8 +332,9 @@ class DataRender(object):
             return self.msg_items_empty
 
         # Init table string
-        table = ""
-        cycle = False
+        table = "<div>"
+        if self.show_title:
+            table += TITLE_STYLE % self.show_title
 
         # Show statistics of founded records
         if self.show_statistics:
@@ -340,16 +342,17 @@ class DataRender(object):
             self.show_statistics = False
 
         if self.toolbar_top:
+            table += "<div class=\"btn-group\">"
             for t in self.toolbar_top:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
+            table += "</div><p></p>"
 
-        table += "<table id=\"customers\">"
+        table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed table-bordered\">"
         if not self.items:
-            table += "<tr>"
+            table += "<thead><tr>"
             for j in self.colums:
-                s = j.replace('_', ' ').capitalize()
-                table += "<th>%s</th>" % s
-            table += "</tr>"
+                table += "<th %s >" % HDR_STYLE + (j.replace('_', ' ').capitalize()) + " </th>"
+            table += "</thead></tr>"
 
             table += "</td></tr>"
 
@@ -359,32 +362,45 @@ class DataRender(object):
                 table += t
             table += "</td></tr>"
 
-
         else:
             for item_dict in self.items:
                 if self.display_header:
-                    table += "<tr>"
+                    table += "<thead><tr>"
+
+                    if self.toolbar_left:
+                        table += "<th %s>#</th>" % HDR_STYLE
+
+                    for j in self.colums:
+                        table += "<th %s >" % HDR_STYLE + (j.replace('_', ' ').capitalize()) + " </th>"
+
+                    table += "</tr><tr>"
 
                     if self.toolbar_left:
                         table += "<th></th>"
 
                     for j in self.colums:
-                        s = j.replace('_', ' ').capitalize()
                         if self.add_order_by_link:
                             if cfg.GROUP_FIELD_VIEW.has_key(j):
-                                s = "<a class=\"table_header_%s\" href=\"/%s/%sorder_by_field=%s&ordering=%s\">%s</a>" % (cfg.GROUP_FIELD_VIEW[j]['order'],
-                                        self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'], cfg.GROUP_FIELD_VIEW[j]['order'], s)
-                        table += "<th>%s</th>" % s
+                                order_link_asc = "/%s/%sorder_by_field=%s&ordering=asc" % (self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'])
+                                order_link_desc = "/%s/%sorder_by_field=%s&ordering=desc" % (self.base_url, self.string, cfg.GROUP_FIELD_VIEW[j]['field'])
+                                btn_state_asc = 'info'
+                                btn_state_desc = 'info'
+                                if j == self.selected_order_field:
+                                    if cfg.GROUP_FIELD_VIEW[j]['order'] == 'asc':
+                                        btn_state_asc = 'warning'
+                                        btn_state_desc = 'info'
+                                    else:
+                                        btn_state_asc = 'info'
+                                        btn_state_desc = 'warning'
 
-                    table += "</tr>"
+                                table += """ <th> <div class="btn-group"> <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-up icon-white"></i></a> <a class="btn btn-mini btn-%s" href="%s"><i class="icon-chevron-down icon-white"></i></a> </div> </th> """ % (btn_state_asc, order_link_asc, btn_state_desc, order_link_desc)
+
+
+                    table += "</tr></thead> <tbody>"
                     self.display_header = False
 
-                cycle_str = ''
-                if cycle:
-                    cycle_str = " class=\"alt\""
-                cycle = not cycle
 
-                table += "<tr%s>" % cycle_str
+                table += "<tr>"
 
                 if self.toolbar_left:
                     table += "<td>"
@@ -405,12 +421,12 @@ class DataRender(object):
 
                 table += "</td></tr>"
 
-        table += "</table>"
+        table += "</tbody></table>"
         if self.toolbar_bot:
             for t in self.toolbar_bot:
                 table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
 
-        table += "<br><br>"
+        table += "</div>"
 
         self.colums = None
         self.display_header = True
@@ -419,31 +435,29 @@ class DataRender(object):
         self.base_url = ""
         self.string = ""
 
+        self.show_title
+
         return table
 
-
 def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[]):
-    table = "<table id=\"list_table\" class=\"list_table_float_left\">"
-    table += "<colgroup><col width=50%><col width=50%></colgroup>"
+    l = "<li>"
+    l += "<div class=\"well well-small\">"
+    l += HDR_STYLE_CENTER % header_msg
 
-    cycle = False
-    toolbar_t = ''
-    for t in toolbar:
-        toolbar_t += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
-
-    table += "<tr><th>%s</th><th>%s</th></tr>" % (toolbar_t, header_msg)
+    l += "<dl class=\"dl-horizontal text-overflow\">"
     for i in show_colum:
-        cycle_str = ''
-        if cycle:
-            cycle_str = " class=\"alt\""
-        cycle = not cycle
+        l += "<dt id=\"row_%s\">%s</dt>" % (i, i.replace('_', ' ').capitalize())
+        l += "<dd id=\"row_%s\">%s</dd>" % (i, formatFields(item_dict, i, default_text="-"))
+    l += "</dt>"
 
-        table += "<tr %s>" % cycle_str
-        table += "<td class=\"hdr\">%s</td>" % (i.replace('_', ' ').capitalize())
-        table += "<td id=\"td_%s\">%s</td>" % (i, formatFields(item_dict, i, default_text="-"))
-        table += "</tr>"
+    if toolbar:
+        l += "<br><div class=\"text-center\"><div class=\"btn-group\">"
+        for t in toolbar:
+            l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+        l += "</div></div>"
 
-    table += "</table>"
+    l += "</div>"
+    l += "</li>"
 
-    return table
 
+    return l

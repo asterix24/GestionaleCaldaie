@@ -26,9 +26,9 @@ def __getIds(raw_items, item_id):
 
     return l
 
-def home(request):
+def home(request, msg=""):
     form = myforms.RangeDataSelect()
-    data = scripts.HOME_ADD_JS
+    data = ''
 
     # Use default at first time when the home page is never loaded
     form_dict = {
@@ -77,15 +77,15 @@ def home(request):
     dr.selectColums(cfg.HOME_STD_VIEW)
 
     tb_top = [
-            "<input type=\"button\" name=\"button_action\" value=\"Seleziona Tutti\">",
-            "<input type=\"submit\" name=\"button_action\" value=\"Lettera\">",
-            "<input type=\"submit\" name=\"button_action\" value=\"Apri\">",
-            "<input type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
-            "<input type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
+            "<input class=\"btn btn-info\" type=\"button\" name=\"button_action\" value=\"Seleziona Tutti\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Lettera\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Apri\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
     ]
 
     tb_left = [
-            "<input type=\"checkbox\" name=\"row_select\" value=\"<cliente_id>,<impianto_id>,<verifica_id, <intervento_id>\">"
+            "<input type=\"checkbox\" name=\"row_select\" value=\"<cliente_id>,<impianto_id>,<verifica_id>,<intervento_id>\">"
     ]
     dr.toolbar(top=tb_top, left=tb_left)
 
@@ -96,7 +96,13 @@ def home(request):
     dr.orderUrl('home', form_dict)
 
     data += dr.toTable()
-    return render(request, 'home.sub',{'query_path':request.get_full_path(), 'data': data,'data_form': form})
+    return render(request, 'home.sub',{'query_path':request.get_full_path(),
+                                       'notification_hdr':'',
+                                       'notification_msg': msg,
+                                       'data': data,
+                                       'data_form': form,
+                                       'scripts': scripts.HOME_ADD_JS,
+                                       })
 
 
 def exportCSV(request, detail_type=None):
@@ -224,4 +230,7 @@ def generate_report(items, file_name=None):
 
 def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
+
+def check_layout(request):
+    return render(request, 'fluid.html', {})
 
