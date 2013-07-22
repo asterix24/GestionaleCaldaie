@@ -317,7 +317,7 @@ def generate_query(search_keys=None, order_by_field=None, ordering=None, id_fiel
     if order_by_field is not None and order_by_field != "":
         if ordering is None:
             ordering = "ASC"
-        print order_by_field
+
         if 'main_cliente' in order_by_field or 'main_impianto' in order_by_field:
             query_order = "ORDER BY " + order_by_field + " " + ordering + ", main_cliente.cognome ASC, main_cliente.nome ASC"
 
