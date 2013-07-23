@@ -15,8 +15,10 @@ from main import database_manager
 from main import scripts
 from main import views
 
+import re
 import logging
 logger = logging.getLogger(__name__)
+
 
 def _display_error(request, msg):
     logger.error("%s" % msg)
@@ -27,29 +29,37 @@ def _display_error(request, msg):
 BREADCRUMB_DIVIDER = "<span class=\"divider\">></span>"
 BREADCRUMB_ELEMENT = "<li><a href=\"%s\">%s</a>%s</li>"
 
+def __breadcrumbName(l):
+    s = "Cliente"
+    if "impianto" in l:
+        s = "Impianto"
+    elif "verifica" in l:
+        s = "Verifica e Manutenzione"
+    elif "intervento" in l:
+        s = "Intervento"
+
+    return s
+
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, hdr_message='', message=''):
     data, data_list = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
+
+
+    # Breadcrumb genarate from current url.
     b = ""
+    r = re.compile("\w+\/\d+")
+    #['anagrafe/33', 'impianto/33', 'verifica/33']
+    l = r.findall(request.path)
+    url = "/"
+    if len(l) > 1:
+        print "qui..", url
+        for i in l[:-1]:
+            url += i + "/"
+            s = __breadcrumbName(i)
+            b += BREADCRUMB_ELEMENT % (url, s, BREADCRUMB_DIVIDER)
 
-    print request.path
-    if request.path not in cfg.BREADCRUMB:
-        cfg.BREADCRUMB.append(request.path)
-
-    if not cfg.BREADCRUMB:
-        b = BREADCRUMB_ELEMENT % (request.path, "Cliente", "")
-    else:
-        for i in cfg.BREADCRUMB:
-            s = "Cliente"
-            if "verifica" in i:
-                s = "Verififca"
-            elif "intervento" in i:
-                s = "Intervento"
-            elif "impianto" in i:
-                s = "Impianto"
-
-            b += BREADCRUMB_ELEMENT % (i, s, BREADCRUMB_DIVIDER)
-            if request.path == i:
-                break
+    url += l[-1] + "/"
+    s = __breadcrumbName(l[-1])
+    b += BREADCRUMB_ELEMENT % (url, s, "")
 
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
@@ -485,7 +495,6 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
     data = ''
-    cfg.BREADCRUMB = []
 
     search_string = ""
     data_to_render = []
