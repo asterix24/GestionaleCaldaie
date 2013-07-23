@@ -29,6 +29,7 @@ def __getIds(raw_items, item_id):
 def home(request, msg=""):
     form = myforms.RangeDataSelect()
     data = ''
+    cfg.BREADCRUMB = []
 
     # Use default at first time when the home page is never loaded
     form_dict = {
