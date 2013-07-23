@@ -24,8 +24,8 @@ def _display_error(request, msg):
             { 'msg_hdr':'Error!',
               'msg_body': msg })
 
-BREADCRUMB_ELEMENT = "<li><a href=\"%s\">uno</a><span class=\"divider\">></span></li>"
-BREADCRUMB_ELEMENT_ACTIVE = "<li class=\"active\"><a href=\"%s\">uno</a></li>"
+BREADCRUMB_DIVIDER = "<span class=\"divider\">></span>"
+BREADCRUMB_ELEMENT = "<li><a href=\"%s\">%s</a>%s</li>"
 
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, hdr_message='', message=''):
     data, data_list = view_record(cliente_id, detail_type, impianto_id, sub_impianto_id)
@@ -35,12 +35,21 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     if request.path not in cfg.BREADCRUMB:
         cfg.BREADCRUMB.append(request.path)
 
-    for i in cfg.BREADCRUMB[:-1]:
-        b += BREADCRUMB_ELEMENT % i
-        if request.path == cfg.BREADCRUMB:
-            break
+    if not cfg.BREADCRUMB:
+        b = BREADCRUMB_ELEMENT % (request.path, "Cliente", "")
+    else:
+        for i in cfg.BREADCRUMB:
+            s = "Cliente"
+            if "verifica" in i:
+                s = "Verififca"
+            elif "intervento" in i:
+                s = "Intervento"
+            elif "impianto" in i:
+                s = "Impianto"
 
-    b += BREADCRUMB_ELEMENT_ACTIVE % cfg.BREADCRUMB[-1]
+            b += BREADCRUMB_ELEMENT % (i, s, BREADCRUMB_DIVIDER)
+            if request.path == i:
+                break
 
     if data is None:
         _display_error(request, "Qualcosa e' andato storto!")
@@ -476,6 +485,7 @@ def detail_record(request, cliente_id, detail_type=None, impianto_id=None, sub_i
 def anagrafe(request):
     form = myforms.FullTextSearchForm()
     data = ''
+    cfg.BREADCRUMB = []
 
     search_string = ""
     data_to_render = []
