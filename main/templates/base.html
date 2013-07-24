@@ -55,7 +55,15 @@
           <div class="nav-collapse collapse">
             <div class="nav pull-right">
                 <a class="btn btn-primary btn-danger" href="/logout/"><i class="icon-user icon-white"></i> Esci</a>
-            </div>
+	    </div>
+	    <ul class="nav pull-right">
+		{% if user.username %}
+		<li><a href="#" style="color:white;">{{user.username|capfirst}}</a></li>
+		{% endif %}
+		{% if user.is_staff %}
+		<li> <a  href="/admin/"><strong> Admin</strong></a> </li>
+		{% endif %}
+	    </ul>
             <ul class="nav">
 		    <li><a href="{% url home %}"><strong>Home</strong></a></li>
 		    <li><a href="/anagrafe/add/#cliente"><strong>Nuovo Cliente</strong></a></li>
