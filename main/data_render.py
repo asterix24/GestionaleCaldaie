@@ -15,6 +15,12 @@ MSG_ITEMS_EMPTY = "<br><h2>La ricerca non ha prodotto risultati</h2><br>"
 MSG_STATISTICS = "<br><h3>Records trovati: %s</h3><br>"
 EMPTY_CELL = '-'
 
+CLIENTE_ID = 0
+IMPIANTO_ID = 1
+VERIFICA_ID = 2
+INTERVENTO_ID = 3
+
+
 def make_url(message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
     url = "<a href=\""
