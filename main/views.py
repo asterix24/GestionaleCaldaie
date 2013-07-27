@@ -26,9 +26,10 @@ def __getIds(raw_items, item_id):
 
     return l
 
-def home(request, msg=""):
+def home(request, d={}):
     form = myforms.RangeDataSelect()
     data = ''
+    notification = ''
 
     # Use default at first time when the home page is never loaded
     form_dict = {
@@ -94,11 +95,13 @@ def home(request, msg=""):
     dr.showStatistics()
 
     dr.orderUrl('home', form_dict)
-
     data += dr.toTable()
+
+    if d:
+       notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
+
     return render(request, 'home.sub',{'query_path':request.get_full_path(),
-                                       'notification_hdr':'',
-                                       'notification_msg': msg,
+                                       'notification': notification,
                                        'data': data,
                                        'data_form': form,
                                        'scripts': scripts.HOME_ADD_JS,
