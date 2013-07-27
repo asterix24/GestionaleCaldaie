@@ -11,7 +11,16 @@ ADD = 'add'
 ALL = 'all'
 
 def hasPermission(request, type=ALL):
+    if request.user.groups.filter(name=ALL):
+        return True
+
     if request.user.groups.filter(name=type):
+        return True
+
+    return False
+
+def has_deletePermission(request):
+    if hasPermission(request, DELETE):
         return True
 
     return False

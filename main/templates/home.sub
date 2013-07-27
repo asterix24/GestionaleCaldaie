@@ -5,13 +5,9 @@
 
 {% block center_block %}
 
-{%if notification_msg %}
-<div class="alert alert-block alert-success">
-<button type="button" class="close" data-dismiss="alert">&times;</button>
-<h4 class="alert-heading">{{notification_hdr}}</h4>
-<p>{{ notification_msg}}</p>
-</div>
-{% endif %}
+{% autoescape off %}
+    {{ notification }}
+{% endautoescape %}
 
 <div class="row-fluid">
     <div class="form-search">
