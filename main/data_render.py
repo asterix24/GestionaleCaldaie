@@ -461,3 +461,22 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
 
 
     return l
+
+
+MSG_WARNING = "alert-warning"
+MSG_ERROR = "alert-error"
+MSG_OK = "alert-success"
+MSG_INFO = "alert-info"
+
+def notification(msg_hdr, msg, ntf_type):
+    n = ""
+    if msg_hdr or msg:
+        n += "<div class=\"row-fluid\"> <div class=\"span2\"> </div>"
+        n += "<div class=\"span8 alert alert-block %s\">" % ntf_type
+        n += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"
+        n += "<h4 class=\"alert-heading\">%s</h4>" % msg_hdr
+        n += "<p>%s</p>" % msg
+        n += "</div>"
+        n += "<div class=\"span2\"> </div></div>"
+
+    return n
