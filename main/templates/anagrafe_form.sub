@@ -4,6 +4,10 @@
 {% block center_block %}
 
 {% autoescape off %}
+    {{ notification }}
+{% endautoescape %}
+
+{% autoescape off %}
     {{header_msg}}
 {% endautoescape %}
 

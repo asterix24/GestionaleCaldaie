@@ -14,6 +14,7 @@ from main import data_render
 from main import database_manager
 from main import scripts
 from main import views
+from main import users
 
 import re
 import logging
@@ -51,7 +52,6 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     l = r.findall(request.path)
     url = "/"
     if len(l) > 1:
-        print "qui..", url
         for i in l[:-1]:
             url += i + "/"
             s = __breadcrumbName(i)
@@ -256,11 +256,32 @@ ERROR_CLIENTE_INSERITO = """<div class=\"alert alert-block\"> <button type=\"but
 Cliente gia\' inserito nel gestionale..
 </div>"""
 
-ERROR_FORM = """<div class=\"alert alert-error\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
-<h4>Errore!</h4>
-Errore nel form..
-</div>"""
+ERROR_FORM_HDR = "Errore form"
+ERROR_FORM = "Ci sono errori nella compilazione del form."
+
+ERROR_PERM_HDR = "Errore di permesso."
+ERROR_PERM_ADD = "Non hai il permesso di aggiungere record al gestionale."
+ERROR_PERM_EDIT = "Non hai il permesso di modificare nessuno record del gestionale."
+
+def __checkPermission(request, select, form, d):
+    if select is None:
+        if users.has_addPermission(request, select):
+            return True, d
+
+        d['message'] = ERROR_PERM_ADD
+
+    else:
+        if users.has_editPermission(request, select):
+            return True, d
+
+        d['message'] = ERROR_PERM_EDIT
+
+
+    d['message_hdr'] = ERROR_PERM_HDR
+    d['message_type'] = data_render.MSG_ERROR
+    d['form'] = form
+
+    return False, d
 
 def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=None):
     """
@@ -273,12 +294,18 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
         'cliente_id':None,
         'impianto_id':None,
         'sub_impianto_id':None,
-        'message':None,
+        'message_hdr':'',
+        'message': '',
+        'message_type': '',
     }
 
     if cliente_id is None or detail_type is None:
         msg = None
         form = models.ClienteForm(request.POST, instance=select)
+        ret, d = __checkPermission(request, select, form, d)
+        if not ret:
+            return False, d
+
         if form.is_valid():
             cli = form.cleaned_data['cliente_id_inserito']
             if cli is not None:
@@ -292,24 +319,37 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
             return True, d
 
         else:
+            d['message'] = ERROR_FORM
+            d['message_hdr'] = ERROR_FORM_HDR
+            d['message_type'] = data_render.MSG_ERROR
             d['form'] = form
             return False, d
-
     else:
         if detail_type == 'impianto':
             form = models.ImpiantoForm(request.POST, instance=select)
+            ret, d = __checkPermission(request, select, form, d)
+            if not ret:
+                return False, d
+
             if form.is_valid():
                 instance = form.save()
                 d['cliente_id'] = cliente_id
                 d['impianto_id'] = instance.id
                 return True, d
             else:
+                d['form'] = form
                 d['message'] = ERROR_FORM
+                d['message_hdr'] = ERROR_FORM_HDR
+                d['message_type'] = data_render.MSG_ERROR
                 d['form'] = form
                 return False, d
 
         if detail_type == 'verifica':
             form = models.VerificaForm(request.POST, instance=select)
+            ret, d = __checkPermission(request, select, form, d)
+            if not ret:
+                return False, d
+
             if form.is_valid():
                 instance = form.save()
                 d['cliente_id'] = cliente_id
@@ -320,10 +360,16 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
             else:
                 d['form'] = form
                 d['message'] = ERROR_FORM
+                d['message_hdr'] = ERROR_FORM_HDR
+                d['message_type'] = data_render.MSG_ERROR
                 return False, d
 
         if detail_type == 'intervento':
             form = models.InterventoForm(request.POST, instance=select)
+            ret, d = __checkPermission(request, select, form, d)
+            if not ret:
+                return False, d
+
             if form.is_valid():
                 instance = form.save(commit = False)
                 instance.tipo_intervento = instance.tipo_intervento.capitalize()
@@ -334,8 +380,10 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 d['detail_type'] = detail_type
                 return True, d
             else:
-                d['message'] = ERROR_FORM
                 d['form'] = form
+                d['message'] = ERROR_FORM
+                d['message_hdr'] = ERROR_FORM_HDR
+                d['message_type'] = data_render.MSG_ERROR
                 return False, d
 
     return _display_error(request, "Qualcosa e' andato storto..")
@@ -344,6 +392,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
     script = ""
     data = ""
     data_list = ""
+    notification = ""
     if cliente_id is None:
         header_msg = "Aggiungi Nuovo Cliente"
         post_url = "add/"
@@ -389,9 +438,10 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
         else:
             request = d['request']
             form = d['form']
+            notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
-        'data':data, 'scripts': script, 'post_url':post_url})
+    return render(request, 'anagrafe_form.sub', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
+        'data_forms': form, 'data':data, 'scripts': script, 'post_url':post_url})
 
 
 def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
@@ -402,6 +452,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
     data = ""
     data_list = ""
     script = ""
+    notification = ""
     if detail_type is None:
         select = models.Cliente.objects.get(pk=cliente_id)
         form = models.ClienteForm(instance=select)
@@ -440,9 +491,10 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
         else:
             request = d['request']
             form = d['form']
+            notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
 
-    return render(request, 'anagrafe_form.sub', {'header_msg': data_render.TITLE_STYLE_FORM % header_msg, 'data_forms': form,
-        'data':data, 'scripts': script, 'post_url':post_url})
+    return render(request, 'anagrafe_form.sub', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
+        'data_forms': form, 'data':data, 'scripts': script, 'post_url':post_url})
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     data = ''
