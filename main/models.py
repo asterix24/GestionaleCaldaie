@@ -40,6 +40,7 @@ class ClienteForm(forms.ModelForm):
         _codice_fiscale = cleaned_data.get("codice_fiscale", '')
         _via = cleaned_data.get("via", '')
         _citta = cleaned_data.get("citta", '')
+        _cap = cleaned_data.get("cap", '')
         _numero_telefono = cleaned_data.get("numero_telefono", '')
         _numero_cellulare = cleaned_data.get("numero_cellulare", '')
         _mail =cleaned_data.get("mail", '')
@@ -49,6 +50,7 @@ class ClienteForm(forms.ModelForm):
                                models.Q(codice_fiscale__iexact=_codice_fiscale) &
                                models.Q(via__iexact=_via) &
                                models.Q(citta__iexact=_citta) &
+                               models.Q(cap__iexact=_cap) &
                                models.Q(numero_telefono__iexact=_numero_telefono) &
                                models.Q(numero_cellulare__iexact=_numero_cellulare) &
                                models.Q(mail__iexact=_mail))
@@ -68,7 +70,6 @@ class ClienteForm(forms.ModelForm):
         if _citta is not None:
             cleaned_data['citta'] = _citta.capitalize()
 
-        print "4"
         # Always return the full collection of cleaned data.
         return cleaned_data
 
