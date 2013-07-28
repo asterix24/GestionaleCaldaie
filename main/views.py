@@ -231,6 +231,9 @@ def generate_report(items, file_name=None):
 
     return response
 
+def err(request):
+    return render(request, 'messages.sub',{'msg_hdr':'Qualcosa è andato storto!' })
+
 def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
 
