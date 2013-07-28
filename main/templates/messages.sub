@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 
 {% block center_block %}
-
-<h1>{{msg_hdr}}</h1>
-<br>
-<h3>
-    {% autoescape off %}
-        {{msg_body}}
-    {% endautoescape %}
-</h3>
+<div class="row-fluid">
+    <div class="span3">
+    </div>
+    <div class="span6">
+        <div class="row-fluid well well-small">
+            <h1 class="text-center">{{msg_hdr}}</h1>
+            <br>
+            <div class="row-fluid text-center">
+                {% autoescape off %}
+                    {{msg_body}}
+                {% endautoescape %}
+	            <a class="btn btn-info btn-large" href="/"><i class="icon-home icon-white"></i> Home</a>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="span3">
+    </div>
+</div>
 {% endblock %}
