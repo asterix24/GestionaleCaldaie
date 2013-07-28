@@ -1,4 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
+handler500 = 'main.errors.server_error'
+handler404 = 'main.errors.page_not_found'
+handler403 = 'main.errors.permission_denied_view'
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
