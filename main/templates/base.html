@@ -54,16 +54,14 @@
           <a class="brand" href="/"><strong>Besalba Impianti srl</strong></a>
           <div class="nav-collapse collapse">
             <div class="nav pull-right">
-                <a class="btn btn-primary btn-danger" href="/logout/"><i class="icon-user icon-white"></i> Esci</a>
-	    </div>
-	    <ul class="nav pull-right">
-		{% if user.username %}
-		<li><a href="#" style="color:white;">{{user.username|capfirst}}</a></li>
-		{% endif %}
-		{% if user.is_staff %}
-		<li> <a  href="/admin/"><strong> Admin</strong></a> </li>
-		{% endif %}
-	    </ul>
+                {% if user.is_staff %}
+                <a class="btn btn-primary btn-info" href="/admin"><i class="icon-wrench icon-white"></i> Admin</a>
+                {% endif %}
+		        {% if user.username %}
+                <a class="btn btn-primary btn-info" href="#"><i class="icon-user icon-white"></i> {{user.username|capfirst}}</a>
+		        {% endif %}
+                <a class="btn btn-primary btn-danger" href="/logout/"><i class="icon-off icon-white"></i> Esci</a>
+	        </div>
             <ul class="nav">
 		    <li><a href="{% url home %}"><strong>Home</strong></a></li>
 		    <li><a href="/anagrafe/add/#cliente"><strong>Nuovo Cliente</strong></a></li>
@@ -82,26 +80,14 @@
             </div>
             <div class="span6">
                 <div class="row-fluid">
-                    <div class="span3">
-                    </div>
-                    <div class="span6">
-                            <p class="text-center" style="font-size:1.5em;"><strong>{% now "d F Y H:i" %}</strong></p>
-                    </div>
-                    <div class="span3">
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="span3">
-                    </div>
-                    <div class="span6">
+                    <p class="text-center" style="font-size:1.5em;"><strong>{% now "d F Y H:i" %}</strong></p>
+                    <div class="row-fluid text-center">
                         <div class="input-append">
                         <form action="/anagrafe/" method="get">
                         <input type="text" id="id_s" name="search_keys" class="input-xlarge" />
                         <button class="btn" type="submit" id="id_cerca"><i class="icon-search"></i></button>
                         </form>
                         </div>
-                    </div>
-                    <div class="span3">
                     </div>
                 </div>
             </div>
