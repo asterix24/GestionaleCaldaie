@@ -23,7 +23,7 @@ site.addsitedir(os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-pac
 
 sys.path.append("/home/asterix/gestionale_www")
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "gestionale.settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "gestionale.besalba-settings"
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
