@@ -47,6 +47,7 @@ STATIC_ROOT = ''
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+CUSTOM_STATIC_URL = '/static/' + APP_PREFIX_NAME + '/'
 
 # Session and login settings
 LOGIN_URL = '/login/'

@@ -20,7 +20,7 @@ SITE_ROOT = "/tmp"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f79u*ma*y7wb'
-LOCAL_PATH = '/Users/asterix/src/sviluppo_e_altro/GestionaleCaldaie/'
+LOCAL_PATH = '/Users/asterix/src/sviluppo_e_altro/GestionaleCaldaie/main/templates/besalba/'
 
 DEBUG = True
 
