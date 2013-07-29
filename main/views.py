@@ -198,7 +198,7 @@ def generate_report(items, file_name=None):
 
     tmp_file = tempfile.NamedTemporaryFile()
 
-    with open(gestionale.local_settings.LOCAL_PATH + 'main/templates/lettera.rtf', 'r') as in_tpl:
+    with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
         for line in in_tpl:
             #inizio la copia del blocco.
             if '>>START<<' in line:
