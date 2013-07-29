@@ -181,7 +181,7 @@ from main import data_render
 import tempfile
 import re
 import os,sys
-import gestionale.local_settings
+import gestionale
 
 def tag_replace(m, item_dict):
     k = m.group()
