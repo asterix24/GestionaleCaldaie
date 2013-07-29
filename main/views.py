@@ -11,6 +11,7 @@ from main import tools
 from main import data_render
 from main import database_manager
 from main import scripts
+from main import errors
 
 import logging
 logger = logging.getLogger(__name__)
@@ -232,7 +233,7 @@ def generate_report(items, file_name=None):
     return response
 
 def err(request):
-    return render(request, 'messages.sub',{'msg_hdr':'Qualcosa è andato storto!' })
+    return errors.server_error(request)
 
 def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })

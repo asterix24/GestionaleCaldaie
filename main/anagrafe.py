@@ -21,24 +21,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def _display_error(request, msg):
-    logger.error("%s" % msg)
-    return render(request, 'messages.sub',
-            { 'msg_hdr':'Error!',
-              'msg_body': msg })
-
 BREADCRUMB_DIVIDER = "<span class=\"divider\">></span>"
 BREADCRUMB_ELEMENT = "<li><a href=\"%s\">%s</a>%s</li>"
+
 
 def __breadcrumbName(l):
     s = "Cliente"
     if "impianto" in l:
         s = "Impianto"
-    elif "verifica" in l:
+    if "verifica" in l:
         s = "Verifica e Manutenzione"
     elif "intervento" in l:
         s = "Intervento"
-
     return s
 
 def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, message_hdr='', message='', message_type=''):
@@ -63,7 +57,7 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
         b += BREADCRUMB_ELEMENT % (url, s, "")
 
     if data is None:
-        _display_error(request, "Qualcosa e' andato storto!")
+        return errors.server_error(request)
 
     return render(request, 'anagrafe.sub', { 'data': data,
                            'data_list': data_list,
@@ -391,7 +385,7 @@ def __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, requ
                 d['message_type'] = data_render.MSG_ERROR
                 return False, d
 
-    return _display_error(request, "Qualcosa e' andato storto..")
+    return errors.server_error(request)
 
 def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     script = ""
@@ -415,7 +409,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             post_url = "%s/impianto/%s/intervento/add/" % (cliente_id, impianto_id)
 
         if detail_type is None:
-            return _display_error(request, "Qualcosa e' andato storto..")
+            return errors.server_error(request)
 
     if request.method == 'GET':
         if cliente_id is None:
@@ -451,7 +445,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
 
 def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
     if cliente_id is None:
-        return _display_error(request, "Qualcosa e' andato storto..")
+        return errors.server_error(request)
 
     select = None
     data = ""
@@ -487,7 +481,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             script = scripts.INTERVENTO_JS
 
         if detail_type is None:
-            return _display_error(request, "Qualcosa e' andato storto..")
+            return errors.server_error(request)
 
     if request.method == 'POST':
         ret, d = __editAdd_record(cliente_id, impianto_id, sub_impianto_id, detail_type, request, select=select)
@@ -554,7 +548,7 @@ def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, 
         return show_record(request, cliente_id=cliente_id, detail_type=detail_type, impianto_id=impianto_id, sub_impianto_id=sub_impianto_id,
                 message_hdr=ERROR_DB_HDR, message=ERROR_DB_DELETE, message_type=data_render.MSG_ERROR)
 
-    return _display_error(request, "Qualcosa e' andato storto..")
+    return errors.server_error(request)
 
 
 
