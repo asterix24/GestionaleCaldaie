@@ -66,11 +66,14 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
                            'breadcrumb': b,
                            })
 
+import gestionale
+
 # TOOLBAR_BTN(url, ico, label)
 TOOLBAR_BTN = "<a class=\"btn btn-small btn-info\" id=\"toolbar\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 TOOLBAR_BTN_NAME = "<a class=\"btn btn-small btn-info\" name=\"%s\" value=\"%s\" id=\"toolbar_%s\" href=\"%s\"><i class=\"%s\"></i> %s</a>"
 TOOLBAR_ICO_DELETE = "<a name=\"%s\" value=\"%s\" id=\"toolbar_delete\" href=\"%s\"> \
-                        <img src=\"/static/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>"
+                        <img src=\"%scommon/minus.jpg\" alt=\"delete..\" title=\"delete..\" width=\"16\" height=\"16\"/> </a>"
+TOOLBAR_ICO_EDIT = "<a href=\"%s\"><img src=\"%scommon/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>"
 
 TOOLBAR_CLIENTE = [
     TOOLBAR_BTN % ("/anagrafe/add/",                         "icon-plus",   "Nuovo"),
@@ -103,6 +106,7 @@ TOOLBAR_INTERVENTO = [
             "delete", "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/", "icon-trash", "Cancella"),
 ]
 
+
 def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=None, show_title=False, show_cliente=False, show_toolbar=True):
     """
     Data: record table format
@@ -132,10 +136,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
         # edit and delete icons with related link
         toolbar_left = [
-              "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/edit/\"> \
-                <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+              TOOLBAR_ICO_EDIT % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/edit/", gestionale.settings.STATIC_URL),
               TOOLBAR_ICO_DELETE % ("Impianto", "Stai cancellando l'impianto selezionato, e anche tutte le verifiche e interventi relativi.",
-                  "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete/"),
+                  "/anagrafe/<cliente_id>/impianto/<impianto_id>/delete/", gestionale.settings.STATIC_URL),
         ]
 
         # button to add new Impianto
@@ -167,10 +170,9 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
             # edit and delete icons with related link
             toolbar_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit/\"> \
-                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                    TOOLBAR_ICO_EDIT % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/edit/", gestionale.settings.STATIC_URL),
                     TOOLBAR_ICO_DELETE % ("Verifica", "Stai cancellando l'intervento selezionata.",
-                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete/")
+                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/verifica/<verifica_id>/delete/", gestionale.settings.STATIC_URL)
             ]
             # button to add new Verifica
             if data_to_render:
@@ -195,10 +197,10 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
 
             # edit and delete icons with related link
             toolbar_left = [
-                  "<a href=\"/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit/\"> \
-                    <img src=\"/static/edit.jpg\" alt=\"edit..\" title=\"edit..\" width=\"16\" height=\"16\"/> </a>",
+                    TOOLBAR_ICO_EDIT % ("/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/edit/",
+                        gestionale.settings.STATIC_URL),
                     TOOLBAR_ICO_DELETE % ("Intervento", "Stai cancellando l'intervento selezionata.",
-                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/")
+                        "/anagrafe/<cliente_id>/impianto/<impianto_id>/intervento/<intervento_id>/delete/", gestionale.settings.STATIC_URL)
             ]
             # button to add new Verifica
             if data_to_render:
@@ -572,22 +574,22 @@ def anagrafe(request):
     }
 
     if request.method == 'GET' and request.GET != {}:
-            form = myforms.FullTextSearchForm(request.GET)
-            if form.is_valid():
-                    form_dict['search_keys'] = form.cleaned_data['search_keys']
-                    form_dict['order_by_field'] = form.cleaned_data['order_by_field']
-                    form_dict['ordering'] = form.cleaned_data['ordering']
+        form = myforms.FullTextSearchForm(request.GET)
+        if form.is_valid():
+                form_dict['search_keys'] = form.cleaned_data['search_keys']
+                form_dict['order_by_field'] = form.cleaned_data['order_by_field']
+                form_dict['ordering'] = form.cleaned_data['ordering']
 
-            data_to_render = database_manager.search_fullText(**form_dict)
-            dr = data_render.DataRender(data_to_render)
-            dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
+        data_to_render = database_manager.search_fullText(**form_dict)
+        dr = data_render.DataRender(data_to_render)
+        dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
 
-            dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-            if search_string != "":
-                dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
-            dr.showStatistics()
-            dr.orderUrl('anagrafe', form_dict)
-            data += dr.toTable()
+        dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
+        if search_string != "":
+            dr.msgStatistics(("<br><h2>\"%s\" trovati:" % search_string) + " %s</h2><br>")
+        dr.showStatistics()
+        dr.orderUrl('anagrafe', form_dict)
+        data += dr.toTable()
 
     return render(request, 'anagrafe.sub',{'query_path':request.get_full_path(),
                                            'data': data,
