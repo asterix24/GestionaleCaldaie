@@ -21,7 +21,7 @@ DATABASES = {
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f79u*ma*y7wb'
 LOCAL_ROOT_PATH = '/Users/asterix/src/sviluppo_e_altro/GestionaleCaldaie/'
-LOCAL_PATH = LOCAL_ROOT_PATH + 'main/templates/besalba/'
+LOCAL_PATH = LOCAL_ROOT_PATH + 'main/templates/' + APP_PREFIX_NAME + '/'
 
 DEBUG = True
 
