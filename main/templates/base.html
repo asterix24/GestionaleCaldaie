@@ -12,8 +12,8 @@
     <title>Gestionale Caldaie</title>
 
     <!-- Le styles -->
-    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}bootstrap/css/datepicker.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}common/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}common/bootstrap/css/datepicker.css" rel="stylesheet">
     <style type="text/css">
       body{
         padding-top: 60px;
@@ -31,15 +31,15 @@
         }
       }
     </style>
-    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}common/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
      <!--[if lt IE 9]>
-     	<script src="{{ STATIC_URL }}bootstrap/js/html5shiv.js"></script>
+     	<script src="{{ STATIC_URL }}common/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="icon" type="image/png" href="{{ CUSTOM_STATIC_URL }}logo.ico" />
+    <link rel="icon" type="image/png" href="{{ STATIC_URL }}logo.ico" />
   </head>
 
   <body>
@@ -76,7 +76,7 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span3">
-                <img src="{{ CUSTOM_STATIC_URL }}logo.png" alt="besalba impianti logo">
+                <img src="{{ STATIC_URL }}logo.png" alt="besalba impianti logo">
             </div>
             <div class="span6">
                 <div class="row-fluid">
@@ -120,10 +120,10 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ STATIC_URL }}jquery.js"></script>
-    <script src="{{ STATIC_URL }}jquery-ui.js"></script>
-    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
-    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap-datepicker.js"></script>
+    <script src="{{ STATIC_URL }}common/jquery.js"></script>
+    <script src="{{ STATIC_URL }}common/jquery-ui.js"></script>
+    <script src="{{ STATIC_URL }}common/bootstrap/js/bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}common/bootstrap/js/bootstrap-datepicker.js"></script>
     {% block scripts %}
     {% endblock %}
   </body>
