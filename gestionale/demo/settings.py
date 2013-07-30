@@ -56,6 +56,7 @@ SESSION_IDLE_TIMEOUT = 3600
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    LOCAL_ROOT_PATH + "main/static/" + APP_PREFIX_NAME,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -92,7 +93,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'gestionale.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'gestionale.wsgi.application'
+WSGI_APPLICATION = 'gestionale.' + APP_PREFIX_NAME + '.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
