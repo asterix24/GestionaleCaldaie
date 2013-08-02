@@ -220,10 +220,16 @@ def __impiantiIds(field, query_data):
         l.append(str(id))
     return ",".join(l)
 
-def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=False):
+def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=False, keep_all=False):
     """
-    We split the query in two, one select clienti and impiato, and
-    with the ids, we selct the verifiche table.
+    Get data from dabase table and put in into one table.
+    The table is made by three query. The qeries are merged in one big
+    table.
+    We can pass extra param to the first two query and by some switch
+    show some row or hide it.
+    verifiche_only: show only verifiche rows, hiding the other ones.
+    keep_all: keep in table all rows, also if there not is other rows in one
+    connected tables.
     """
     query_data = search_runQuery(query_str, param)
 
@@ -276,13 +282,17 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
         else:
             query_data3[key] = [d]
 
-    # Compute the last verifica and the most recent
-    # analisi combustione, with its id.
+    # Serach the last verifica and the most recent analisi combustione.
+    # This function, merge to the firt db query the other tables, like
+    # verifiche and interventi table.
+    # The tables join is based on impianti id.
     n = []
     for table_row in query_data:
         interventi_row = {}
         verifiche_row = {}
 
+        # On the all verifiche impianti, compute the most recent analisi
+        # combustione and the last verifica.
         id = table_row.get('impianto_id', None)
         if id is not None:
             #verifiche
@@ -297,13 +307,18 @@ def query_table(query_str, param, query_str2=None, param2=None, verifiche_only=F
                         verifiche_row['prossima_analisi_combustione'] = i['prossima_analisi_combustione']
                         break
 
+            # On the all interverti of impianti get the last one.
             interventi_list = query_data3.get(id, [])
             if interventi_list:
                 interventi_row = interventi_list[0]
 
+            # Lets to create the complete dict row.
+            # We want not show duplicate row in table, so we add only the newest
             if verifiche_only and verifiche_list:
                 n.append(dict(table_row.items() + verifiche_row.items()))
             elif not verifiche_only and (verifiche_list or interventi_list):
+                n.append(dict(table_row.items() + verifiche_row.items() + interventi_row.items()))
+            elif keep_all:
                 n.append(dict(table_row.items() + verifiche_row.items() + interventi_row.items()))
 
         elif not verifiche_only:
@@ -355,7 +370,6 @@ def generate_query(search_keys=None, order_by_field=None, ordering=None, id_fiel
     return QUERY + " WHERE ( " + " AND ".join(search_query)  + " ) " + query_order, param
 
 def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=None, order_by_field=None, ordering=None):
-
     if ref_month is None or ref_month == "":
         ref_month = datetime.date.today().month
     if ref_year is None or ref_year == "":
@@ -367,7 +381,6 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
 
     #if group_field is not None:
     query_str, param = generate_query(search_keys, order_by_field, ordering)
-
 
     query_year = """(
         ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione) OR
@@ -433,7 +446,7 @@ def query_sortDict(data, order_by_field, ordering):
 
 def search_fullText(search_keys=None, order_by_field=None, ordering=None):
     query_str, param = generate_query(search_keys, order_by_field, ordering)
-    data = query_table(query_str, param)
+    data = query_table(query_str, param, keep_all = True)
     return query_sortDict(data, order_by_field, ordering)
 
 def search_ids(id_field, ids):
