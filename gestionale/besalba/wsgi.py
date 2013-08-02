@@ -18,10 +18,9 @@ import sys
 import site
 import os
 
-site.addsitedir('/home/asterix/venv/local/lib/python2.7')
-site.addsitedir(os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-packages'))
-
-sys.path.append("/home/asterix/gestionale_www")
+site.addsitedir(local_settings.ENV_PYTHON)
+site.addsitedir(local_settings.ENV_SITE_PYTHON)
+sys.path.append(local_settings.LOCAL_ROOT_PATH)
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "gestionale.besalba.settings"
 

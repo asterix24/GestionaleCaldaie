@@ -23,6 +23,11 @@ SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f79u*ma*y7wb'
 LOCAL_ROOT_PATH = '/Users/asterix/src/sviluppo_e_altro/GestionaleCaldaie/'
 LOCAL_PATH = LOCAL_ROOT_PATH + 'main/templates/' + APP_PREFIX_NAME + '/'
 
+# virtual env settings
+import os
+ENV_PYTHON = "/home/asterix/venv/local/lib/python2.7"
+ENV_SITE_PYTHON = os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-packages')
+
 DEBUG = True
 
 SITE_ROOT = "/tmp"
