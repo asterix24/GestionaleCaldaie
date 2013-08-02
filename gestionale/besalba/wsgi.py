@@ -17,6 +17,7 @@ framework.
 import sys
 import site
 import os
+import local_settings
 
 site.addsitedir(local_settings.ENV_PYTHON)
 site.addsitedir(local_settings.ENV_SITE_PYTHON)
