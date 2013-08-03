@@ -46,7 +46,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/' + APP_PREFIX_NAME + '/'
+STATIC_URL = '/static/'
 
 # Session and login settings
 LOGIN_URL = '/login/'
@@ -56,7 +56,6 @@ SESSION_IDLE_TIMEOUT = 3600
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    LOCAL_ROOT_PATH + "main/static/" + APP_PREFIX_NAME,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
