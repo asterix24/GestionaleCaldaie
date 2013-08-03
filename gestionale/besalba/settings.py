@@ -2,7 +2,6 @@
 
 from local_settings import *
 
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -120,7 +119,8 @@ import sys
 if DEBUG:
     import logging
     logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%d/%b/%Y %H:%M:%S',
-                            filename=SITE_ROOT + "/gestionale.log")
+                            filename=LOCAL_LOG_PATH + "gestionale.log")
+
     logging.getLogger('main.data_render').setLevel(logging.INFO)
     logging.getLogger('main.database_manager').setLevel(logging.INFO)
     logging.getLogger('main.myfomrs').setLevel(logging.INFO)
