@@ -16,13 +16,14 @@ framework.
 
 import sys
 import site
-import local_settings
-
-site.addsitedir(local_settings.ENV_PYTHON)
-site.addsitedir(local_settings.ENV_SITE_PYTHON)
-sys.path.append(local_settings.LOCAL_ROOT_PATH)
-
+import os
 os.environ["DJANGO_SETTINGS_MODULE"] = "gestionale.test.settings"
+
+from  gestionale.besalba.local_settings import *
+
+site.addsitedir(ENV_PYTHON)
+site.addsitedir(ENV_SITE_PYTHON)
+sys.path.append(LOCAL_ROOT_PATH)
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
