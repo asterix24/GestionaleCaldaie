@@ -25,6 +25,6 @@ sed -i "s/DEFAULT/$NEW_SITE/g" $NEW/wsgi.py
 mkdir "main/templates/$NEW_SITE"
 mkdir "main/static/$NEW_SITE"
 ln -s /home/asterix/venv/lib/python2.7/site-packages/Django-1.4-py2.7.egg/django/contrib/admin/static/admin/ main/static/$NEW_SITE/admin
-ln -s main/static/common/ ../common
+ln -s ../common main/static/$NEW_SITE/common
 
 mkdir "log/$NEW_SITE"
