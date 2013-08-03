@@ -1,6 +1,5 @@
 # Django settings for gestionale project.
 
-
 from local_settings import *
 
 # Local time zone for this installation. Choices can be found here:
@@ -46,7 +45,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/' + APP_PREFIX_NAME + '/'
+STATIC_URL = '/static/'
 
 # Session and login settings
 LOGIN_URL = '/login/'
@@ -56,7 +55,6 @@ SESSION_IDLE_TIMEOUT = 3600
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    LOCAL_ROOT_PATH + "main/static/" + APP_PREFIX_NAME,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -121,7 +119,8 @@ import sys
 if DEBUG:
     import logging
     logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%d/%b/%Y %H:%M:%S',
-                            filename=SITE_ROOT + "/gestionale.log")
+                            filename=LOCAL_LOG_PATH + "gestionale.log")
+
     logging.getLogger('main.data_render').setLevel(logging.INFO)
     logging.getLogger('main.database_manager').setLevel(logging.INFO)
     logging.getLogger('main.myfomrs').setLevel(logging.INFO)

@@ -25,7 +25,6 @@ site.addsitedir(ENV_PYTHON)
 site.addsitedir(ENV_SITE_PYTHON)
 sys.path.append(LOCAL_ROOT_PATH)
 
-
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
