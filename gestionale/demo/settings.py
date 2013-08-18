@@ -110,7 +110,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "gestionale.local_env",
 )
 
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
