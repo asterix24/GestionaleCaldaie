@@ -33,6 +33,7 @@ import os
 ENV_PYTHON = "/home/asterix/venv/local/lib/python2.7"
 ENV_SITE_PYTHON = os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-packages')
 
+<<<<<<< HEAD
 
 # Email settings
 EMAIL_SUBJECT_PREFIX = '[GESTIONEIMPIANTI](DEFAULT) '
@@ -49,6 +50,14 @@ EMAIL_PORT = 123
 # render context, that is implicit define with render function.
 def local_env(request):
     return {"APP_NAME_VERBOSE":"DEFAULT_LONG"}
+=======
+# Email settings
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp'
+#EMAIL_PORT = 465
+#EMAIL_HOST_USER = 'error@gestioneimpianti.net'
+#EMAIL_HOST_PASSWORD = ''
+>>>>>>> 0353320d85e0f8db399313fa6e001b23b7fd9005
 
 
 
