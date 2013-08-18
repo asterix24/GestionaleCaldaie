@@ -33,12 +33,22 @@ import os
 ENV_PYTHON = "/home/asterix/venv/local/lib/python2.7"
 ENV_SITE_PYTHON = os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-packages')
 
+
 # Email settings
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp'
-#EMAIL_PORT = 465
-#EMAIL_HOST_USER = 'error@gestioneimpianti.net'
-#EMAIL_HOST_PASSWORD = ''
+EMAIL_SUBJECT_PREFIX = '[GESTIONEIMPIANTI](DEFAULT) '
+
+DEFAULT_FROM_EMAIL = ''
+EMAIL_USE_TLS = True
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 123
+
+# Define here all specific variable that we want to use
+# inside the templates. This dictionary will be merged with
+# render context, that is implicit define with render function.
+def local_env(request):
+    return {"APP_NAME_VERBOSE":"DEFAULT_LONG"}
 
 
 
