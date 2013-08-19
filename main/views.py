@@ -158,21 +158,6 @@ def exportCSV(request, detail_type=None):
 
     return response
 
-def maps(request):
-    data = scripts.MAPS_ADD_JS
-    return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})
-
-def populatedb(request):
-    #data = tools.insert_csv_files(cli_on=False)
-    data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
-    return _display_ok(request, "DB aggiornato con sucesso\n" + data)
-
-def test(request, search_string):
-    form = myforms.FullTextSearchForm()
-    data = scripts.HOME_ADD_JS
-    data_to_render = database_manager.query_test(search_string)
-    print len(data_to_render)
-    return render(request, 'anagrafe.sub', {'data': data,'forms': form })
 
 
 from django.http import HttpResponse
@@ -232,12 +217,44 @@ def generate_report(items, file_name=None):
 
     return response
 
+import subprocess
+def check_rst(request):
+    #with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
+    #['rst2pdf', 'manual.txt', '-o', 'uno.pdf', '-s', 'manual.style']
+    d = tempfile.mkdtemp()
+    outfile = os.path.join(d,"out.pdf")
+    cmd = ["rst2pdf",
+            "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.txt'),
+            "-o",
+            "%s" % outfile,
+            "-s",
+            "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.style'),
+            ]
+
+    print subprocess.check_output(cmd)
+    out = open(outfile, 'r')
+    response = http.HttpResponse(out, mimetype='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="lettere.pdf"'
+    return response
+
 def err(request):
     return errors.server_error(request)
 
 def check_test(request):
     return render(request, 'anagrafe.sub', {'data': "" })
 
-def check_layout(request):
-    return render(request, 'fluid.html', {})
+def maps(request):
+    data = scripts.MAPS_ADD_JS
+    return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})
 
+def populatedb(request):
+    #data = tools.insert_csv_files(cli_on=False)
+    data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
+    return _display_ok(request, "DB aggiornato con sucesso\n" + data)
+
+def test(request, search_string):
+    form = myforms.FullTextSearchForm()
+    data = scripts.HOME_ADD_JS
+    data_to_render = database_manager.query_test(search_string)
+    print len(data_to_render)
+    return render(request, 'anagrafe.sub', {'data': data,'forms': form })
