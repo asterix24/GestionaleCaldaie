@@ -23,17 +23,27 @@ SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f79u*ma*y7wb'
 DEBUG = False
 
 LOCAL_ROOT_PATH = 'PWD'
-
-
 LOCAL_PATH = LOCAL_ROOT_PATH + 'main/templates/' + APP_PREFIX_NAME + '/'
 LOCAL_LOG_PATH =  LOCAL_ROOT_PATH + 'log/' + APP_PREFIX_NAME + '/'
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
 
 # virtual env settings
 import os
 ENV_PYTHON = "/home/asterix/venv/local/lib/python2.7"
 ENV_SITE_PYTHON = os.path.join('/home/asterix/venv/local/lib/python2.7', 'site-packages')
-
-<<<<<<< HEAD
 
 # Email settings
 EMAIL_SUBJECT_PREFIX = '[GESTIONEIMPIANTI](DEFAULT) '
@@ -50,14 +60,5 @@ EMAIL_PORT = 123
 # render context, that is implicit define with render function.
 def local_env(request):
     return {"APP_NAME_VERBOSE":"DEFAULT_LONG"}
-=======
-# Email settings
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp'
-#EMAIL_PORT = 465
-#EMAIL_HOST_USER = 'error@gestioneimpianti.net'
-#EMAIL_HOST_PASSWORD = ''
->>>>>>> 0353320d85e0f8db399313fa6e001b23b7fd9005
-
 
 
