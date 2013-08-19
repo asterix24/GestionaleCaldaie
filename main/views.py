@@ -231,7 +231,12 @@ def check_rst(request):
             "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.style'),
             ]
 
-    print subprocess.check_output(cmd)
+    try:
+        print subprocess.check_call(cmd)
+    except (subprocess.CalledProcessError, OSError), m:
+        logger.error("Pdf subprocess: %s" % m)
+        return errors.server_error(request)
+
     out = open(outfile, 'r')
     response = http.HttpResponse(out, mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="lettere.pdf"'
