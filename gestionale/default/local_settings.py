@@ -23,7 +23,7 @@ SECRET_KEY = 'eq2u35)_qf#zrn$n97+o4belkhe9j=xq17yx75f79u*ma*y7wb'
 DEBUG = False
 
 LOCAL_ROOT_PATH = 'PWD'
-LOCAL_PATH = LOCAL_ROOT_PATH + 'main/templates/' + APP_PREFIX_NAME + '/'
+LOCAL_TEMPLATE_PATH = LOCAL_ROOT_PATH + 'main/templates/' + APP_PREFIX_NAME + '/'
 LOCAL_LOG_PATH =  LOCAL_ROOT_PATH + 'log/' + APP_PREFIX_NAME + '/'
 
 TEMPLATE_DIRS = (

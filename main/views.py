@@ -186,7 +186,7 @@ def generate_report(items, file_name=None):
 
     tmp_file = tempfile.NamedTemporaryFile()
 
-    with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
+    with open(gestionale.local_settings.LOCAL_TEMPLATE_PATH + 'lettera.rtf', 'r') as in_tpl:
         for line in in_tpl:
             #inizio la copia del blocco.
             if '>>START<<' in line:
@@ -225,18 +225,17 @@ from django.template import Context, Template
 
 #def check_rst(request):
 def generate_report2(request, items, file_name=None):
-    #with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
+    #with open(gestionale.local_settings.LOCAL_TEMPLATE_PATH + 'lettera.rtf', 'r') as in_tpl:
     #['rst2pdf', 'manual.txt', '-o', 'uno.pdf', '-s', 'manual.style']
     date_str = datetime.date.today()
     date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
 
     d = tempfile.mkdtemp()
-    in_t = open(os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.txt'), 'r')
-    in_hdr = open(os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_hdr.txt'), 'r')
+    in_t = open(os.path.join(gestionale.local_settings.LOCAL_TEMPLATE_PATH, 'lettera_template.txt'), 'r')
+    in_hdr = open(os.path.join(gestionale.local_settings.LOCAL_TEMPLATE_PATH, 'lettera_hdr.txt'), 'r')
     tpl = in_t.read()
     tpl_hdr = in_hdr.read()
-    print tpl
-    print subprocess.call(["cp", "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'logo_lettera.jpg'),"%s" % d])
+    print subprocess.call(["cp", "%s" % os.path.join(gestionale.local_settings.LOCAL_TEMPLATE_PATH, 'logo_lettera.jpg'),"%s" % d])
 
     txt = os.path.join(d,"out.txt")
     with open(txt, 'wb') as out_txt:
@@ -254,7 +253,7 @@ def generate_report2(request, items, file_name=None):
             "-o",
             "%s" % outfile,
             "-s",
-            "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.style'),
+            "%s" % os.path.join(gestionale.local_settings.LOCAL_TEMPLATE_PATH, 'lettera_template.style'),
             ]
 
     try:
