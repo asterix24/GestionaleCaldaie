@@ -48,7 +48,7 @@ def home(request, d={}):
         if action == 'Lettera':
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
-            return generate_report(data_to_render)
+            return generate_report2(request, data_to_render)
         else:
             for i in selected_rows:
                 ids = i.split(',')
@@ -174,6 +174,9 @@ def tag_replace(m, item_dict):
     field = data_render.formatFields(item_dict, field_name, default_text="-")
     return ''.join([c if ord(c) < 128 else u'\\u' + unicode(ord(c)) + u'?' for c in unicode(field)])
 
+def convert_utf(str):
+    return ''.join([c if ord(c) < 128 else u'\\u' + unicode(ord(c)) + u'?' for c in unicode(str)])
+
 def generate_report(items, file_name=None):
     block = []
     block_copy = False
@@ -218,13 +221,36 @@ def generate_report(items, file_name=None):
     return response
 
 import subprocess
-def check_rst(request):
+from django.template import Context, Template
+
+#def check_rst(request):
+def generate_report2(request, items, file_name=None):
     #with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
     #['rst2pdf', 'manual.txt', '-o', 'uno.pdf', '-s', 'manual.style']
+    date_str = datetime.date.today()
+    date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
+
     d = tempfile.mkdtemp()
+    in_t = open(os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.txt'), 'r')
+    in_hdr = open(os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_hdr.txt'), 'r')
+    tpl = in_t.read()
+    tpl_hdr = in_hdr.read()
+    print tpl
+    print subprocess.call(["cp", "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'logo_lettera.jpg'),"%s" % d])
+
+    txt = os.path.join(d,"out.txt")
+    with open(txt, 'wb') as out_txt:
+        out_txt.write(tpl_hdr)
+        for i in items:
+            i['data'] = date_str
+            t = Template(tpl)
+            c = Context(i)
+            out_txt.write(t.render(c).encode('utf8'))
+
     outfile = os.path.join(d,"out.pdf")
+    print open(txt,'r').read()
     cmd = ["rst2pdf",
-            "%s" % os.path.join(gestionale.local_settings.LOCAL_PATH, 'lettera_template.txt'),
+            "%s" % txt,
             "-o",
             "%s" % outfile,
             "-s",
@@ -237,8 +263,7 @@ def check_rst(request):
         logger.error("Pdf subprocess: %s" % m)
         return errors.server_error(request)
 
-    out = open(outfile, 'r')
-    response = http.HttpResponse(out, mimetype='application/pdf')
+    response = http.HttpResponse(open(outfile, 'r'), mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="lettere.pdf"'
     return response
 
