@@ -52,6 +52,7 @@ urlpatterns = patterns('',
 	# Uncomment the next line to enable the admin:
 	url(r'^admin/', include(admin.site.urls)),
 
+	#url(r'^test/$', 'main.views.check_rst', name='test'),
 	#url(r'^err/$', 'main.views.err', name='err'),
 	#url(r'^dev/populatedb/$', 'main.views.populatedb', name='populat_db'),
 	#url(r'^test/(?P<search_string>\w+)/$', 'main.views.test', name='test'),

@@ -158,7 +158,8 @@ def exportCSV(request, detail_type=None):
 
     return response
 
-
+def user_settings(request):
+    return render(request, 'messages.sub',{'msg_hdr':'Permesso negato.' })
 
 from django.http import HttpResponse
 from functools import partial
