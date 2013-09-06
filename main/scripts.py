@@ -106,7 +106,7 @@ function hide_provaFumi() {
     $("[id=row_altro_colore_bollino]").hide();
 }
 
-if($("#id_tipo_verifica").val() != "provafumi") {
+if($("#id_tipo_verifica").val() != "provafumi" || $("#id_tipo_verifica").val() != "prima_accensione") {
     hide_provaFumi();
 }
 
@@ -134,7 +134,7 @@ $("#id_tipo_verifica").change(function () {
 });
 
 $("#id_tipo_verifica").change( function() {
-    if ($(this).val() == "provafumi") {
+    if ($(this).val() == "provafumi" || $(this).val() == "prima_accensione") {
         show_provaFumi();
     } else {
         hide_provaFumi();
