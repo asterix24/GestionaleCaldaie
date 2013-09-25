@@ -87,3 +87,8 @@ class CustomRadioSelect(RadioFieldRenderer):
         s += u"</>"
         return mark_safe(s)
 
+
+class UploadFileForm(forms.Form):
+    file  = forms.FileField(label='Seleziona il file')
+
+

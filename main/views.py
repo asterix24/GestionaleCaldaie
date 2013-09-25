@@ -158,6 +158,24 @@ def exportCSV(request, detail_type=None):
 
     return response
 
+
+def handle_uploaded_file(f):
+    destination = open('/tmp/prova.txt', 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+        destination.close()
+
+def settings(request):
+    data = "Nulla"
+    form = myforms.UploadFileForm()
+    if request.method == 'POST':
+        form = myforms.UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            data = "Ok"
+
+    return render(request, 'settings.sub',{'form':form, 'data': data})
+
 def maps(request):
     data = scripts.MAPS_ADD_JS
     return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})

@@ -55,8 +55,9 @@
           <div class="nav-collapse collapse">
             <div class="nav pull-right">
                 {% if user.is_staff %}
-                <a class="btn btn-primary btn-info" href="/admin"><i class="icon-wrench icon-white"></i> Admin</a>
+                <a class="btn btn-primary btn-info" href="/admin"><i class="icon-briefcase icon-white"></i> Admin</a>
                 {% endif %}
+                <a class="btn btn-primary btn-info" href="/settings"><i class="icon-wrench icon-white"></i> Impostazioni</a>
 		        {% if user.username %}
                 <a class="btn btn-primary btn-info" href="#"><i class="icon-user icon-white"></i> {{user.username|capfirst}}</a>
 		        {% endif %}
@@ -109,13 +110,12 @@
         </div><!--/span-->
       </div><!--/row-->
 
-      <hr>
+        <hr>
+        <footer>
+            <p> &copy; GestioneImpianti.net 2013</p>
+        </footer>
+  </div><!--/row-->
 
-      <footer>
-        <p>&copy; GestioneImpianti.net 2013</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
 
     <!-- Le javascript
     ================================================== -->
