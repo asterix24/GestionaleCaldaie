@@ -344,7 +344,7 @@ class DataRender(object):
 
         # Show statistics of founded records
         if self.show_statistics:
-            table += self.msg_statistics % len(self.items)
+            table += self.msg_statistics.replace("COUNT", str(len(self.items)))
             self.show_statistics = False
 
         if self.toolbar_top:

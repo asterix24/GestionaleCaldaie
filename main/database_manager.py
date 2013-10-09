@@ -369,12 +369,11 @@ def generate_query(search_keys=None, order_by_field=None, ordering=None, id_fiel
 
     return QUERY + " WHERE ( " + " AND ".join(search_query)  + " ) " + query_order, param
 
-def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=None, order_by_field=None, ordering=None):
+def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=None, order_by_field=None, ordering=None, status=False):
     if ref_month is None or ref_month == "":
         ref_month = datetime.date.today().month
     if ref_year is None or ref_year == "":
         ref_year = datetime.date.today().year
-
     if ref_month > 12 and ref_month < 1:
         logger.error("Invalid month[%s]" % ref_month)
         return []
@@ -412,7 +411,10 @@ def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=
         query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (ref_year)
         query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (ref_month)
 
-    query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
+    if status:
+        query_str2 = " ((main_verifica.stato_verifica = \'C\') AND " + query_year + " AND " + query_month + " )"
+    else:
+        query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
 
     data = query_table(query_str, param, query_str2, [], verifiche_only=True)
     return query_sortDict(data, order_by_field, ordering)

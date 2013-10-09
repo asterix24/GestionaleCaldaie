@@ -92,11 +92,23 @@ def home(request, d={}):
     dr.toolbar(top=tb_top, left=tb_left)
 
     dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
-    dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(form_dict['ref_month'])) + "%s interventi in scadenza.</h2><br>")
+    dr.msgStatistics(("<br><h2>Nel mese di %s " % myforms.monthStr(form_dict['ref_month'])) + "COUNT interventi in scadenza.</h2><br>")
     dr.showStatistics()
 
     dr.orderUrl('home', form_dict)
     data += dr.toTable()
+
+
+    form_dict['status'] = True
+    data_to_render = database_manager.search_inMonth(**form_dict)
+    dr = data_render.DataRender(data_to_render)
+    dr.selectColums(cfg.HOME_STD_VIEW)
+    dr.toolbar(top=tb_top, left=tb_left)
+    dr.msgItemsEmpty("")
+    dr.msgStatistics(("<br><h2>N.COUNT interventi chiusi nel mese di %s" % myforms.monthStr(form_dict['ref_month'])) + ".</h2><br>")
+    dr.showStatistics()
+    data += dr.toTable()
+
 
     if d:
        notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
