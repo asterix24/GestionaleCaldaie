@@ -3,11 +3,14 @@
 
 HOME_ADD_JS = """
 <script>
-$("a[id=action]").click(function() {
+$("a[id=action]").click(function(event){
+    event.preventDefault();
     var action = $(this).text();
     $.each($("input[name=row_select]"), function(index, value) {
         if (value.id == action[0] || 'T' == action[0]) {
             value.checked = true;
+        } else {
+            value.checked = false;
         }
         if ('N' == action[0]) {
             value.checked = false;
