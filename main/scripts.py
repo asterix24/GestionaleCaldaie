@@ -3,19 +3,19 @@
 
 HOME_ADD_JS = """
 <script>
-$("input[type=button]").click( function() {
-    var button_action = $(this).val();
-    if (button_action == 'Seleziona Tutti') {
-        $("input[name=row_select]").attr('checked', true);
-        $(this).val('Deseleziona Tutti');
-    } else if (button_action == 'Deseleziona Tutti') {
-        $("input[name=row_select]").attr('checked', false);
-        $(this).val('Seleziona Tutti');
-    }
+$("a[id=action]").click(function() {
+    var action = $(this).text();
+    $.each($("input[name=row_select]"), function(index, value) {
+        if (value.id == action[0] || 'T' == action[0]) {
+            value.checked = true;
+        }
+        if ('N' == action[0]) {
+            value.checked = false;
+        }
+    });
 });
 </script>
 """
-
 MAPS_ADD_JS = """
 <script>
 var mapOptions = {

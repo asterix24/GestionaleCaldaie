@@ -79,15 +79,29 @@ def home(request, d={}):
     dr.selectColums(cfg.HOME_STD_VIEW)
 
     tb_top = [
-            "<input class=\"btn btn-info\" type=\"button\" name=\"button_action\" value=\"Seleziona Tutti\">",
+            "<button class=\"btn btn-info dropdown-toggle\" data-toggle=\"dropdown\">Seleziona \
+            <span class=\"caret\"></span></button> \
+            <ul class=\"dropdown-menu\"> \
+            <li><a id=\"action\" href=\"#\">Aperti</a></li> \
+            <li><a id=\"action\" href=\"#\">Sospesi</a></li> \
+            <li><a id=\"action\" href=\"#\">Chiusi</a></li> \
+            <li class=\"divider\"></li> \
+            <li><a id=\"action\" href=\"#\">Tutti</a></li> \
+            <li><a id=\"action\" href=\"#\">Nessuno</a></li> \
+            </ul>",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Lettera\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Apri\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
     ]
 
+
+
+
+
+
     tb_left = [
-            "<input type=\"checkbox\" name=\"row_select\" value=\"<cliente_id>,<impianto_id>,<verifica_id>,<intervento_id>\">"
+            "<input type=\"checkbox\" name=\"row_select\" id=\"{stato_verifica}\" value=\"{cliente_id},{impianto_id},{verifica_id},{intervento_id}\">"
     ]
     dr.toolbar(top=tb_top, left=tb_left)
 
@@ -207,10 +221,9 @@ def generate_report(items, file_name=None):
     add_page = False
     date_str = datetime.date.today()
     date_str = date_str.strftime(cfg.DATA_FIELD_STR_FORMAT)
-
     tmp_file = tempfile.NamedTemporaryFile()
 
-    with open(gestionale.local_settings.LOCAL_PATH + 'lettera.rtf', 'r') as in_tpl:
+    with open(gestionale.local_settings.LOCAL_TEMPLATE_PATH + 'lettera.rtf', 'r') as in_tpl:
         for line in in_tpl:
             #inizio la copia del blocco.
             if '>>START<<' in line:

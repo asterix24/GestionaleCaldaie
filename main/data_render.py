@@ -20,6 +20,7 @@ IMPIANTO_ID = 1
 VERIFICA_ID = 2
 INTERVENTO_ID = 3
 
+PATTEN_REPLACE = '({\w+})'
 
 def make_url(message, path, cliente_id=None, impianto_id=None, sub_impianto_id=None):
     data = ""
@@ -245,10 +246,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
 def id_replace(m, item_dict):
     k = m.group()
     field_name = k[1:-1].lower()
-    if field_name in ['cliente_id', 'impianto_id', 'verifica_id', 'intervento_id']:
-        return str(item_dict.get(field_name,'noid'))
-    else:
-        return 'noid'
+    return str(item_dict.get(field_name,'noid'))
 
 HDR_STYLE_CENTER = "<div class=\"text-center\" style=\"font-size:1.1em;color:#0088cc\"><strong>%s</strong></div>"
 HDR_STYLE = "style=\"background-color: #5993A5;\
@@ -350,7 +348,7 @@ class DataRender(object):
         if self.toolbar_top:
             table += "<div class=\"btn-group\">"
             for t in self.toolbar_top:
-                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
+                table += "%s" % re.sub(PATTEN_REPLACE, partial(id_replace, item_dict=self.items[0]), t)
             table += "</div><p></p>"
 
         table += "<table id=\"customers\" class=\"table table-striped table-hover table-condensed table-bordered\">"
@@ -411,7 +409,7 @@ class DataRender(object):
                 if self.toolbar_left:
                     table += "<td>"
                     for t in self.toolbar_left:
-                        table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                        table += "%s" % re.sub(PATTEN_REPLACE, partial(id_replace, item_dict=item_dict), t)
                     table += "</td>"
 
                 for i in self.colums:
@@ -423,14 +421,14 @@ class DataRender(object):
                 colspan = len(self.colums) + 1
                 table += "<tr><td colspan=\"%s\">" % colspan
                 for t in self.toolbar_last_row:
-                    table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=self.items[0]), t)
+                    table += "%s" % re.sub(PATTEN_REPLACE, partial(id_replace, item_dict=self.items[0]), t)
 
                 table += "</td></tr>"
 
         table += "</tbody></table>"
         if self.toolbar_bot:
             for t in self.toolbar_bot:
-                table += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+                table += "%s" % re.sub(PATTEN_REPLACE, partial(id_replace, item_dict=item_dict), t)
 
         table += "</div>"
 
@@ -459,7 +457,7 @@ def render_toList(item_dict, show_colum, header_msg, detail_type=None, toolbar=[
     if toolbar:
         l += "<br><div class=\"text-center\"><div class=\"btn-group\">"
         for t in toolbar:
-            l += "%s" % re.sub('(<\w+>)', partial(id_replace, item_dict=item_dict), t)
+            l += "%s" % re.sub(PATTEN_REPLACE, partial(id_replace, item_dict=item_dict), t)
         l += "</div></div>"
 
     l += "</div>"
