@@ -12,7 +12,7 @@ from main import cfg
 logger = logging.getLogger(__name__)
 
 MSG_ITEMS_EMPTY = "<br><h2>La ricerca non ha prodotto risultati</h2><br>"
-MSG_STATISTICS = "<br><h3>Records trovati: %s</h3><br>"
+MSG_STATISTICS = "<br><h3>Records trovati: COUNT</h3><br>"
 EMPTY_CELL = '-'
 
 CLIENTE_ID = 0
@@ -228,7 +228,7 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
                 s = RENDER_TABLE[field_name](item_dict, field_name, default_text, with_url)
             else:
                 s  = item_dict[field_name]
-                if not isValidKey(item_dict, field_name):
+                if s is None or s == "":
                     s = default_text
                 elif type(s) == datetime.date:
                     s = s.strftime(cfg.DATA_FIELD_STR_FORMAT)
@@ -239,7 +239,6 @@ def formatFields(item_dict, field_name, with_url=False, default_text=EMPTY_CELL)
         logger.error("%s Errore nel render di (%s) s=%s {%s}" % (__name__, m, s, item_dict))
         s = default_text
 
-    print
     return s
 
 

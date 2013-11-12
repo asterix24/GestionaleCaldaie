@@ -49,6 +49,10 @@ def home(request, d={}):
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
             return generate_report(data_to_render)
+        elif action == 'Esporta CSV':
+            ids = __getIds(selected_rows, data_render.CLIENTE_ID)
+            data_to_render = database_manager.search_ids('main_cliente.id', ids)
+            return export_csv(data_to_render)
         else:
             for i in selected_rows:
                 ids = i.split(',')
@@ -74,7 +78,6 @@ def home(request, d={}):
             form_dict['ordering'] = form.cleaned_data['ordering']
 
     data_to_render = database_manager.search_inMonth(**form_dict)
-
     dr = data_render.DataRender(data_to_render)
     dr.selectColums(cfg.HOME_STD_VIEW)
 
@@ -93,12 +96,8 @@ def home(request, d={}):
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Apri\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Esporta CSV\">",
     ]
-
-
-
-
-
 
     tb_left = [
             "<input type=\"checkbox\" name=\"row_select\" id=\"{stato_verifica}\" value=\"{cliente_id},{impianto_id},{verifica_id},{intervento_id}\">"
@@ -135,58 +134,25 @@ def home(request, d={}):
                                        })
 
 
-def exportCSV(request, detail_type=None):
-    data_table = []
-    filename='Elenco'
-    form_dict = {
-            'search_keys' : "",
-            'filter_type' : None,
-            'ref_month' : None,
-            'ref_year' : None,
-            'order_by_field' : "",
-            'ordering' : "",
-    }
-    if detail_type is None or detail_type == "home":
-
-        form_dict['search_keys'] = request.GET.get('search_keys', None)
-        form_dict['filter_type'] = request.GET.get('filter_type', None)
-        form_dict['ref_month'] = request.GET.get('ref_month', None)
-        form_dict['ref_year'] = request.GET.get('ref_year', None)
-        form_dict['order_by_field'] = request.GET.gorder_by_field('order_by_field', None)
-        form_dict['ordering'] = request.GET.get('ordering', None)
-
-        filename = myforms.monthStr(form_dict['ref_month'])
-
-        data_table = database_manager.search_inMonth(**form_dict)
-
-    elif detail_type == "anagrafe":
-        filename='Anagrafe'
-
-        form_dict['search_keys'] = request.GET.get('search_keys','')
-        form_dict['order_by_field'] = request.GET.get('order_by_field', None)
-        form_dict['ordering'] = request.GET.get('ordering', None)
-        data_table = database_manager.search_fullText(form_dict['search_keys'], form_dict['order_by_field'], form_dict['ordering'])
-
+def export_csv(data_table):
+    filename = "Elenco"
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y_%X"))
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
 
     response.write("\xEF\xBB\xBF")
-    writer = tools.UnicodeWriter(response, delimiter=';', quotechar='\"')
+    writer = tools.UnicodeWriter(response, delimiter=',', quotechar='\"')
     writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
 
     for item_dict in data_table:
         l = []
         for i in cfg.ANAGRAFE_STD_VIEW:
-            l.append(data_render.formatFields(item_dict, i, default_text=u"-"))
+            l.append(data_render.formatFields(item_dict, i, default_text="-"))
 
         writer.writerow(l)
 
     return response
 
-def maps(request):
-    data = scripts.MAPS_ADD_JS
-    return render(request, 'maps.sub',{'query_path':request.get_full_path(), 'data': data})
 
 def populatedb(request):
     #data = tools.insert_csv_files(cli_on=False)
