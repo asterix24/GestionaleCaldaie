@@ -27,6 +27,30 @@ def __getIds(raw_items, item_id):
 
     return l
 
+def __export_csv(data_table):
+    filename = "Elenco"
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = http.HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
+
+    response.write("\xEF\xBB\xBF")
+    writer = tools.UnicodeWriter(response, delimiter=',', quotechar='\"')
+    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
+
+    for item_dict in data_table:
+        l = []
+        for i in cfg.ANAGRAFE_STD_VIEW:
+            l.append(data_render.formatFields(item_dict, i, default_text="-"))
+
+        writer.writerow(l)
+
+    return response
+
+def export_csv(request):
+    search_string = request.GET.get('search_keys','')
+    data_table = database_manager.search_fullText(search_string)
+    return __export_csv(data_table)
+
 def home(request, d={}):
     form = myforms.RangeDataSelect()
     data = ''
@@ -52,7 +76,7 @@ def home(request, d={}):
         elif action == 'Esporta CSV':
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
-            return export_csv(data_to_render)
+            return __export_csv(data_to_render)
         else:
             for i in selected_rows:
                 ids = i.split(',')
@@ -134,24 +158,6 @@ def home(request, d={}):
                                        })
 
 
-def export_csv(data_table):
-    filename = "Elenco"
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = http.HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
-
-    response.write("\xEF\xBB\xBF")
-    writer = tools.UnicodeWriter(response, delimiter=',', quotechar='\"')
-    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
-
-    for item_dict in data_table:
-        l = []
-        for i in cfg.ANAGRAFE_STD_VIEW:
-            l.append(data_render.formatFields(item_dict, i, default_text="-"))
-
-        writer.writerow(l)
-
-    return response
 
 
 def populatedb(request):

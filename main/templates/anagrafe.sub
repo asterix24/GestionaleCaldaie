@@ -6,6 +6,10 @@
 {% endautoescape %}
 {% endblock %}
 
+{% block navigation_menu_block_top %}
+<li><a href="/export{{query_path}}"><strong>Esporta CSV</strong></a></li>
+{% endblock %}
+
 {% block center_block %}
 
 <div id="notification_area" class="modal hide">

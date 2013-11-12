@@ -15,8 +15,7 @@ urlpatterns = patterns('',
 	url(r'^$', 'main.views.home', name='home'),
 	url(r'^home/$', 'main.views.home', name='home'),
 	#url(r'^maps/$', 'main.views.maps', name='maps'),
-	#url(r'^export/$', 'main.views.exportCSV', name='exportCSV'),
-	#url(r'^export/(?P<detail_type>\w+)/$', 'main.views.exportCSV', name='exportCSV'),
+	url(r'^export/anagrafe/$', 'main.views.export_csv', name='expor_csv'),
 	url(r'^anagrafe/$', 'main.anagrafe.anagrafe', name='anagrafe'),
 
 	# Client manager urls
