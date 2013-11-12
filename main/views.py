@@ -92,10 +92,10 @@ def home(request, d={}):
             <li><a id=\"action\" href=\"#\">Tutti</a></li> \
             <li><a id=\"action\" href=\"#\">Nessuno</a></li> \
             </ul>",
-            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Lettera\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Apri\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Lettera\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Esporta CSV\">",
     ]
 
