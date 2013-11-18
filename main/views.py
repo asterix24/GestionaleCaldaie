@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bmport settings
 # -*- coding: utf-8 -*-
 
 from django import http
@@ -157,20 +157,63 @@ def home(request, d={}):
                                        'scripts': scripts.HOME_ADD_JS,
                                        })
 
-
-
-
 def populatedb(request):
     #data = tools.insert_csv_files(cli_on=False)
     data = tools.load_csv('/home/asterix/gestionale_www/main/elenco2011.csv')
     return _display_ok(request, "DB aggiornato con sucesso\n" + data)
 
-def test(request, search_string):
-    form = myforms.FullTextSearchForm()
-    data = scripts.HOME_ADD_JS
-    data_to_render = database_manager.query_test(search_string)
-    print len(data_to_render)
-    return render(request, 'anagrafe.sub', {'data': data,'forms': form })
+def test(request):
+    print request.POST.getlist('or', [])
+    show = cfg.HOME_STD_VIEW
+    hide = ["Vuota"]
+    #print show, hide
+    return render(request, 'test.sub', {'items_show': show, 'items_hide':hide })
+
+from main.models import Cliente
+from main.templates import default_view
+from main.data import custom_view
+
+def slide_list(request):
+    show = []
+    hide = []
+
+    # get settings from files
+    if request.method == "GET":
+        try:
+            show = custom_view.HOME_VIEW_SHOW
+        except AttributeError:
+            logger.error("No custom settings foldback on default.")
+            show = default_view.HOME_VIEW_SHOW
+
+        for i in cfg.CFG_ALL:
+            if i in show:
+                continue
+            hide.append(i)
+
+    if request.method == "POST":
+        show_fld = request.POST.get('show','')
+        hide_fld = request.POST.get('hide','')
+
+        print "show", show_fld
+        print "hide", hide_fld
+        if show_fld:
+            ls = s.split(',')
+            for k in ls:
+                if k in cfg.CFG_ALL:
+                    custom_view.HOME_VIEW.append(k)
+
+        if hide_fld:
+            lh = h.split(',')
+            for k in lh:
+                try:
+                    idx = custom_view.HOME_VIEW(k)
+                    custom_view.HOME_VIEW.pop(idx)
+                except ValueError:
+                    continue
+
+
+    context_dict = { 'hide_list':hide, 'show_list':show }
+    return render(request, "test.sub", context_dict)
 
 
 from django.http import HttpResponse
