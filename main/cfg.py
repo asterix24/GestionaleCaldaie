@@ -115,28 +115,88 @@ DB_DATA_FIELD = [
 'prossima_analisi_combustione',
 ]
 
-GROUP_FIELD_VIEW = {
-'cognome'             : { "field":"main_cliente.cognome",               "order":"asc" },
-'nome'                : { "field":"main_cliente.nome",                  "order":"asc" },
-'codice_fiscale'      : { "field":"main_cliente.codice_fiscale",        "order":"asc" },
-'via'                 : { "field":"main_cliente.via",                   "order":"asc" },
-'citta'               : { "field":"main_cliente.citta",                 "order":"asc" },
-'cap'                 : { "field":"main_cliente.cap",                   "order":"asc" },
-'numero_cellulare'    : { "field":"main_cliente.numero_cellulare",      "order":"asc" },
-'numero_telefono'     : { "field":"main_cliente.numero_telefono",       "order":"asc" },
-'mail'                : { "field":"main_cliente.mail",                  "order":"asc" },
 
-'codice_impianto'     : { "field":"main_impianto.codice_impianto",       "order":"asc" },
-'stato_impianto'      : { "field":"main_impianto.stato_impianto",       "order":"asc" },
-'marca_caldaia'       : { "field":"main_impianto.marca_caldaia",        "order":"asc" },
-'modello_caldaia'     : { "field":"main_impianto.modello_caldaia",      "order":"asc" },
-'matricola_caldaia'   : { "field":"main_impianto.matricola_caldaia",    "order":"asc" },
-'potenza_caldaia'     : { "field":"main_impianto.potenza_caldaia",      "order":"asc" },
-'combustibile'        : { "field":"main_impianto.combustibile",         "order":"asc" },
-'tipo_caldaia'        : { "field":"main_impianto.tipo_caldaia",         "order":"asc" },
-'data_installazione'  : { "field":"main_impianto.data_installazione",   "order":"asc" },
-'data_contratto'      : { "field":"main_impianto.data_contratto",       "order":"asc" },
-'anzianita_impianto'  : { "field":"main_impianto.anzianita_impianto",   "order":"asc" },
+CFG_CLIENTE = [
+#cliente
+    'cliente_data_inserimento',
+    'nome',
+    'cognome',
+    'codice_fiscale',
+    'via',
+    'citta',
+    'cap',
+    'numero_telefono',
+    'numero_cellulare',
+    'mail',
+    ]
+CFG_IMPIANTO = [
+#impianto
+    'impianto_data_inserimento',
+    'stato_impianto',
+    'cliente_impianto',
+    'codice_impianto',
+    'marca_caldaia',
+    'modello_caldaia',
+    'matricola_caldaia',
+    'potenza_caldaia',
+    'altra_potenza_caldaia',
+    'tipo_caldaia',
+    'altro_tipo_caldaia',
+    'combustibile',
+    'data_installazione',
+    'data_contratto',
+    ]
+CFG_VERIFICA = [
+#Verifica
+    'stato_verifica',
+    'data_verifica',
+    'tipo_verifica',
+    'altro_tipo_verifica',
+    'codice_id',
+    'numero_rapporto',
+    'prossima_verifica',
+    'analisi_combustione',
+    'colore_bollino',
+    'altro_colore_bollino',
+    'numero_bollino',
+    'valore_bollino',
+    'prossima_analisi_combustione',
+    'stato_pagamento',
+    'costo_intervento',
+    'note_verifica',
+    ]
+CFG_INTERVENTO = [
+# interventi
+    'data_intervento',
+    'intervento_impianto',
+    'tipo_intervento',
+    'note_intervento',
+]
+
+CFG_ALL = CFG_CLIENTE + CFG_IMPIANTO + CFG_VERIFICA + CFG_INTERVENTO
+
+GROUP_FIELD_VIEW = {
+'cognome'                       : { "field":"main_cliente.cognome",                        "order":"asc"},
+'nome'                          : { "field":"main_cliente.nome",                           "order":"asc"},
+'codice_fiscale'                : { "field":"main_cliente.codice_fiscale",                 "order":"asc"},
+'via'                           : { "field":"main_cliente.via",                            "order":"asc"},
+'citta'                         : { "field":"main_cliente.citta",                          "order":"asc"},
+'cap'                           : { "field":"main_cliente.cap",                            "order":"asc"},
+'numero_cellulare'              : { "field":"main_cliente.numero_cellulare",               "order":"asc"},
+'numero_telefono'               : { "field":"main_cliente.numero_telefono",                "order":"asc"},
+'mail'                          : { "field":"main_cliente.mail",                           "order":"asc"},
+
+'codice_impianto'               : { "field":"main_impianto.codice_impianto",               "order":"asc"},
+'stato_impianto'                : { "field":"main_impianto.stato_impianto",                "order":"asc"},
+'marca_caldaia'                 : { "field":"main_impianto.marca_caldaia",                 "order":"asc"},
+'modello_caldaia'               : { "field":"main_impianto.modello_caldaia",               "order":"asc"},
+'matricola_caldaia'             : { "field":"main_impianto.matricola_caldaia",             "order":"asc"},
+'potenza_caldaia'               : { "field":"main_impianto.potenza_caldaia",               "order":"asc"},
+'combustibile'                  : { "field":"main_impianto.combustibile",                  "order":"asc"},
+'tipo_caldaia'                  : { "field":"main_impianto.tipo_caldaia",                  "order":"asc"},
+'data_installazione'            : { "field":"main_impianto.data_installazione",            "order":"asc"},
+'data_contratto'                : { "field":"main_impianto.data_contratto",                "order":"asc"},
+'anzianita_impianto'            : { "field":"main_impianto.anzianita_impianto",            "order":"asc"},
 
 'stato_verifica'                : { "field":"main_verifica.stato_verifica",                "order":"asc"},
 'data_verifica'                 : { "field":"main_verifica.data_verifica",                 "order":"asc"},
@@ -146,20 +206,20 @@ GROUP_FIELD_VIEW = {
 'numero_rapporto'               : { "field":"main_verifica.numero_rapporto",               "order":"asc"},
 'prossima_verifica'             : { "field":"main_verifica.prossima_verifica",             "order":"asc"},
 'analisi_combustione'           : { "field":"main_verifica.analisi_combustione",           "order":"asc"},
-'colore_bollino'                : { "field":"main_verifica.colore_bollino",                 "order":"asc"},
-'altro_colore_bollino'          : { "field":"main_verifica.altro_colore_bollino",           "order":"asc"},
-'numero_bollino'                : { "field":"main_verifica.numero_bollino",                 "order":"asc"},
-'valore_bollino'                : { "field":"main_verifica.valore_bollino",                 "order":"asc"},
-'prossima_analisi_combustione'  : { "field":"main_verifica.prossima_analisi_combustione",   "order":"asc"},
-'stato_pagamento'               : { "field":"main_verifica.stato_pagamento",                "order":"asc"},
-'costo_intervento'              : { "field":"main_verifica.costo_intervento",               "order":"asc"},
-'note_verifica'                 : { "field":"main_verifica.note_verifica",                  "order":"asc"},
-'data_ultima_verifica'          : { "field":"main_verifica.data_ultima_verifica",           "order":"asc"},
-'ultima_analisi_combustione'    : { "field":"main_verifica.ultima_analisi_combustione",     "order":"asc"},
+'colore_bollino'                : { "field":"main_verifica.colore_bollino",                "order":"asc"},
+'altro_colore_bollino'          : { "field":"main_verifica.altro_colore_bollino",          "order":"asc"},
+'numero_bollino'                : { "field":"main_verifica.numero_bollino",                "order":"asc"},
+'valore_bollino'                : { "field":"main_verifica.valore_bollino",                "order":"asc"},
+'prossima_analisi_combustione'  : { "field":"main_verifica.prossima_analisi_combustione",  "order":"asc"},
+'stato_pagamento'               : { "field":"main_verifica.stato_pagamento",               "order":"asc"},
+'costo_intervento'              : { "field":"main_verifica.costo_intervento",              "order":"asc"},
+'note_verifica'                 : { "field":"main_verifica.note_verifica",                 "order":"asc"},
+'data_ultima_verifica'          : { "field":"main_verifica.data_ultima_verifica",          "order":"asc"},
+'ultima_analisi_combustione'    : { "field":"main_verifica.ultima_analisi_combustione",    "order":"asc"},
 
-'data_intervento'               : { "field":"main_intervento.data_intervento",     "order":"asc"},
-'tipo_intervento'               : { "field":"main_intervento.tipo_intervento",     "order":"asc"},
-'note_intervento'               : { "field":"main_intervento.note_intervento",     "order":"asc"},
+'data_intervento'               : { "field":"main_intervento.data_intervento",             "order":"asc"},
+'tipo_intervento'               : { "field":"main_intervento.tipo_intervento",             "order":"asc"},
+'note_intervento'               : { "field":"main_intervento.note_intervento",             "order":"asc"},
 
 }
 
