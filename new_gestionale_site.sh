@@ -24,6 +24,8 @@ sed -i "s,PWD,$CURRENT_DIR,g" $NEW/local_settings.py
 
 sed -i "s/DEFAULT/$NEW_SITE/g" $NEW/wsgi.py
 
+mkdir "main/data/$NEW_SITE"
+
 mkdir "main/templates/$NEW_SITE"
 mkdir "main/static/$NEW_SITE"
 ln -s /home/asterix/venv/lib/python2.7/site-packages/Django-1.4-py2.7.egg/django/contrib/admin/static/admin/ main/static/$NEW_SITE/admin
