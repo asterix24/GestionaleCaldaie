@@ -176,12 +176,12 @@ from main.data import custom_view
 def slide_list(request):
     show = []
     hide = []
+    f = models.SettingsForm()
 
     # get settings from files
     if request.method == "GET":
-        try:
-            show = custom_view.HOME_VIEW_SHOW
-        except AttributeError:
+        show = models.Settings.objects.all()
+        if not show:
             logger.error("No custom settings foldback on default.")
             show = default_view.HOME_VIEW_SHOW
 
@@ -191,26 +191,9 @@ def slide_list(request):
             hide.append(i)
 
     if request.method == "POST":
-        show_fld = request.POST.get('show','')
-        hide_fld = request.POST.get('hide','')
-
-        print "show", show_fld
-        print "hide", hide_fld
-        if show_fld:
-            ls = s.split(',')
-            for k in ls:
-                if k in cfg.CFG_ALL:
-                    custom_view.HOME_VIEW.append(k)
-
-        if hide_fld:
-            lh = h.split(',')
-            for k in lh:
-                try:
-                    idx = custom_view.HOME_VIEW(k)
-                    custom_view.HOME_VIEW.pop(idx)
-                except ValueError:
-                    continue
-
+        form = models.SettingsForm(request.POST)
+        if form.is_valid():
+            form.save()
 
     context_dict = { 'hide_list':hide, 'show_list':show }
     return render(request, "test.sub", context_dict)
