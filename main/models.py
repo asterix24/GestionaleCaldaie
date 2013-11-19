@@ -326,3 +326,26 @@ class InterventoForm(forms.ModelForm):
     class Meta:
         model = Intervento
 
+class Settings(models.Model):
+    home_view = models.TextField(default='', null=True, blank=True)
+    anagrafe_view = models.TextField(default='', null=True, blank=True)
+    export_csv = models.TextField(default='', null=True, blank=True)
+
+    def __unicode__(self):
+        return self.home_view
+
+from main import cfg
+class SettingsForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super(forms.ModelForm, self).clean()
+        _home_view = cleaned_data.get("home_view")
+        ls = _home_view.split(',')
+        for i in ls:
+            if i in cfg.CFG_ALL:
+                _home_view.append(i)
+
+        return cleaned_data
+
+    class Meta:
+        model = Settings
+
