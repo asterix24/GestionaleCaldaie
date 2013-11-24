@@ -36,7 +36,7 @@ def __settings_ShowHide(settings, key, default, idx=0):
 
     return show, hide
 
-def settings_view(request):
+def settings_home(request):
     home_view_show = []
     home_view_hide = []
 
@@ -45,6 +45,9 @@ def settings_view(request):
         settings = models.Settings.objects.all()
         home_view_show, home_view_hide = __settings_ShowHide(settings, 'home_view', cfg.HOME_STD_VIEW)
 
+    return render(request, "settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+
+def settings_view(request):
     if request.method == "POST":
         print request.POST
         try:
@@ -56,6 +59,6 @@ def settings_view(request):
         if form.is_valid():
             form.save()
 
-    return render(request, "settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+    return http.HttpResponse()
 
 
