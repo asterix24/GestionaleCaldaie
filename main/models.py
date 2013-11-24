@@ -334,18 +334,25 @@ class Settings(models.Model):
     def __unicode__(self):
         return self.home_view
 
+    class Meta:
+        ordering = ['-id'] # Ordina per data in modo decrescente
+
 from main import cfg
+
 class SettingsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
-        _home_view = cleaned_data.get("home_view")
-        ls = _home_view.split(',')
-        for i in ls:
-            if i in cfg.CFG_ALL:
-                _home_view.append(i)
+        _home_view = cleaned_data.get("home_view",'')
+        h = []
+        if _home_view:
+            ls = _home_view.split('-')
+            for i in ls:
+                if i in cfg.CFG_ALL:
+                    h.append(i)
 
+
+        cleaned_data['home_view'] = '-'.join(h)
         return cleaned_data
 
     class Meta:
         model = Settings
-
