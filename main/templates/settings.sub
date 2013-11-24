@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block center_block %}
+
+<div class="row-fluid">
+    <h3>{{data}}</h3>
+
+<form class="form-horizontal" action="{% url settings %}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    <div class="well well-small">
+        <div class="controls">
+            {{ form }}
+        </div>
+    {% if form.errors %} <div class="alert alert-error">{{form.errors}}</div> {% endif %}
+
+    <input class="btn btn-info btn-large" type="submit" value="Carica"/>
+    </div>
+</form>
+
+</div>
+
+<hr>
+<ul id="show_sortable" class="droptrue">
+    <li class="ui-state-disabled"><h4>Show</h4></li>
+    {% for slide in home_show %}
+        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
+    {% endfor %}
+</ul>
+
+<hr>
+<ul id="hide_sortable" class="droptrue">
+    <li class="ui-state-disabled"><h4>Hide</h4></li>
+    {% for slide in home_hide %}
+        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+$("#show_sortable").sortable({
+    items: "li.ui-state-default",
+    placeholder: "Show items",
+    connectWith: '#hide_sortable',
+    update: function(event,ui) {
+        var r = $('#show_sortable').sortable('toArray');
+        r = r.join('-');
+        $.ajax({
+            type: "POST",
+            url: "/settings/view/",
+            data: 'home_view=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
+        });
+    }
+}).disableSelection();
+
+$("#hide_sortable").sortable({
+    items: "li.ui-state-default",
+    placeholder: "Hide items",
+    connectWith: '#show_sortable',
+}).disableSelection();
+
+</script>
+{% endblock %}
