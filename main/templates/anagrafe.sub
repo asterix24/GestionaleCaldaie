@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block navigation_menu_block_top %}
-<li><a href="/export{{query_path}}"><strong>Esporta CSV</strong></a></li>
+<li><a href="/export{{query_path}}"><strong>Scarica Tabella</strong></a></li>
 {% endblock %}
 
 {% block center_block %}
