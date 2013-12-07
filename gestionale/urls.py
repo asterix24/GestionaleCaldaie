@@ -47,7 +47,8 @@ urlpatterns = patterns('',
 	url(r'^anagrafe/(?P<cliente_id>\d+)/impianto/(?P<impianto_id>\d+)/(?P<detail_type>\w+)/(?P<sub_impianto_id>\d+)/edit/$', 'main.anagrafe.edit_record', name='edit_record'),
 
     #settings
-	url(r'^settings/$', 'main.user_settings.slide_list', name='slide_list'),
+	url(r'^settings/$', 'main.user_settings.settings_home', name='settings_home'),
+	url(r'^settings/view/$', 'main.user_settings.slide_list', name='slide_list'),
 
 	# Uncomment the admin/doc line below to enable admin documentation:
 	#url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

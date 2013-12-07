@@ -5,7 +5,7 @@
 <div class="row-fluid">
     <h3>{{data}}</h3>
 
-<form class="form-horizontal" action="{% url settings %}" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" action="{% url home %}" method="post" enctype="multipart/form-data">
 {% csrf_token %}
     <div class="well well-small">
         <div class="controls">

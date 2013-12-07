@@ -3,6 +3,7 @@
 
 from django import http
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 
 from main import models
 from main import myforms
@@ -16,7 +17,6 @@ from main import errors
 import logging
 logger = logging.getLogger(__name__)
 
-from main.models import Cliente
 
 def __settings_ShowHide(settings, key, default, idx=0):
     settings = settings.values()
@@ -45,7 +45,8 @@ def __settings_ShowHide(settings, key, default, idx=0):
     return show, hide
 
 
-from django.core.exceptions import ObjectDoesNotExist
+def settings_home(request):
+    return render(request, "user_settings.sub", { })
 
 def slide_list(request):
     home_view_show = []
@@ -65,5 +66,5 @@ def slide_list(request):
         form = models.SettingsForm(request.POST, instance=select)
         if form.is_valid():
             form.save()
-    return render(request, "test.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+    return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
 
