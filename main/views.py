@@ -27,14 +27,36 @@ def __getIds(raw_items, item_id):
 
     return l
 
-def __export_csv(data_table):
-    filename = "Elenco"
+import xlwt
+def __export_xls(data_table, filename="tabella"):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = http.HttpResponse(mimetype='application/ms-excel; charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="%s_%s.xls"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
+
+    book = xlwt.Workbook(encoding='utf-8')
+    sheet = book.add_sheet('Elenco')
+
+    #Add header
+    for colum,j in enumerate(cfg.ANAGRAFE_STD_VIEW):
+        sheet.write(0, colum, "%s" % j.replace('_', ' ').capitalize())
+
+    #Write table
+    for row,i in enumerate(data_table):
+        for colum,j in enumerate(cfg.ANAGRAFE_STD_VIEW):
+            #we should skip the header row.
+            sheet.write(row + 1, colum, data_render.formatFields(i,j, default_text="-"))
+
+    book.save(response)
+    return response
+
+
+def __export_csv(data_table, filename="tabella"):
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
 
     response.write("\xEF\xBB\xBF")
-    writer = tools.UnicodeWriter(response, delimiter=',', quotechar='\"')
+    writer = tools.UnicodeWriter(response, delimiter=';')
     writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
 
     for item_dict in data_table:
@@ -46,10 +68,11 @@ def __export_csv(data_table):
 
     return response
 
-def export_csv(request):
+def export_table(request):
     search_string = request.GET.get('search_keys','')
     data_table = database_manager.search_fullText(search_string)
-    return __export_csv(data_table)
+    return __export_xls(data_table, "Anagrafe")
+
 
 def home(request, d={}):
     form = myforms.RangeDataSelect()
@@ -73,10 +96,10 @@ def home(request, d={}):
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
             return generate_report(data_to_render)
-        elif action == 'Esporta CSV':
+        elif action == 'Scarica Tabella':
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
-            return __export_csv(data_to_render)
+            return __export_xls(data_to_render, "Elenco")
         else:
             for i in selected_rows:
                 ids = i.split(',')
@@ -120,7 +143,7 @@ def home(request, d={}):
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Chiudi\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Sospendi\">",
             "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Lettera\">",
-            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Esporta CSV\">",
+            "<input class=\"btn btn-info\" type=\"submit\" name=\"button_action\" value=\"Scarica Tabella\">",
     ]
 
     tb_left = [
