@@ -19,23 +19,41 @@
 
 </div>
 
-<hr>
-<ul id="show_sortable" class="droptrue">
-    <li class="ui-state-disabled"><h4>Show</h4></li>
-    {% for slide in home_show %}
-        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
-    {% endfor %}
-</ul>
 
-<hr>
-<ul id="hide_sortable" class="droptrue">
-    <li class="ui-state-disabled"><h4>Hide</h4></li>
-    {% for slide in home_hide %}
-        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
-    {% endfor %}
-</ul>
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+    <li class="active"><a href="#home_set" data-toggle="tab">Home</a></li>
+    <li><a href="#anagrafe_set" data-toggle="tab">Anagrafe</a></li>
+    <li><a href="#lC" data-toggle="tab">Section 3</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="home_set">
+            <div class="span5 offset1 well well-small">
+                <h4>Mostra</h4>
+                <ul id="show_sortable" class="nav nav-tabs nav-stacked">
+                    {% for slide in home_show %}
+                        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="span5 offeset1 well well-small">
+                <h4>Nascondi</h4>
+                <ul id="hide_sortable" class="nav nav-tabs nav-stacked">
+                    {% for slide in home_hide %}
+                        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="tab-pane" id="anagrafe_set">
+            <p>Howdy, I'm in Section B.</p>
+        </div>
+        <div class="tab-pane" id="lC">
+            <p>What up girl, this is Section C.</p>
+        </div>
+    </div>
+</div> <!-- /tabbable -->
 
-<hr>
 
 {% endblock %}
 
