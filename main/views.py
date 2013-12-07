@@ -193,9 +193,7 @@ def test(request):
     return render(request, 'test.sub', {'items_show': show, 'items_hide':hide })
 
 
-from django.http import HttpResponse
 from functools import partial
-from main import data_render
 import tempfile
 import re
 import os,sys
