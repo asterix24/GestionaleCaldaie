@@ -46,9 +46,6 @@ def __settings_ShowHide(settings, key, default, idx=0):
 
 
 def settings_home(request):
-    return render(request, "user_settings.sub", { })
-
-def slide_list(request):
     home_view_show = []
     home_view_hide = []
 
@@ -56,6 +53,10 @@ def slide_list(request):
     if request.method == "GET":
         settings = models.Settings.objects.all()
         home_view_show, home_view_hide = __settings_ShowHide(settings, 'home_view', cfg.HOME_STD_VIEW)
+
+    return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+
+def settings_view(request):
 
     if request.method == "POST":
         try:
@@ -66,5 +67,6 @@ def slide_list(request):
         form = models.SettingsForm(request.POST, instance=select)
         if form.is_valid():
             form.save()
+
     return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
 

@@ -48,7 +48,7 @@ urlpatterns = patterns('',
 
     #settings
 	url(r'^settings/$', 'main.user_settings.settings_home', name='settings_home'),
-	url(r'^settings/view/$', 'main.user_settings.slide_list', name='slide_list'),
+	url(r'^settings/view/$', 'main.user_settings.settings_view', name='settings_view'),
 
 	# Uncomment the admin/doc line below to enable admin documentation:
 	#url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
