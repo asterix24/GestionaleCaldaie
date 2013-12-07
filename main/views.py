@@ -28,9 +28,8 @@ def __getIds(raw_items, item_id):
     return l
 
 import xlwt
-def __export_xls(data_table):
+def __export_xls(data_table, filename="tabella"):
     # Create the HttpResponse object with the appropriate CSV header.
-    filename = "Elenco"
     response = http.HttpResponse(mimetype='application/ms-excel; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="%s_%s.xls"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
 
@@ -51,8 +50,7 @@ def __export_xls(data_table):
     return response
 
 
-def __export_csv(data_table):
-    filename = "Elenco"
+def __export_csv(data_table, filename="tabella"):
     # Create the HttpResponse object with the appropriate CSV header.
     response = http.HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
@@ -73,7 +71,7 @@ def __export_csv(data_table):
 def export_table(request):
     search_string = request.GET.get('search_keys','')
     data_table = database_manager.search_fullText(search_string)
-    return __export_xls(data_table)
+    return __export_xls(data_table, "Anagrafe")
 
 
 def home(request, d={}):
@@ -101,7 +99,7 @@ def home(request, d={}):
         elif action == 'Scarica Tabella':
             ids = __getIds(selected_rows, data_render.CLIENTE_ID)
             data_to_render = database_manager.search_ids('main_cliente.id', ids)
-            return __export_xls(data_to_render)
+            return __export_xls(data_to_render, "Elenco")
         else:
             for i in selected_rows:
                 ids = i.split(',')
