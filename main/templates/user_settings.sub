@@ -19,67 +19,72 @@
 
 </div>
 
-
+<hr>
 <div class="tabbable tabs-left">
     <ul class="nav nav-tabs">
-    <li class="active"><a href="#home_set" data-toggle="tab">Home</a></li>
-    <li><a href="#anagrafe_set" data-toggle="tab">Anagrafe</a></li>
-    <li><a href="#lC" data-toggle="tab">Section 3</a></li>
+        <li class="active"><a href="#home_set" data-toggle="tab">Home</a></li>
+        <li><a href="#anagrafe_set" data-toggle="tab">Anagrafe</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="home_set">
-            <div class="span5 offset1 well well-small">
-                <h4>Mostra</h4>
-                <ul id="show_sortable" class="nav nav-tabs nav-stacked">
-                    {% for slide in home_show %}
-                        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
-                    {% endfor %}
-                </ul>
+            <div class="span5 offset1">
+                <table id=show_sortable class="table table-condensed table-bordered">
+                    <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:600;">
+                    Mostra
+                    </th>
+                    <tbody>
+                        {% for slide in home_show %}
+                            <tr class="show_sortable_content" id="{{ slide }}"><td>{{slide}}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class="span5 offeset1 well well-small">
-                <h4>Nascondi</h4>
-                <ul id="hide_sortable" class="nav nav-tabs nav-stacked">
-                    {% for slide in home_hide %}
-                        <li class="ui-state-default" id="{{ slide }}">{{slide}}</li>
-                    {% endfor %}
-                </ul>
+            <div class="span5">
+                <table id=hide_sortable class="table table-condensed table-bordered">
+                    <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:600;">
+                    Nascondi
+                    </th>
+                    <tbody>
+                        {% for slide in home_hide %}
+                            <tr class="hide_sortable_content" id="{{ slide }}"><td>{{slide}}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="tab-pane" id="anagrafe_set">
-            <p>Howdy, I'm in Section B.</p>
-        </div>
-        <div class="tab-pane" id="lC">
-            <p>What up girl, this is Section C.</p>
-        </div>
+        <div class="tab-pane" id="anagrafe_set"> <p>Howdy, I'm in Section B.</p> </div>
     </div>
 </div> <!-- /tabbable -->
-
 
 {% endblock %}
 
 {% block scripts %}
 <script>
 
+
 $("#show_sortable").sortable({
-    items: "li.ui-state-default",
     placeholder: "Show items",
+    items: "tr.show_sortable_content",
     connectWith: '#hide_sortable',
     update: function(event,ui) {
-        var r = $('#show_sortable').sortable('toArray');
+        var r = $('#show_sortable tr.show_sortable_content').sortable('toArray');
         r = r.join('-');
+        alert(r);
         $.ajax({
             type: "POST",
             url: "/settings/view/",
             data: 'home_view=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
         });
-    }
+        }
 }).disableSelection();
 
 $("#hide_sortable").sortable({
-    items: "li.ui-state-default",
     placeholder: "Hide items",
+    items:"tr.hide_sortable_content",
     connectWith: '#show_sortable',
 }).disableSelection();
 
 </script>
 {% endblock %}
+
+

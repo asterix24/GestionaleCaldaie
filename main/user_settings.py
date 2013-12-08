@@ -57,13 +57,15 @@ def settings_home(request):
     return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
 
 def settings_view(request):
-
+    print request.POST
+    print "qui"
     if request.method == "POST":
         try:
             select = models.Settings.objects.get(pk=0)
         except ObjectDoesNotExist:
             select = None
 
+        print request.POST
         form = models.SettingsForm(request.POST, instance=select)
         if form.is_valid():
             form.save()
