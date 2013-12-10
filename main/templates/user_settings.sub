@@ -20,39 +20,49 @@
 </div>
 
 <hr>
-<div class="tabbable tabs-left">
+<div class="tabbable">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#home_set" data-toggle="tab">Home</a></li>
-        <li><a href="#anagrafe_set" data-toggle="tab">Anagrafe</a></li>
+        {% for item in items %}
+		{% if forloop.first %}
+			<li class="active"><a href="#{{item.setting_id}}" data-toggle="tab">{{item.setting_label}}</a></li>
+		{% else %}
+			<li><a href="#{{item.setting_id}}" data-toggle="tab">{{item.setting_label}}</a></li>
+		{% endif %}
+        {% endfor %}
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="home_set">
-            <div class="span5 offset1">
-                <table id=show_sortable class="table table-condensed table-bordered">
-                    <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:600;">
-                    Mostra
-                    </th>
-                    <tbody>
-                        {% for slide in home_show %}
-                            <tr class="show_sortable_content" id="{{ slide }}"><td>{{slide}}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    {% for item in items %}
+			{% if forloop.first %}
+            <div class="tab-pane active" id="{{item.setting_id}}">
+			{% else %}
+            <div class="tab-pane" id="{{item.setting_id}}">
+			{% endif %}
+                <div class="span5 offset1">
+                    <table id=show_sortable_{{item.setting_id}} class="table table-condensed table-bordered">
+                        <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:500;">
+                        Mostra
+                        </th>
+                        <tbody>
+                            {% for slide in item.show %}
+                                <tr class="show_sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="span5">
+                    <table id=hide_sortable_{{item.setting_id}} class="table table-condensed table-bordered">
+                        <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:500;">
+                        Nascondi
+                        </th>
+                        <tbody>
+                            {% for slide in item.hide %}
+                                <tr class="hide_sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="span5">
-                <table id=hide_sortable class="table table-condensed table-bordered">
-                    <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:600;">
-                    Nascondi
-                    </th>
-                    <tbody>
-                        {% for slide in home_hide %}
-                            <tr class="hide_sortable_content" id="{{ slide }}"><td>{{slide}}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane" id="anagrafe_set"> <p>Howdy, I'm in Section B.</p> </div>
+    {% endfor %}
     </div>
 </div> <!-- /tabbable -->
 
@@ -62,14 +72,14 @@
 <script>
 
 
-$("#show_sortable").sortable({
+{% for item in items %}
+$("#show_sortable_{{item.setting_id}}").sortable({
     placeholder: "Show items",
     items: "tr.show_sortable_content",
-    connectWith: '#hide_sortable',
+    connectWith: '#hide_sortable_{{item.setting_id}}',
     update: function(event,ui) {
-        var r = $('#show_sortable tr.show_sortable_content').sortable('toArray');
+        var r = $('#show_sortable_{{item.setting_id}}').sortable('toArray');
         r = r.join('-');
-        alert(r);
         $.ajax({
             type: "POST",
             url: "/settings/view/",
@@ -78,12 +88,12 @@ $("#show_sortable").sortable({
         }
 }).disableSelection();
 
-$("#hide_sortable").sortable({
+$("#hide_sortable_{{item.setting_id}}").sortable({
     placeholder: "Hide items",
     items:"tr.hide_sortable_content",
-    connectWith: '#show_sortable',
+    connectWith: '#show_sortable_{{item.setting_id}}',
 }).disableSelection();
-
+{% endfor %}
 </script>
 {% endblock %}
 

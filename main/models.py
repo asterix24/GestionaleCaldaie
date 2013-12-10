@@ -329,7 +329,7 @@ class InterventoForm(forms.ModelForm):
 class Settings(models.Model):
     home_view = models.TextField(default='', null=True, blank=True)
     anagrafe_view = models.TextField(default='', null=True, blank=True)
-    export_csv = models.TextField(default='', null=True, blank=True)
+    export_table = models.TextField(default='', null=True, blank=True)
 
     def __unicode__(self):
         return self.home_view
@@ -339,19 +339,23 @@ class Settings(models.Model):
 
 from main import cfg
 
+def __check(d, key):
+    v = d.get(key,'')
+    l = v.split('-')
+    h = []
+    for i in l:
+        if i in cfg.CFG_ALL:
+            h.append(i)
+    return h
+
 class SettingsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
-        _home_view = cleaned_data.get("home_view",'')
-        h = []
-        if _home_view:
-            ls = _home_view.split('-')
-            for i in ls:
-                if i in cfg.CFG_ALL:
-                    h.append(i)
 
+        cleaned_data['home_view'] = __check(cleaned_data, 'home_view')
+        cleaned_data['anagrafe_view'] = __check(cleaned_data, 'anagrafe_view')
+        cleaned_data['export_table_view'] = __check(cleaned_data, 'export_table_view')
 
-        cleaned_data['home_view'] = '-'.join(h)
         return cleaned_data
 
     class Meta:

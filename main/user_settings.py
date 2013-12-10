@@ -18,57 +18,56 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def __settings_ShowHide(settings, key, default, idx=0):
+def __settings_ShowHide(settings, key, key_label, default, idx=0):
     settings = settings.values()
-    show = default
-    hide = []
 
-    #TODO Rivedere un po'
-    if idx == len(settings) and idx > 0:
-        idx = idx - 1
-
+    show_settings = default
+    # There is a valid user settings, make dict
     if settings:
-        settings = settings[idx]
+        # Take last
+        settings = settings[0]
         s = settings.get(key, '')
         if s:
-            show = s.split('-')
+            show_settings = s.split('-')
         else:
             logger.error("No custom settings for %s, foldback on default.", key)
     else:
         logger.error("No custom settings for %s, foldback on default.", key)
 
-    for i in cfg.CFG_ALL:
-        if i in show:
-            continue
-        hide.append(i)
+    show = []
+    for i in show_settings:
+        show.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
-    return show, hide
+    hide = []
+    for i in cfg.CFG_ALL:
+        if i not in show_settings:
+            hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
+
+    return {'setting_id':key, 'setting_label':key_label, 'show':show, 'hide':hide}
 
 
 def settings_home(request):
-    home_view_show = []
-    home_view_hide = []
-
+    items = []
     # get settings from files
     if request.method == "GET":
         settings = models.Settings.objects.all()
-        home_view_show, home_view_hide = __settings_ShowHide(settings, 'home_view', cfg.HOME_STD_VIEW)
+        items.append(__settings_ShowHide(settings, 'home_view'    , 'Vista Home',    cfg.HOME_STD_VIEW))
+        items.append(__settings_ShowHide(settings, 'anagrafe_view', 'Vista Anagrafe', cfg.HOME_STD_VIEW))
+        items.append(__settings_ShowHide(settings, 'export_table' , 'Vista esportazione', cfg.HOME_STD_VIEW))
 
-    return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+    return render(request, "user_settings.sub", {'items':items})
 
 def settings_view(request):
     print request.POST
-    print "qui"
     if request.method == "POST":
         try:
             select = models.Settings.objects.get(pk=0)
         except ObjectDoesNotExist:
             select = None
 
-        print request.POST
         form = models.SettingsForm(request.POST, instance=select)
         if form.is_valid():
             form.save()
 
-    return render(request, "user_settings.sub", { 'home_show':home_view_show, 'home_hide':home_view_hide})
+    return render(request, "user_settings.sub", {})
 
