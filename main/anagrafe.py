@@ -59,7 +59,7 @@ def show_record(request, cliente_id, detail_type=None, impianto_id=None, sub_imp
     if data is None:
         return errors.server_error(request)
 
-    return render(request, 'anagrafe.sub', { 'data': data,
+    return render(request, 'anagrafe.html', { 'data': data,
                            'data_list': data_list,
                            'notification': data_render.notification(message_hdr, message, message_type),
                            'scripts':scripts.ANAGRAFE_JS,
@@ -441,7 +441,7 @@ def add_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub
             form = d['form']
             notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
 
-    return render(request, 'anagrafe_form.sub', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
+    return render(request, 'anagrafe_form.html', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
         'data_forms': form, 'data':data, 'scripts': script, 'post_url':post_url})
 
 
@@ -494,7 +494,7 @@ def edit_record(request, cliente_id=None, detail_type=None, impianto_id=None, su
             form = d['form']
             notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
 
-    return render(request, 'anagrafe_form.sub', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
+    return render(request, 'anagrafe_form.html', {'notification': notification, 'header_msg': data_render.TITLE_STYLE_FORM % header_msg,
         'data_forms': form, 'data':data, 'scripts': script, 'post_url':post_url})
 
 def delete_record(request, cliente_id=None, detail_type=None, impianto_id=None, sub_impianto_id=None):
@@ -591,7 +591,7 @@ def anagrafe(request):
         dr.orderUrl('anagrafe', form_dict)
         data += dr.toTable()
 
-    return render(request, 'anagrafe.sub',{'query_path':request.get_full_path(),
+    return render(request, 'anagrafe.html',{'query_path':request.get_full_path(),
                                            'data': data,
                                            'data_form': form,
                                            'scripts': '',
