@@ -83,7 +83,7 @@ $("#show_sortable_{{item.setting_id}}").sortable({
         $.ajax({
             type: "POST",
             url: "/settings/view/",
-            data: 'home_view=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
+            data: '{{item.setting_id}}=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
         });
         }
 }).disableSelection();
