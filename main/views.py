@@ -173,7 +173,7 @@ def home(request, d={}):
     if d:
        notification = data_render.notification(d['message_hdr'], d['message'], d['message_type'])
 
-    return render(request, 'home.sub',{'query_path':request.get_full_path(),
+    return render(request, 'home.html',{'query_path':request.get_full_path(),
                                        'notification': notification,
                                        'data': data,
                                        'data_form': form,
@@ -190,7 +190,7 @@ def test(request):
     show = cfg.HOME_STD_VIEW
     hide = ["Vuota"]
     #print show, hide
-    return render(request, 'test.sub', {'items_show': show, 'items_hide':hide })
+    return render(request, 'test.html', {'items_show': show, 'items_hide':hide })
 
 
 from functools import partial
@@ -251,7 +251,7 @@ def err(request):
     return errors.server_error(request)
 
 def check_test(request):
-    return render(request, 'anagrafe.sub', {'data': "" })
+    return render(request, 'anagrafe.html', {'data': "" })
 
 def check_layout(request):
     return render(request, 'fluid.html', {})
