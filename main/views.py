@@ -12,6 +12,7 @@ from main import data_render
 from main import database_manager
 from main import scripts
 from main import errors
+from main import user_settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -126,8 +127,8 @@ def home(request, d={}):
 
     data_to_render = database_manager.search_inMonth(**form_dict)
     dr = data_render.DataRender(data_to_render)
-    dr.selectColums(cfg.HOME_STD_VIEW)
 
+    dr.selectColums(user_settings.settings_columView('home_view'))
     tb_top = [
             "<button class=\"btn btn-info dropdown-toggle\" data-toggle=\"dropdown\">Seleziona \
             <span class=\"caret\"></span></button> \
@@ -162,7 +163,7 @@ def home(request, d={}):
     form_dict['status'] = True
     data_to_render = database_manager.search_inMonth(**form_dict)
     dr = data_render.DataRender(data_to_render)
-    dr.selectColums(cfg.HOME_STD_VIEW)
+    dr.selectColums(user_settings.settings_columView('home_view'))
     dr.toolbar(top=tb_top, left=tb_left)
     dr.msgItemsEmpty("")
     dr.msgStatistics(("<br><h2>N.COUNT interventi chiusi nel mese di %s" % myforms.monthStr(form_dict['ref_month'])) + ".</h2><br>")

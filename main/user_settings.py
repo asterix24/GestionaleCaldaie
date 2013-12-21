@@ -18,10 +18,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def __settings_ShowHide(settings, key, key_label, default, idx=0):
+def __settings_ShowHide(settings, key):
     settings = settings.values()
 
-    show_settings = default
+    show_settings = cfg.CFG_TABLE[key][1]
     # There is a valid user settings, make dict
     if settings:
         # Take last
@@ -43,17 +43,25 @@ def __settings_ShowHide(settings, key, key_label, default, idx=0):
             if i not in show_settings:
                 hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
-    return {'setting_id':key, 'setting_label':key_label, 'show':show, 'hide':hide}
+    return {'setting_id':key, 'setting_label':cfg.CFG_TABLE[key][0], 'show':show, 'hide':hide}
 
+
+def settings_columView(key):
+    select = models.Settings.objects.all()
+    if select:
+        select = select.values()[0]
+        return select[key].split('-')
+    else:
+        return cfg.CFG_TABLE[key][1]
 
 def settings_home(request):
     items = []
     # get settings from files
     if request.method == "GET":
         settings = models.Settings.objects.all()
-        items.append(__settings_ShowHide(settings, 'home_view'    , 'Vista Home',    cfg.HOME_STD_VIEW))
-        items.append(__settings_ShowHide(settings, 'anagrafe_view', 'Vista Anagrafe', cfg.HOME_STD_VIEW))
-        items.append(__settings_ShowHide(settings, 'export_table' , 'Vista esportazione', cfg.HOME_STD_VIEW))
+        items.append(__settings_ShowHide(settings, 'home_view'    ))
+        items.append(__settings_ShowHide(settings, 'anagrafe_view'))
+        items.append(__settings_ShowHide(settings, 'export_table' ))
 
     return render(request, "user_settings.html", {'items':items})
 
@@ -77,4 +85,6 @@ def settings_view(request):
                 form.save()
 
     return render(request, "user_settings.html", {})
+
+
 

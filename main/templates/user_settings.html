@@ -44,7 +44,7 @@
                         </th>
                         <tbody>
                             {% for slide in item.show %}
-                                <tr class="show_sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                                <tr class="sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -56,7 +56,7 @@
                         </th>
                         <tbody>
                             {% for slide in item.hide %}
-                                <tr class="hide_sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                                <tr class="sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -75,7 +75,7 @@
 {% for item in items %}
 $("#show_sortable_{{item.setting_id}}").sortable({
     placeholder: "Show items",
-    items: "tr.show_sortable_content",
+    items: "tr.sortable_content",
     connectWith: '#hide_sortable_{{item.setting_id}}',
     update: function(event,ui) {
         var r = $('#show_sortable_{{item.setting_id}}').sortable('toArray');
@@ -90,7 +90,7 @@ $("#show_sortable_{{item.setting_id}}").sortable({
 
 $("#hide_sortable_{{item.setting_id}}").sortable({
     placeholder: "Hide items",
-    items:"tr.hide_sortable_content",
+    items:"tr.sortable_content",
     connectWith: '#show_sortable_{{item.setting_id}}',
 }).disableSelection();
 {% endfor %}

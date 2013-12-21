@@ -175,6 +175,12 @@ CFG_INTERVENTO = [
 
 CFG_ALL = CFG_CLIENTE + CFG_IMPIANTO + CFG_VERIFICA + CFG_INTERVENTO
 
+CFG_TABLE = {
+    'home_view'    : ['Vista Home',         HOME_STD_VIEW],
+    'anagrafe_view': ['Vista Anagrafe',     HOME_STD_VIEW],
+    'export_table' : ['Vista esportazione', HOME_STD_VIEW],
+}
+
 GROUP_FIELD_VIEW = {
 'cognome'                       : { "field":"main_cliente.cognome",                        "order":"asc"},
 'nome'                          : { "field":"main_cliente.nome",                           "order":"asc"},
