@@ -332,31 +332,33 @@ class Settings(models.Model):
     export_table = models.TextField(default='', null=True, blank=True)
 
     def __unicode__(self):
-        return self.home_view
+        return self.home_view + self.anagrafe_view + self.export_table
 
     class Meta:
         ordering = ['-id'] # Ordina per data in modo decrescente
 
 from main import cfg
 
-def __check(d, key):
-    v = d.get(key,'')
-    l = v.split('-')
-    h = []
-    for i in l:
-        if i in cfg.CFG_ALL:
-            h.append(i)
-    return h
-
 class SettingsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(forms.ModelForm, self).clean()
 
-        cleaned_data['home_view'] = __check(cleaned_data, 'home_view')
-        cleaned_data['anagrafe_view'] = __check(cleaned_data, 'anagrafe_view')
-        cleaned_data['export_table_view'] = __check(cleaned_data, 'export_table_view')
+        def __check_s(d, key):
+            v = d.get(key,'')
+            l = v.split('-')
+            h = []
+            for i in l:
+                if i in cfg.CFG_ALL:
+                    h.append(i)
+            return "-".join(h)
 
+        cleaned_data['home_view'] = __check_s(cleaned_data, 'home_view')
+        cleaned_data['anagrafe_view'] = __check_s(cleaned_data, 'anagrafe_view')
+        cleaned_data['export_table'] = __check_s(cleaned_data, 'export_table')
+
+        print "clean: ", cleaned_data
         return cleaned_data
 
     class Meta:
         model = Settings
+

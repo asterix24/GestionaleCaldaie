@@ -38,10 +38,10 @@ def __settings_ShowHide(settings, key, key_label, default, idx=0):
     for i in show_settings:
         show.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
-    hide = []
-    for i in cfg.CFG_ALL:
-        if i not in show_settings:
-            hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
+        hide = []
+        for i in cfg.CFG_ALL:
+            if i not in show_settings:
+                hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
     return {'setting_id':key, 'setting_label':key_label, 'show':show, 'hide':hide}
 
@@ -55,19 +55,26 @@ def settings_home(request):
         items.append(__settings_ShowHide(settings, 'anagrafe_view', 'Vista Anagrafe', cfg.HOME_STD_VIEW))
         items.append(__settings_ShowHide(settings, 'export_table' , 'Vista esportazione', cfg.HOME_STD_VIEW))
 
-    return render(request, "user_settings.sub", {'items':items})
+    return render(request, "user_settings.html", {'items':items})
 
 def settings_view(request):
     print request.POST
     if request.method == "POST":
-        try:
-            select = models.Settings.objects.get(pk=0)
-        except ObjectDoesNotExist:
-            select = None
-
-        form = models.SettingsForm(request.POST, instance=select)
+        form = models.SettingsForm(request.POST)
+        select = models.Settings.objects.all()
         if form.is_valid():
-            form.save()
+            if select:
+                v = form.cleaned_data['home_view']
+                if v:
+                    models.Settings.objects.all().update(home_view=v)
+                v = form.cleaned_data['anagrafe_view']
+                if v:
+                    models.Settings.objects.all().update(anagrafe_view=v)
+                v = form.cleaned_data['export_table']
+                if v:
+                    models.Settings.objects.all().update(export_table=v)
+            else:
+                form.save()
 
-    return render(request, "user_settings.sub", {})
+    return render(request, "user_settings.html", {})
 
