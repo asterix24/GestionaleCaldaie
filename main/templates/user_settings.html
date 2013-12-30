@@ -42,21 +42,27 @@
                         <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:500;">
                         Mostra
                         </th>
-                        <tbody>
+                        <tbody id=items_remove>
                             {% for slide in item.show %}
-                                <tr class="sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                                <tr class="sortable_content" id="{{ slide.id }}">
+                                    <td>
+                                        <a href="#" id=item_sort value="remove-{{item.setting_id}}-{{slide.id}}-{{slide.label}}"><i class="icon-minus-sign"></i>  {{slide.label}}</a>
+                                    </td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 <div class="span5">
-                    <table id=hide_sortable_{{item.setting_id}} class="table table-condensed table-bordered">
+                    <table class="table table-condensed table-bordered">
                         <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:500;">
                         Nascondi
                         </th>
-                        <tbody>
+                        <tbody id=items_add>
                             {% for slide in item.hide %}
-                                <tr class="sortable_content" id="{{ slide.id }}"><td>{{slide.label}}</td></tr>
+                            <tr>
+                                <td><a href="#" id=item_sort value="add-{{item.setting_id}}-{{slide.id}}-{{slide.label}}" ><i class="icon-plus-sign"></i>  {{slide.label}}</a></td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -71,12 +77,10 @@
 {% block scripts %}
 <script>
 
-
 {% for item in items %}
 $("#show_sortable_{{item.setting_id}}").sortable({
     placeholder: "Show items",
     items: "tr.sortable_content",
-    connectWith: '#hide_sortable_{{item.setting_id}}',
     update: function(event,ui) {
         var r = $('#show_sortable_{{item.setting_id}}').sortable('toArray');
         r = r.join('-');
@@ -88,12 +92,32 @@ $("#show_sortable_{{item.setting_id}}").sortable({
         }
 }).disableSelection();
 
-$("#hide_sortable_{{item.setting_id}}").sortable({
-    placeholder: "Hide items",
-    items:"tr.sortable_content",
-    connectWith: '#show_sortable_{{item.setting_id}}',
-}).disableSelection();
 {% endfor %}
+$("a[id=item_sort]").live('click', function (event) {
+        var v = $(this).attr('value').split("-");
+        var v_action = v[0];
+        var v_set_id = v[1];
+        var v_id = v[2];
+        var v_label = v[3];
+        $(this).parent().parent().remove();
+        if (v_action == 'add') {
+            var r = "<tr class=\"sortable_content\" id=" + v_id + "><td><a href=\"#\" id=item_sort value=\"remove-" +  v_id + "-" + v_label + "\"><i class=\"icon-minus-sign\"></i>  " + v_label + "</a></td></tr>";
+            $("tbody[id=items_remove]").append(r);
+        } else {
+            var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i>" + v_label + "</a></td></tr>";
+            $("tbody[id=items_add]").append(r);
+        }
+
+        var r = $('#show_sortable_'+v_set_id).sortable('toArray');
+        r = r.join('-');
+        $.ajax({
+            type: "POST",
+            url: "/settings/view/",
+            data: v_set_id + '=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
+        });
+        event.preventDefault();
+});
+
 </script>
 {% endblock %}
 
