@@ -101,10 +101,10 @@ $("a[id=item_sort]").live('click', function (event) {
         var v_label = v[3];
         $(this).parent().parent().remove();
         if (v_action == 'add') {
-            var r = "<tr class=\"sortable_content\" id=" + v_id + "><td><a href=\"#\" id=item_sort value=\"remove-" +  v_id + "-" + v_label + "\"><i class=\"icon-minus-sign\"></i>  " + v_label + "</a></td></tr>";
+            var r = "<tr class=\"sortable_content\" id=" + v_id + "><td><a href=\"#\" id=item_sort value=\"remove-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-minus-sign\"></i>  " + v_label + "</a></td></tr>";
             $("tbody[id=items_remove]").append(r);
         } else {
-            var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i>" + v_label + "</a></td></tr>";
+            var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i>" + v_label + "</a></td></tr>";
             $("tbody[id=items_add]").append(r);
         }
 
