@@ -175,11 +175,33 @@ CFG_INTERVENTO = [
 
 CFG_ALL = CFG_CLIENTE + CFG_IMPIANTO + CFG_VERIFICA + CFG_INTERVENTO
 
-CFG_TABLE = {
-    'home_view'    : ['Vista Home',         HOME_STD_VIEW],
-    'anagrafe_view': ['Vista Anagrafe',     HOME_STD_VIEW],
-    'export_table' : ['Vista esportazione', HOME_STD_VIEW],
-}
+CFG_TABLE = [
+   ('home_view'               , 'Vista Home',           HOME_STD_VIEW                ),
+   ('anagrafe_view'           , 'Vista Anagrafe',       ANAGRAFE_STD_VIEW            ),
+   ('anagrafe_cliente_view'   , 'Dettaglio Cliente',    ANAGRAFE_CLIENTE_STD_VIEW    ),
+   ('anagrafe_impianto_view'  , 'Dettaglio Impianto',   ANAGRAFE_IMPIANTI_STD_VIEW   ),
+   ('anagrafe_verifica_view'  , 'Dettaglio Verifica',   ANAGRAFE_VERIFICA_STD_VIEW   ),
+   ('anagrafe_intervento_view', 'Dettaglio Intervento', ANAGRAFE_INTERVENTI_STD_VIEW ),
+   ('export_table'            , 'Vista esportazione',   HOME_STD_VIEW                ),
+]
+
+def cfg_table(key):
+    for i in CFG_TABLE:
+        if i[0] == key:
+            return i
+    return ()
+
+def cfg_tableLabel(key):
+    l = cfg_table(key)
+    if l:
+        return l[1]
+    return ()
+
+def cfg_tableList(key):
+    l = cfg_table(key)
+    if l:
+        return l[2]
+    return ()
 
 GROUP_FIELD_VIEW = {
 'cognome'                       : { "field":"main_cliente.cognome",                        "order":"asc"},

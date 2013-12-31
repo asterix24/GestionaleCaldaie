@@ -17,11 +17,10 @@ from main import errors
 import logging
 logger = logging.getLogger(__name__)
 
-
 def __settings_ShowHide(settings, key):
     settings = settings.values()
 
-    show_settings = cfg.CFG_TABLE[key][1]
+    show_settings = cfg.cfg_tableList(key)
     # There is a valid user settings, make dict
     if settings:
         # Take last
@@ -43,25 +42,26 @@ def __settings_ShowHide(settings, key):
             if i not in show_settings:
                 hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
-    return {'setting_id':key, 'setting_label':cfg.CFG_TABLE[key][0], 'show':show, 'hide':hide}
+    return {'setting_id':key, 'setting_label':cfg.cfg_tableLabel(key), 'show':show, 'hide':hide}
 
 
 def settings_columView(key):
     select = models.Settings.objects.all()
+    l = cfg.cfg_tableList(key)
     if select:
         select = select.values()[0]
-        return select[key].split('-')
-    else:
-        return cfg.CFG_TABLE[key][1]
+        ll = select[key].split('-')
+        if ll[0]:
+            l = ll
+    return l
 
 def settings_home(request):
     items = []
     # get settings from files
     if request.method == "GET":
         settings = models.Settings.objects.all()
-        items.append(__settings_ShowHide(settings, 'home_view'    ))
-        items.append(__settings_ShowHide(settings, 'anagrafe_view'))
-        items.append(__settings_ShowHide(settings, 'export_table' ))
+        for i in cfg.CFG_TABLE:
+            items.append(__settings_ShowHide(settings, i[0]))
 
     return render(request, "user_settings.html", {'items':items})
 
@@ -75,9 +75,27 @@ def settings_view(request):
                 v = form.cleaned_data['home_view']
                 if v:
                     models.Settings.objects.all().update(home_view=v)
+
                 v = form.cleaned_data['anagrafe_view']
                 if v:
                     models.Settings.objects.all().update(anagrafe_view=v)
+
+                v = form.cleaned_data['anagrafe_cliente_view']
+                if v:
+                    models.Settings.objects.all().update(anagrafe_cliente_view=v)
+
+                v = form.cleaned_data['anagrafe_impianto_view']
+                if v:
+                    models.Settings.objects.all().update(anagrafe_impianto_view=v)
+
+                v = form.cleaned_data['anagrafe_verifica_view']
+                if v:
+                    models.Settings.objects.all().update(anagrafe_verifica_view=v)
+
+                v = form.cleaned_data['anagrafe_intervento_view']
+                if v:
+                    models.Settings.objects.all().update(anagrafe_intervento_view=v)
+
                 v = form.cleaned_data['export_table']
                 if v:
                     models.Settings.objects.all().update(export_table=v)

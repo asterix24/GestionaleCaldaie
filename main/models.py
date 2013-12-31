@@ -329,10 +329,14 @@ class InterventoForm(forms.ModelForm):
 class Settings(models.Model):
     home_view = models.TextField(default='', null=True, blank=True)
     anagrafe_view = models.TextField(default='', null=True, blank=True)
+    anagrafe_cliente_view = models.TextField(default='', null=True, blank=True)
+    anagrafe_impianto_view = models.TextField(default='', null=True, blank=True)
+    anagrafe_verifica_view = models.TextField(default='', null=True, blank=True)
+    anagrafe_intervento_view = models.TextField(default='', null=True, blank=True)
     export_table = models.TextField(default='', null=True, blank=True)
 
     def __unicode__(self):
-        return self.home_view + self.anagrafe_view + self.export_table
+        return self.home_view
 
     class Meta:
         ordering = ['-id'] # Ordina per data in modo decrescente
@@ -352,9 +356,8 @@ class SettingsForm(forms.ModelForm):
                     h.append(i)
             return "-".join(h)
 
-        cleaned_data['home_view'] = __check_s(cleaned_data, 'home_view')
-        cleaned_data['anagrafe_view'] = __check_s(cleaned_data, 'anagrafe_view')
-        cleaned_data['export_table'] = __check_s(cleaned_data, 'export_table')
+        for i in cfg.CFG_TABLE:
+            cleaned_data[i[0]] = __check_s(cleaned_data, i[0])
 
         print "clean: ", cleaned_data
         return cleaned_data

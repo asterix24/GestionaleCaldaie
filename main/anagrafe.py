@@ -15,6 +15,7 @@ from main import database_manager
 from main import scripts
 from main import views
 from main import users
+from main import user_settings
 
 import re
 import logging
@@ -123,7 +124,8 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         tb=""
         if show_toolbar:
             tb = TOOLBAR_CLIENTE
-        data_list = data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_CLIENTE_STD_VIEW, "Dettaglio Cliente",
+        cliente_list = user_settings.settings_columView('anagrafe_cliente_view')
+        data_list = data_render.render_toList(data_to_render[0], cliente_list, "Dettaglio Cliente",
                 toolbar=tb)
 
     dr = None
@@ -132,7 +134,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
         data_to_render = database_manager.search_clienteImpiantoSet(cliente_id)
         dr = data_render.DataRender(data_to_render)
         dr.showTitle("Elenco impianti")
-        dr.selectColums(cfg.ANAGRAFE_IMPIANTI_STD_VIEW)
+        dr.selectColums(user_settings.settings_columView('anagrafe_impianto_view'))
 
         # edit and delete icons with related link
         toolbar_left = [
@@ -160,14 +162,14 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     elif detail_type == "impianto":
         data_to_render = database_manager.search_impiantoId(impianto_id)
         if data_to_render:
-            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+            data_list += data_render.render_toList(data_to_render[0], user_settings.settings_columView('anagrafe_impianto_view'), "Dettaglio Impianto",
                     toolbar=TOOLBAR_IMPIANTO)
 
             # Display all verifiche related to this impianto
             data_to_render = database_manager.search_impiantoVerificaSet(impianto_id)
             dr = data_render.DataRender(data_to_render)
             dr.showTitle("Elenco verifiche")
-            dr.selectColums(cfg.ANAGRAFE_VERIFICA_STD_VIEW)
+            dr.selectColums(user_settings.settings_columView('anagrafe_verifica_view'))
             # edit and delete icons with related link
             toolbar_left = [
                     TOOLBAR_ICO_EDIT % ("/anagrafe/{cliente_id}/impianto/{impianto_id}/verifica/{verifica_id}/edit/", gestionale.settings.STATIC_URL),
@@ -193,7 +195,7 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
             data_to_render = database_manager.search_impiantoInterventoSet(impianto_id)
             dr = data_render.DataRender(data_to_render)
             dr.showTitle("Elenco interventi")
-            dr.selectColums(cfg.ANAGRAFE_INTERVENTI_STD_VIEW)
+            dr.selectColums(user_settings.settings_columView('anagrafe_intervento_view'))
 
             # edit and delete icons with related link
             toolbar_left = [
@@ -220,25 +222,25 @@ def view_record(cliente_id, detail_type=None, impianto_id=None, sub_impianto_id=
     elif detail_type == "verifica":
         data_to_render = database_manager.search_impiantoId(impianto_id)
         if data_to_render:
-            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+            data_list += data_render.render_toList(data_to_render[0], user_settings.settings_columView('anagrafe_impianto_view'), "Dettaglio Impianto",
                     toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             if data_to_render:
                 data_to_render = database_manager.search_verificaId(sub_impianto_id)
-                data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_VERIFICA_STD_VIEW, "Dettaglio Verifica e Manutenzioni",
+                data_list += data_render.render_toList(data_to_render[0], user_settings.settings_columView('anagrafe_verifica_view'), "Dettaglio Verifica e Manutenzioni",
                         toolbar=TOOLBAR_VERIFICA)
 
     elif detail_type == "intervento":
         data_to_render = database_manager.search_impiantoId(impianto_id)
         if data_to_render:
-            data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_IMPIANTI_STD_VIEW, "Dettaglio Impianto",
+            data_list += data_render.render_toList(data_to_render[0], user_settings.settings_columView('anagrafe_impianto_view'), "Dettaglio Impianto",
                         toolbar=TOOLBAR_IMPIANTO)
 
         if sub_impianto_id is not None:
             data_to_render = database_manager.search_interventoId(sub_impianto_id)
             if data_to_render:
-                data_list += data_render.render_toList(data_to_render[0], cfg.ANAGRAFE_INTERVENTI_STD_VIEW, "Dettaglio Intervento",
+                data_list += data_render.render_toList(data_to_render[0], user_settings.settings_columView('anagrafe_intervento_view'), "Dettaglio Intervento",
                         toolbar=TOOLBAR_INTERVENTO)
     else:
         data = None
@@ -582,7 +584,8 @@ def anagrafe(request):
 
         data_to_render = database_manager.search_fullText(**form_dict)
         dr = data_render.DataRender(data_to_render)
-        dr.selectColums(cfg.ANAGRAFE_STD_VIEW)
+
+        dr.selectColums(user_settings.settings_columView('anagrafe_view'))
 
         dr.msgItemsEmpty("<br><h3>La ricerca non ha prodotto risultati.</h3>")
         if search_string != "":

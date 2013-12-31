@@ -38,12 +38,13 @@ def __export_xls(data_table, filename="tabella"):
     sheet = book.add_sheet('Elenco')
 
     #Add header
-    for colum,j in enumerate(cfg.ANAGRAFE_STD_VIEW):
+    export_list = user_settings.settings_columView('export_table')
+    for colum,j in enumerate(export_list):
         sheet.write(0, colum, "%s" % j.replace('_', ' ').capitalize())
 
     #Write table
     for row,i in enumerate(data_table):
-        for colum,j in enumerate(cfg.ANAGRAFE_STD_VIEW):
+        for colum,j in enumerate(export_list):
             #we should skip the header row.
             sheet.write(row + 1, colum, data_render.formatFields(i,j, default_text="-"))
 
@@ -56,13 +57,15 @@ def __export_csv(data_table, filename="tabella"):
     response = http.HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (filename, datetime.datetime.today().strftime("%d-%m-%Y"))
 
+    export_list = user_settings.settings_columView('export_table')
+
     response.write("\xEF\xBB\xBF")
     writer = tools.UnicodeWriter(response, delimiter=';')
-    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in cfg.ANAGRAFE_STD_VIEW])
+    writer.writerow(["%s" % j.replace('_', ' ').capitalize() for j in export_list])
 
     for item_dict in data_table:
         l = []
-        for i in cfg.ANAGRAFE_STD_VIEW:
+        for i in export_list:
             l.append(data_render.formatFields(item_dict, i, default_text="-"))
 
         writer.writerow(l)
