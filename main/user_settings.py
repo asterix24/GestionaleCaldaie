@@ -55,6 +55,13 @@ def settings_columView(key):
             l = ll
     return l
 
+def settings_reset(request, setting_id):
+    keys = cfg.cfg_tableKeys()
+    if setting_id in keys:
+        models.Settings.objects.all().update(**{setting_id:''})
+
+    return settings_home(request)
+
 def settings_home(request):
     items = []
     # get settings from files
@@ -72,33 +79,10 @@ def settings_view(request):
         select = models.Settings.objects.all()
         if form.is_valid():
             if select:
-                v = form.cleaned_data['home_view']
-                if v:
-                    models.Settings.objects.all().update(home_view=v)
-
-                v = form.cleaned_data['anagrafe_view']
-                if v:
-                    models.Settings.objects.all().update(anagrafe_view=v)
-
-                v = form.cleaned_data['anagrafe_cliente_view']
-                if v:
-                    models.Settings.objects.all().update(anagrafe_cliente_view=v)
-
-                v = form.cleaned_data['anagrafe_impianto_view']
-                if v:
-                    models.Settings.objects.all().update(anagrafe_impianto_view=v)
-
-                v = form.cleaned_data['anagrafe_verifica_view']
-                if v:
-                    models.Settings.objects.all().update(anagrafe_verifica_view=v)
-
-                v = form.cleaned_data['anagrafe_intervento_view']
-                if v:
-                    models.Settings.objects.all().update(anagrafe_intervento_view=v)
-
-                v = form.cleaned_data['export_table']
-                if v:
-                    models.Settings.objects.all().update(export_table=v)
+                for i in cfg.cfg_tableKeys():
+                    v = form.cleaned_data[i]
+                    if v:
+                        models.Settings.objects.all().update(**{i:v})
             else:
                 form.save()
 

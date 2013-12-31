@@ -359,7 +359,7 @@ class SettingsForm(forms.ModelForm):
         for i in cfg.CFG_TABLE:
             cleaned_data[i[0]] = __check_s(cleaned_data, i[0])
 
-        print "clean: ", cleaned_data
+        #print "clean: ", cleaned_data
         return cleaned_data
 
     class Meta:

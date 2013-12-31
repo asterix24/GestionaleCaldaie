@@ -191,6 +191,12 @@ def cfg_table(key):
             return i
     return ()
 
+def cfg_tableKeys():
+    l = []
+    for i in CFG_TABLE:
+        l.append(i[0])
+    return l
+
 def cfg_tableLabel(key):
     l = cfg_table(key)
     if l:
@@ -202,6 +208,7 @@ def cfg_tableList(key):
     if l:
         return l[2]
     return ()
+
 
 GROUP_FIELD_VIEW = {
 'cognome'                       : { "field":"main_cliente.cognome",                        "order":"asc"},

@@ -37,7 +37,10 @@
 			{% else %}
             <div class="tab-pane" id="{{item.setting_id}}">
 			{% endif %}
-                <div class="span5 offset1">
+                <div class="span2">
+                    <a href=/settings/reset/{{item.setting_id}} class="btn btn-info">Ripristina</a>
+                </div>
+                <div class="span5">
                     <table id=show_sortable_{{item.setting_id}} class="table table-condensed table-bordered">
                         <th style="background-color: #5993A5;vertical-align: middle; color: #F8F8F8; text-align:center;font-size:1.1;font-weight:500;">
                         Mostra
