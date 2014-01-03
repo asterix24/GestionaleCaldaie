@@ -17,7 +17,7 @@ from main import errors
 import logging
 logger = logging.getLogger(__name__)
 
-def __settings_ShowHide(settings, key):
+def __settings_ShowHide(settings, key, active):
     settings = settings.values()
 
     show_settings = cfg.cfg_tableList(key)
@@ -42,7 +42,8 @@ def __settings_ShowHide(settings, key):
             if i not in show_settings:
                 hide.append({'id':i, 'label': i.replace('_', ' ').capitalize()})
 
-    return {'setting_id':key, 'setting_label':cfg.cfg_tableLabel(key), 'show':show, 'hide':hide}
+    return {'setting_id':key, 'setting_label':cfg.cfg_tableLabel(key),
+            'show':show, 'hide':hide, 'active':active}
 
 
 def settings_columView(key):
@@ -56,19 +57,23 @@ def settings_columView(key):
     return l
 
 def settings_reset(request, setting_id):
-    keys = cfg.cfg_tableKeys()
-    if setting_id in keys:
+    if setting_id in cfg.cfg_tableKeys():
         models.Settings.objects.all().update(**{setting_id:''})
 
-    return settings_home(request)
+    return settings_home(request, setting_id)
 
-def settings_home(request):
+def settings_home(request, active=None):
     items = []
     # get settings from files
     if request.method == "GET":
         settings = models.Settings.objects.all()
-        for i in cfg.CFG_TABLE:
-            items.append(__settings_ShowHide(settings, i[0]))
+        for i in cfg.cfg_tableKeys():
+            if i == active or active is None:
+                items.append(__settings_ShowHide(settings, i, True))
+                active = False
+                continue
+
+            items.append(__settings_ShowHide(settings, i, False))
 
     return render(request, "user_settings.html", {'items':items})
 

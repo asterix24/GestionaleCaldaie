@@ -23,7 +23,7 @@
 <div class="tabbable">
     <ul class="nav nav-tabs">
         {% for item in items %}
-		{% if forloop.first %}
+		{% if item.active %}
 			<li class="active"><a href="#{{item.setting_id}}" data-toggle="tab">{{item.setting_label}}</a></li>
 		{% else %}
 			<li><a href="#{{item.setting_id}}" data-toggle="tab">{{item.setting_label}}</a></li>
@@ -32,12 +32,12 @@
     </ul>
     <div class="tab-content">
     {% for item in items %}
-			{% if forloop.first %}
-            <div class="tab-pane active" id="{{item.setting_id}}">
-			{% else %}
-            <div class="tab-pane" id="{{item.setting_id}}">
-			{% endif %}
-                <div class="span2">
+	{% if item.active %}
+	<div class="tab-pane active" id="{{item.setting_id}}">
+	{% else %}
+	<div class="tab-pane" id="{{item.setting_id}}">
+	{% endif %}
+                <div class="span1">
                     <a href=/settings/reset/{{item.setting_id}} class="btn btn-info">Ripristina</a>
                 </div>
                 <div class="span5">
@@ -97,6 +97,7 @@ $("#show_sortable_{{item.setting_id}}").sortable({
 
 {% endfor %}
 $("a[id=item_sort]").live('click', function (event) {
+        event.preventDefault();
         var v = $(this).attr('value').split("-");
         var v_action = v[0];
         var v_set_id = v[1];
@@ -110,7 +111,6 @@ $("a[id=item_sort]").live('click', function (event) {
             var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i>" + v_label + "</a></td></tr>";
             $("tbody[id=items_add]").append(r);
         }
-
         var r = $('#show_sortable_'+v_set_id).sortable('toArray');
         r = r.join('-');
         $.ajax({
@@ -118,7 +118,6 @@ $("a[id=item_sort]").live('click', function (event) {
             url: "/settings/view/",
             data: v_set_id + '=' + r + '&csrfmiddlewaretoken={{ csrf_token }}&',
         });
-        event.preventDefault();
 });
 
 </script>
