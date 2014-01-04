@@ -1,25 +1,14 @@
 {% extends "base.html" %}
 
 {% block center_block %}
-
-<div class="row-fluid">
-    <h3>{{data}}</h3>
-
-<form class="form-horizontal" action="{% url home %}" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-    <div class="well well-small">
-        <div class="controls">
-            {{ form }}
-        </div>
-    {% if form.errors %} <div class="alert alert-error">{{form.errors}}</div> {% endif %}
-
-    <input class="btn btn-info btn-large" type="submit" value="Carica"/>
-    </div>
-</form>
-
-</div>
-
+<h1>Impostazioni</h1>
 <hr>
+<h2>Viste</h2>
+<p>Modifica i dati da visualizzare nelle varie viste.</p>
+<p>Per cambiare l'ordine trascina con il mouse le righe con l'icona della freccia.</p>
+<p>Per aggiungere una colonna clicca sull'icona con il piu', mentre per rimuoverla clicca sull'icona con il segno meno.
+</p>
+<br>
 <div class="tabbable">
     <ul class="nav nav-tabs">
         {% for item in items %}
@@ -48,8 +37,10 @@
                         <tbody id=items_remove>
                             {% for slide in item.show %}
                                 <tr class="sortable_content" id="{{ slide.id }}">
-                                    <td>
-                                        <a href="#" id=item_sort value="remove-{{item.setting_id}}-{{slide.id}}-{{slide.label}}"><i class="icon-minus-sign"></i>  {{slide.label}}</a>
+                                    <td><i class="icon-resize-vertical"></i>
+                                        <a href="#" id=item_sort value="remove-{{item.setting_id}}-{{slide.id}}-{{slide.label}}">
+						<i class="icon-minus-sign"></i>  {{slide.label}}
+					</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -105,10 +96,10 @@ $("a[id=item_sort]").live('click', function (event) {
         var v_label = v[3];
         $(this).parent().parent().remove();
         if (v_action == 'add') {
-            var r = "<tr class=\"sortable_content\" id=" + v_id + "><td><a href=\"#\" id=item_sort value=\"remove-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-minus-sign\"></i>  " + v_label + "</a></td></tr>";
+            var r = "<tr class=\"sortable_content\" id=" + v_id + "><td><i class=\"icon-resize-vertical\"></i><a href=\"#\" id=item_sort value=\"remove-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-minus-sign\"></i>  " + v_label + "</a></td></tr>";
             $("tbody[id=items_remove]").append(r);
         } else {
-            var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i>" + v_label + "</a></td></tr>";
+            var r = "<tr><td><a href=\"#\" id=item_sort value=\"add-" + v_set_id + "-" + v_id + "-" + v_label + "\"><i class=\"icon-plus-sign\"></i> " + v_label + "</a></td></tr>";
             $("tbody[id=items_add]").append(r);
         }
         var r = $('#show_sortable_'+v_set_id).sortable('toArray');
@@ -121,6 +112,11 @@ $("a[id=item_sort]").live('click', function (event) {
 });
 
 </script>
+<style type="text/css">
+.table-hover tbody tr:hover > td {
+  cursor: pointer
+}
+</style>
 {% endblock %}
 
 
