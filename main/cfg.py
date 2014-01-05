@@ -164,7 +164,10 @@ CFG_VERIFICA = [
     'stato_pagamento',
     'costo_intervento',
     'note_verifica',
+    'data_ultima_verifica',
+    'ultima_analisi_combustione',
     ]
+
 CFG_INTERVENTO = [
 # interventi
     'data_intervento',
