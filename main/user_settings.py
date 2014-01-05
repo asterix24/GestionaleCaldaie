@@ -78,7 +78,7 @@ def settings_home(request, active=None):
     return render(request, "user_settings.html", {'items':items})
 
 def settings_view(request):
-    print request.POST
+    #print request.POST
     if request.method == "POST":
         form = models.SettingsForm(request.POST)
         select = models.Settings.objects.all()
