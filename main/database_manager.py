@@ -372,52 +372,70 @@ def generate_query(search_keys=None, order_by_field=None, ordering=None, id_fiel
 def search_inMonth(search_keys=None, ref_month=None, ref_year=None, filter_type=None, order_by_field=None, ordering=None, status=False):
     if ref_month is None or ref_month == "":
         ref_month = datetime.date.today().month
+
     if ref_year is None or ref_year == "":
         ref_year = datetime.date.today().year
+
+    ref_month = int(ref_month)
     if ref_month > 12 and ref_month < 1:
         logger.error("Invalid month[%s]" % ref_month)
         return []
 
+    ref_year = int(ref_year)
+
     #if group_field is not None:
     query_str, param = generate_query(search_keys, order_by_field, ordering)
 
-    query_year = """(
-        ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione) OR
-        ( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s) OR
-        ( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s) OR
-        ( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)
-        )""" % (ref_year, ref_year, ref_year, ref_year)
-
-    query_month = """(
-        ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione) OR
-        ( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s ) OR
-        ( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s ) OR
-        ( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )
-        )""" % (ref_month, ref_month, ref_month, ref_month)
-
-    if filter_type == 'fumi':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s AND main_verifica.analisi_combustione)" % (ref_year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s AND main_verifica.analisi_combustione)" % (ref_month)
-
-    if filter_type == 'fumi_prossimi':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_analisi_combustione) < %s)" % (ref_year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_analisi_combustione) = %s )" % (ref_month)
-
-    if filter_type == 'verifiche':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.data_verifica) < %s)" % (ref_year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.data_verifica) = %s )" % (ref_month)
-
-    if filter_type == 'verifiche_prossima':
-        query_year = "( EXTRACT(\'year\' FROM main_verifica.prossima_verifica) < %s)" % (ref_year)
-        query_month = "( EXTRACT(\'month\' FROM main_verifica.prossima_verifica) = %s )" % (ref_month)
-
     if status:
-        query_str2 = " ((main_verifica.stato_verifica = \'C\') AND " + query_year + " AND " + query_month + " )"
+        #query_str2 = " ((main_verifica.stato_verifica = \'C\') AND " + query_year + " AND " + query_month + " )"
+        query_str2 = " ((main_verifica.stato_verifica = \'C\') )"
     else:
-        query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
+        #query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') AND " + query_year + " AND " + query_month + " )"
+        query_str2 = " ((main_verifica.stato_verifica = \'A\' OR main_verifica.stato_verifica = \'S\') )"
 
     data = query_table(query_str, param, query_str2, [], verifiche_only=True)
-    return query_sortDict(data, order_by_field, ordering)
+
+    def __flag(item,key):
+        value = item.get(key, None)
+        if value is None:
+            return False
+        return value
+
+    def __date(item,key,year,month):
+        value = item.get(key, None)
+        if value is None:
+            return False
+        if type(value) != datetime.date:
+            return False
+
+        #print value.year,  year, value.month, month
+        return (value.year < year) and (value.month == month)
+
+    data_filter = []
+    for i in data:
+        if filter_type == 'fumi':
+            if __flag(i, 'analisi_combustione') and __date(i, 'data_verifica', ref_year, ref_month):
+                    data_filter.append(i)
+
+        elif filter_type == 'fumi_prossimi':
+            if __date(i, 'prossima_analisi_combustione', ref_year, ref_month):
+                    data_filter.append(i)
+
+        elif filter_type == 'verifiche':
+            if __date(i, 'data_verifica', ref_year, ref_month):
+                data_filter.append(i)
+
+        elif filter_type == 'verifiche_prossima':
+            if __date(i, 'prossima_verifica', ref_year, ref_month):
+                    data_filter.append(i)
+        else:
+            if ((__flag(i, 'analisi_combustione') and __date(i, 'data_verifica', ref_year, ref_month)) or
+                 __date(i,'prossima_analisi_combustione', ref_year, ref_month) or
+                 __date(i,'prossima_verifica', ref_year, ref_month)):
+                    data_filter.append(i)
+
+    #print len(data), len(data_filter)
+    return query_sortDict(data_filter, order_by_field, ordering)
 
 
 
