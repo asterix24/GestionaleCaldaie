@@ -175,7 +175,7 @@ def __analisi_combustione(items, key, s=EMPTY_CELL, with_url=False):
 
     s = 'No.'
     if items[key]:
-        s = 'Eseguita.'
+        s = 'Si.'
 
     return s
 
