@@ -171,7 +171,7 @@ def __colore_bollino(items, key, s=EMPTY_CELL, with_url=False):
 
 def __analisi_combustione(items, key, s=EMPTY_CELL, with_url=False):
     if not isValidKey(items, key):
-        return "No Fumi"
+        return s
 
     s = 'No.'
     if items[key]:
